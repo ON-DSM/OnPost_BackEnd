@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Random;
+
 @Service
 @Slf4j
 @Transactional(rollbackFor = {Exception.class})
@@ -38,7 +40,7 @@ public class AuthService {
                 .email(signupDto.getEmail())
                 .name(signupDto.getUsername())
                 .password(passwordEncoder.encode(signupDto.getPassword()))
-                .validMember(false);
+                .certified(certifiedKey());
 
         if (signupDto.getEmail().equals("khcho0125@dsm.hs.kr")) {
             builder.author(Authority.ADMIN);
@@ -50,6 +52,8 @@ public class AuthService {
     }
 
     public TokenDto loginMember(LoginDto loginDto) {
+
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         String authorites = jwtProvider.getAuthorities(authentication);
@@ -57,5 +61,20 @@ public class AuthService {
         return jwtProvider.generateToken(loginDto.getEmail(), authorites);
     }
 
+    private String certifiedKey() {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        int num, len = 0;
 
+        do {
+            num = random.nextInt(75) + 48;
+            if ( (num <= 57) || (num >= 65 && num <= 90) || (num >= 97)) {
+                sb.append((char) num);
+                len++;
+            }
+
+        } while (len < 10);
+        return sb.toString();
+
+    }
 }
