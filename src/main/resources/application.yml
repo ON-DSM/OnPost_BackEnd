@@ -11,9 +11,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        show_sql: true
     open-in-view: false
     database: mysql
-    database-platform: org.hiberante.dialect.MySQL5InnoDBDialect
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
 logging:
   level:
