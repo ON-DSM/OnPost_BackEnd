@@ -20,6 +20,6 @@ public class MemberQueryRepository {
     }
 
     public boolean checkEmail(String email) {
-        return memberRepository.findByEmail(email).isEmpty();
+        return memberRepository.findByEmail(email).isPresent();
     }
 }

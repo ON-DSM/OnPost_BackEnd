@@ -29,12 +29,12 @@ public class Member {
 
     @NotBlank
     private String password;
+
     private String profile;
     private String introduce;
 
-    @NotBlank
     @Enumerated(value = EnumType.STRING)
     private Authority author;
 
-    private boolean validMember;
+    private String certified;
 }
