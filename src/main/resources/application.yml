@@ -28,3 +28,11 @@ jwt:
   access: ${ACCESS_TIME}
   refresh: ${REFRESH_TIME}
   header: ${HEADER}
+
+cloud.aws:
+  region.static: ${REGION}
+  credentials:
+    secretKey: ${SECRETKEY}
+    accessKey: ${ACCESSKEY}
+  s3.bucket: ${BUCKET}
+  stack.auto: false
