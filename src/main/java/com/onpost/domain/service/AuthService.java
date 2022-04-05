@@ -3,8 +3,8 @@ package com.onpost.domain.service;
 import com.onpost.domain.dto.auth.LoginDto;
 import com.onpost.domain.dto.auth.SignupDto;
 import com.onpost.domain.dto.auth.TokenDto;
-import com.onpost.domain.entity.Authority;
-import com.onpost.domain.entity.Member;
+import com.onpost.domain.entity.member.Authority;
+import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.MemberQueryRepository;
 import com.onpost.global.error.exception.EmailAlreadyExistsException;
 import com.onpost.global.jwt.JwtProvider;
@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Random;
 
 @Service
@@ -37,6 +39,9 @@ public class AuthService {
         }
 
         Member.MemberBuilder builder = Member.builder()
+                .follower(new LinkedHashSet<>())
+                .following(new LinkedHashSet<>())
+                .makePost(new LinkedList<>())
                 .email(signupDto.getEmail())
                 .name(signupDto.getUsername())
                 .password(passwordEncoder.encode(signupDto.getPassword()))

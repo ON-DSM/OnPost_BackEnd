@@ -1,4 +1,4 @@
-package com.onpost.domain.entity;
+package com.onpost.domain.entity.member;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

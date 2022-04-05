@@ -1,6 +1,6 @@
 package com.onpost.global.jwt;
 
-import com.onpost.domain.entity.Member;
+import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.jpa.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
