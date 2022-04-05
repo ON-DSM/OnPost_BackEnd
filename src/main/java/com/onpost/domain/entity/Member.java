@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -37,4 +38,16 @@ public class Member {
     private Authority author;
 
     private String certified;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
+    }
+
+    public void setProfile(String Profile) {
+        this.profile = profile;
+    }
 }
