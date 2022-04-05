@@ -1,4 +1,4 @@
-package com.onpost.domain.dto;
+package com.onpost.domain.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,8 +1,8 @@
 package com.onpost.domain.controller;
 
-import com.onpost.domain.dto.LoginDto;
-import com.onpost.domain.dto.SignupDto;
-import com.onpost.domain.dto.TokenDto;
+import com.onpost.domain.dto.auth.LoginDto;
+import com.onpost.domain.dto.auth.SignupDto;
+import com.onpost.domain.dto.auth.TokenDto;
 import com.onpost.domain.entity.Member;
 import com.onpost.domain.service.AuthService;
 import com.onpost.global.jwt.JwtProvider;

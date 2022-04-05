@@ -1,6 +1,6 @@
 package com.onpost.global.jwt;
 
-import com.onpost.domain.dto.TokenDto;
+import com.onpost.domain.dto.auth.TokenDto;
 import com.onpost.global.error.exception.InvalidTokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
