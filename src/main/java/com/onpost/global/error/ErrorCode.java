@@ -8,7 +8,11 @@ import lombok.Getter;
 public enum ErrorCode {
 
     INVALID_TOKEN("Invalid token", 401),
-    EMAIL_ALREADY_EXISTS("Email Already Exists", 409);
+    EMAIL_ALREADY_EXISTS("Email Already Exists", 409),
+
+    POST_NOT_FOUND("Post Not Found", 404),
+    IMAGE_NOT_FOUND("Image Not Found", 404),
+    MEMBER_NOT_FOUND("Member Not Found", 404);
 
     private final String message;
     private final int status;
