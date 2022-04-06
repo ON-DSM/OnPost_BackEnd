@@ -98,7 +98,8 @@ public class Member extends BaseEntity {
     }
 
     public void unfollowMe(Member follower) {
-
+        this.follower.remove(follower);
+        follower.following.remove(this);
     }
 
     public void updatePost(Post post) {

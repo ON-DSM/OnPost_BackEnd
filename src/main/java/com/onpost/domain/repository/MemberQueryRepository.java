@@ -57,4 +57,20 @@ public class MemberQueryRepository {
                 .where(member.id.eq(id))
                 .fetchOne();
     }
+
+    public Member deleteDummy(Long id) {
+        return jpaQueryFactory.selectFrom(member)
+                .leftJoin(member.makePost)
+                .fetchJoin()
+                .leftJoin(member.follower)
+                .fetchJoin()
+                .leftJoin(member.following)
+                .fetchJoin()
+                .where(member.id.eq(id))
+                .fetchOne();
+    }
+
+    public void delete(Member member) {
+        memberRepository.delete(member);
+    }
 }
