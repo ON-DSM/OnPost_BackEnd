@@ -3,13 +3,14 @@ package com.onpost.domain.service;
 import com.onpost.domain.entity.Image;
 import com.onpost.domain.repository.jpa.ImageRepository;
 import com.onpost.global.s3.S3Uploader;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.elasticsearch.core.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -18,17 +19,8 @@ public class ImageService {
     private final S3Uploader s3Uploader;
     private final ImageRepository imageRepository;
 
-    public void deleteImageList(List<Long> imageList) {
-        for(Long im : imageList) {
-            Image image = imageRepository.getById(im);
-            String[] paths = image.getImagePath().split("/");
-            s3Uploader.delete(paths[paths.length - 2] + "/" + paths[paths.length - 1]);
-            imageRepository.delete(image);
-        }
-    }
-
-    public void deleteImageList(Set<Image> imageSet) {
-        for(Image image : imageSet) {
+    public void deleteImageList(List<Image> images) {
+        for(Image image : images) {
             String[] paths = image.getImagePath().split("/");
             s3Uploader.delete(paths[paths.length - 2] + "/" + paths[paths.length - 1]);
             imageRepository.delete(image);
@@ -41,10 +33,12 @@ public class ImageService {
         imageRepository.delete(image);
     }
 
-    public Set<Image> getImageList(List<MultipartFile> fileList, String dirName) {
-        LinkedHashSet<Image> imageList = new LinkedHashSet<>();
-        for(MultipartFile im : fileList) {
-            imageList.add(imageRepository.save(Image.builder().imagePath(s3Uploader.upload(im, dirName)).build()));
+    public List<Image> getImageList(List<MultipartFile> images, String dirName) {
+        LinkedList<Image> imageList = new LinkedList<>();
+        if(images != null) {
+            for (MultipartFile im : images) {
+                imageList.add(imageRepository.save(Image.builder().imagePath(s3Uploader.upload(im, dirName)).build()));
+            }
         }
         return imageList;
     }
