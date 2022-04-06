@@ -23,12 +23,17 @@ public class MemberController {
     }
 
     @GetMapping("/Profile")
-    public MemberResponse getProfile(@RequestParam Long id) {
+    public MemberResponse show(@RequestParam Long id) {
         return memberService.showMember(id);
     }
 
     @PutMapping("/follow")
     public void follow(@Valid @RequestBody FollowDto followDto) {
         memberService.followMember(followDto);
+    }
+
+    @DeleteMapping("/delete")
+    public void delete(@RequestParam Long id) {
+        memberService.deleteMember(id);
     }
 }
