@@ -5,6 +5,7 @@ import com.onpost.domain.dto.member.MemberRequest;
 import com.onpost.domain.dto.member.MemberResponse;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.MemberQueryRepository;
+import com.onpost.domain.repository.PostQueryRepository;
 import com.onpost.global.s3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ public class MemberService {
 
     private final MemberQueryRepository memberQueryRepository;
     private final S3Uploader s3Uploader;
+    private final PostQueryRepository postQueryRepository;
 
     public Member editMember(MemberRequest memberRequest) {
         Member member = memberQueryRepository.getCurrentMember(memberRequest.getId());
@@ -44,8 +46,19 @@ public class MemberService {
     }
 
     public void followMember(FollowDto followDto) {
-        log.info("{}", followDto.getFollowId());
-        Member member = memberQueryRepository.getFollowRelation(followDto.getId());
+        Member me = memberQueryRepository.getFollowRelation(followDto.getId());
+        Member follow = memberQueryRepository.getFollowRelation(followDto.getFollowId());
+
+        me.followMe(follow);
+
+        memberQueryRepository.save(me);
+        memberQueryRepository.save(follow);
+    }
+
+    public void deleteMember(Long id) {
+        Member member = memberQueryRepository.deleteDummy(id);
+
+        postQueryRepository.delete
 
     }
 }
