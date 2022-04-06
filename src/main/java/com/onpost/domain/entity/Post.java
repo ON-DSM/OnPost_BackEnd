@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -32,8 +33,29 @@ public class Post extends BaseEntity {
 
     @OneToMany
     @JoinTable(
+            name = "images",
             joinColumns = {@JoinColumn(name = "post_id")},
             inverseJoinColumns = {@JoinColumn(name = "image_id")}
     )
     private List<Image> images;
+
+    @OneToMany
+    @JoinTable(
+            name = "postLike",
+            joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<Member> postLike;
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
 }
