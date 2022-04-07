@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -36,3 +36,8 @@ cloud.aws:
     accessKey: ${ACCESSKEY}
   s3.bucket: ${BUCKET}
   stack.auto: false
+
+redis:
+  port: ${REDIS_PORT}
+  host: ${REDIS_HOST}
+  password: ${REDIS_PW}
