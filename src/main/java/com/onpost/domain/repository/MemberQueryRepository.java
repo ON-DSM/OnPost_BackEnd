@@ -4,6 +4,7 @@ import com.onpost.domain.dto.member.MemberResponse;
 import com.onpost.domain.dto.member.QMemberResponse;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.jpa.MemberRepository;
+import com.onpost.global.error.exception.MemberNotFoundException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -72,5 +73,9 @@ public class MemberQueryRepository {
 
     public void delete(Member member) {
         memberRepository.delete(member);
+    }
+
+    public Member getMemberByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
 }
