@@ -75,7 +75,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
          return new PostResponse(find);
     }
 
-    public List<PostResponse> showPost(String columns, String direction, Long page) {
+    public List<PostResponse> showPost(OrderSpecifier<?> sort, Long page) {
         List<Post> posts = jpaQueryFactory.selectFrom(post)
                 .leftJoin(post.writer)
                 .fetchJoin()
@@ -83,37 +83,11 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
                 .fetchJoin()
                 .leftJoin(post.postLike)
                 .fetchJoin()
-                .orderBy(sortPage(columns, direction))
+                .orderBy(sort)
                 .limit(16L)
                 .offset((page - 1L) * 16L)
                 .fetch();
         return posts.stream().map(PostResponse::new).collect(Collectors.toList());
-    }
-
-    private OrderSpecifier<?> sortPage(String column, String direction) {
-        NumberExpression<?> expression;
-        switch (column) {
-            case "like":
-                expression = post.postLike.size();
-                return Sort(expression, direction);
-            case "id":
-                expression = post.id;
-                return Sort(expression, direction);
-
-            default:
-                return null;
-        }
-    }
-
-    private OrderSpecifier<?> Sort(NumberExpression<?> expression, String direction) {
-        switch (direction) {
-            case "desc":
-                return expression.desc();
-            case "asc":
-                return expression.asc();
-            default:
-                return null;
-        }
     }
 
     public PostResponse editPost(PostRequest per) {
@@ -139,5 +113,9 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         postRepository.save(query);
 
         return new PostResponse(query);
+    }
+
+    public void delete(Member member) {
+        memberRepository.delete(member);
     }
 }

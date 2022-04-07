@@ -29,10 +29,9 @@ public class PostController {
     }
 
     @GetMapping("/main")
-    public List<PostResponse> mainPage(@RequestParam(defaultValue = "id") String sort,
-                                       @RequestParam(defaultValue = "asc") String direction,
+    public List<PostResponse> mainPage(@RequestParam(defaultValue = "like") String sort,
                                        @RequestParam(defaultValue = "1") Long page) {
-        return postService.pagePost(sort, direction, page);
+        return postService.pagePost(sort, page);
     }
 
     @PutMapping("/edit")
