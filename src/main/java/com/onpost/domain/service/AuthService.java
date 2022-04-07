@@ -5,21 +5,22 @@ import com.onpost.domain.dto.auth.SignupDto;
 import com.onpost.domain.dto.auth.TokenDto;
 import com.onpost.domain.entity.member.Authority;
 import com.onpost.domain.entity.member.Member;
+import com.onpost.domain.entity.member.RefreshToken;
 import com.onpost.domain.repository.MemberQueryRepository;
+import com.onpost.domain.repository.jpa.RefreshRepository;
 import com.onpost.global.error.exception.EmailAlreadyExistsException;
+import com.onpost.global.error.exception.ExpiredRefreshTokenException;
+import com.onpost.global.error.exception.PasswordNotMatchException;
 import com.onpost.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.Random;
 
 @Service
 @Slf4j
@@ -28,8 +29,8 @@ import java.util.Random;
 public class AuthService {
 
     private final JwtProvider jwtProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final MemberQueryRepository memberQueryRepository;
+    private final RefreshRepository refreshRepository;
     private final PasswordEncoder passwordEncoder;
 
     public Member signupMember(SignupDto signupDto) {
@@ -58,28 +59,30 @@ public class AuthService {
 
     public TokenDto loginMember(LoginDto loginDto) {
 
+        Member member = memberQueryRepository.getMemberByEmail(loginDto.getEmail());
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        String authorites = jwtProvider.getAuthorities(authentication);
+        if(!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())) {
+            throw PasswordNotMatchException.EXCEPTION;
+        }
 
-        return jwtProvider.generateToken(loginDto.getEmail(), authorites);
+        String access = jwtProvider.generateAccessToken(member.getAuthor().name(), loginDto.getEmail());
+        String refresh = jwtProvider.generateRefreshToken(member.getAuthor().name(), loginDto.getEmail());
+
+        return new TokenDto(access, refresh);
+    }
+
+    public TokenDto refreshRequest(String token) {
+        RefreshToken refreshToken = refreshRepository.findByRefreshToken(token)
+                .orElseThrow(() -> ExpiredRefreshTokenException.EXCEPTION);
+
+        String refresh = jwtProvider.generateRefreshToken(refreshToken.getAuthority(), refreshToken.getEmail());
+        refreshToken.updateToken(refresh);
+
+        String access = jwtProvider.generateAccessToken(refreshToken.getAuthority(), refreshToken.getEmail());
+        return new TokenDto(refresh, access);
     }
 
     private String certifiedKey() {
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        int num, len = 0;
-
-        do {
-            num = random.nextInt(75) + 48;
-            if ( (num <= 57) || (num >= 65 && num <= 90) || (num >= 97)) {
-                sb.append((char) num);
-                len++;
-            }
-
-        } while (len < 10);
-        return sb.toString();
-
+        return RandomString.make(10);
     }
 }
