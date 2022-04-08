@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -50,7 +52,7 @@ public class Member extends BaseEntity {
             joinColumns = {@JoinColumn(name = "publisher")},
             inverseJoinColumns = {@JoinColumn(name = "subscriber")}
     )
-    private Set<Member> follower;
+    private Set<Member> follower = new LinkedHashSet<>();
 
     @OneToMany
     @JoinTable(
@@ -58,7 +60,7 @@ public class Member extends BaseEntity {
             joinColumns = {@JoinColumn(name = "publisher")},
             inverseJoinColumns = {@JoinColumn(name = "subscriber")}
     )
-    private Set<Member> following;
+    private Set<Member> following = new LinkedHashSet<>();
 
     @OneToMany
     @JoinTable(
@@ -66,7 +68,7 @@ public class Member extends BaseEntity {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "post_id")}
     )
-    private List<Post> makePost;
+    private List<Post> makePost = new LinkedList<>();
 
     public void setName(String name) {
         this.name = name;
@@ -78,18 +80,6 @@ public class Member extends BaseEntity {
 
     public void setProfile(String profile) {
         this.profile = profile;
-    }
-
-    public long getFollowingSize() {
-        return this.following.size();
-    }
-
-    public long getFollowerSize() {
-        return this.follower.size();
-    }
-
-    public long getMakePost() {
-        return this.makePost.size();
     }
 
     public void followMe(Member follower) {
