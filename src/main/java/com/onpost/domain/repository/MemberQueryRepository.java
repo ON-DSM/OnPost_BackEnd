@@ -18,10 +18,6 @@ public class MemberQueryRepository {
     private final MemberRepository memberRepository;
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Member create(Member member) {
-        return memberRepository.save(member);
-    }
-
     public boolean checkEmail(String email) {
         return memberRepository.findByEmail(email).isPresent();
     }
