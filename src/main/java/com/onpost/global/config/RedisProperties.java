@@ -16,6 +16,6 @@ public class RedisProperties {
     public RedisProperties(Integer port, String host, String password) {
         this.host = host;
         this.password = password;
-        this.port = port;   
+        this.port = port;
     }
 }
