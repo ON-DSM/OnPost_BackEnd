@@ -9,7 +9,6 @@ import com.onpost.domain.repository.jpa.MemberRepository;
 import com.onpost.domain.repository.jpa.PostRepository;
 import com.onpost.domain.service.ImageService;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -43,7 +42,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         Member writer = jpaQueryFactory.selectFrom(member)
                 .leftJoin(member.makePost)
                 .fetchJoin()
-                .where(member.id.eq(postRequest.getWriterId()))
+                .where(member.id.eq(postRequest.getId()))
                 .fetchOne();
 
         Post post = Post.builder()
@@ -94,7 +93,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         Post query = jpaQueryFactory.selectFrom(post)
                 .leftJoin(post.images)
                 .fetchJoin()
-                .where(post.id.eq(per.getWriterId()))
+                .where(post.id.eq(per.getId()))
                 .fetchOne();
 
         if(per.getContext() != null) {
@@ -115,7 +114,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         return new PostResponse(query);
     }
 
-    public void delete(Member member) {
-        memberRepository.delete(member);
+    public void delete(Post post) {
+        postRepository.delete(post);
     }
 }
