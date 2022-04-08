@@ -1,6 +1,7 @@
 package com.onpost.domain.dto.member;
 
 import com.onpost.domain.entity.member.Authority;
+import com.onpost.domain.entity.member.Member;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 
@@ -28,5 +29,15 @@ public class MemberResponse extends MemberDto {
         this.follower = follower;
         this.following = following;
         this.makePost = makePost;
+    }
+
+    public MemberResponse(Member member) {
+        super(member.getId(), member.getName(), member.getIntroduce());
+        this.profile = member.getProfile();
+        this.createAt = member.getCreateAt();
+        this.authority = member.getAuthor();
+        this.follower = member.getFollower().size();
+        this.following = member.getFollowing().size();
+        this.makePost = member.getMakePost().size();
     }
 }
