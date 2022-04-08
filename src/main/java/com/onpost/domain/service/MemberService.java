@@ -3,6 +3,7 @@ package com.onpost.domain.service;
 import com.onpost.domain.dto.member.FollowDto;
 import com.onpost.domain.dto.member.MemberRequest;
 import com.onpost.domain.dto.member.MemberResponse;
+import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.MemberQueryRepository;
 import com.onpost.domain.repository.PostQueryRepository;
@@ -57,8 +58,20 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         Member member = memberQueryRepository.deleteDummy(id);
+        for(Member m : member.getFollowing()) {
+            m.unfollowMe(member);
+        }
 
-        postQueryRepository.delete
+        for(Member m : member.getFollower()) {
+            member.unfollowMe(m);
+        }
 
+        s3Uploader.delete(member.getProfile());
+
+        for(Post p : member.getMakePost()) {
+            postQueryRepository.delete(p);
+        }
+
+        memberQueryRepository.delete(member);
     }
 }
