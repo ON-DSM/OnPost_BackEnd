@@ -19,9 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-
 @Service
 @Slf4j
 @Transactional(rollbackFor = {Exception.class})
@@ -40,9 +37,6 @@ public class AuthService {
         }
 
         Member.MemberBuilder builder = Member.builder()
-                .follower(new LinkedHashSet<>())
-                .following(new LinkedHashSet<>())
-                .makePost(new LinkedList<>())
                 .email(signupDto.getEmail())
                 .name(signupDto.getUsername())
                 .password(passwordEncoder.encode(signupDto.getPassword()))
@@ -54,7 +48,7 @@ public class AuthService {
             builder.author(Authority.USER);
         }
 
-        return memberQueryRepository.create(builder.build());
+        return memberQueryRepository.save(builder.build());
     }
 
     public TokenDto loginMember(LoginDto loginDto) {
