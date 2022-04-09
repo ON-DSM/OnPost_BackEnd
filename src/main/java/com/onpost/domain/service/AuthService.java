@@ -3,6 +3,7 @@ package com.onpost.domain.service;
 import com.onpost.domain.dto.auth.LoginDto;
 import com.onpost.domain.dto.auth.SignupDto;
 import com.onpost.domain.dto.auth.TokenDto;
+import com.onpost.domain.dto.member.MemberView;
 import com.onpost.domain.entity.member.Authority;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.entity.member.RefreshToken;
@@ -30,25 +31,22 @@ public class AuthService {
     private final RefreshRepository refreshRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Member signupMember(SignupDto signupDto) {
+    public MemberView signupMember(SignupDto signupDto) {
 
         if (memberQueryRepository.checkEmail(signupDto.getEmail())) {
             throw EmailAlreadyExistsException.EXCEPTION;
         }
 
-        Member.MemberBuilder builder = Member.builder()
+        Member member = Member.builder()
+                .author(Authority.USER)
                 .email(signupDto.getEmail())
                 .name(signupDto.getUsername())
                 .password(passwordEncoder.encode(signupDto.getPassword()))
-                .certified(certifiedKey());
+                .certified(certifiedKey()).build();
 
-        if (signupDto.getEmail().equals("khcho0125@dsm.hs.kr")) {
-            builder.author(Authority.ADMIN);
-        } else {
-            builder.author(Authority.USER);
-        }
+        memberQueryRepository.save(member);
 
-        return memberQueryRepository.save(builder.build());
+        return new MemberView(member);
     }
 
     public TokenDto loginMember(LoginDto loginDto) {
@@ -73,7 +71,7 @@ public class AuthService {
         refreshToken.updateToken(refresh);
 
         String access = jwtProvider.generateAccessToken(refreshToken.getAuthority(), refreshToken.getEmail());
-        return new TokenDto(refresh, access);
+        return new TokenDto(access, refresh);
     }
 
     private String certifiedKey() {
