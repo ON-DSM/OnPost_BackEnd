@@ -95,4 +95,8 @@ public class Member extends BaseEntity {
     public void updatePost(Post post) {
         this.makePost.add(post);
     }
+
+    public void deletePost(Post post) {
+        this.makePost.remove(post);
+    }
 }
