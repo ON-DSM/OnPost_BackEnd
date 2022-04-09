@@ -3,9 +3,7 @@ package com.onpost.domain.service;
 import com.onpost.domain.entity.Image;
 import com.onpost.domain.repository.jpa.ImageRepository;
 import com.onpost.global.s3.S3Uploader;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.elasticsearch.core.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,12 +25,6 @@ public class ImageService {
         }
     }
 
-    public void deleteImage(Image image) {
-        String[] paths = image.getImagePath().split("/");
-        s3Uploader.delete(paths[paths.length - 2] + "/" + paths[paths.length - 1]);
-        imageRepository.delete(image);
-    }
-
     public List<Image> getImageList(List<MultipartFile> images, String dirName) {
         LinkedList<Image> imageList = new LinkedList<>();
         if(images != null) {
@@ -43,9 +35,12 @@ public class ImageService {
         return imageList;
     }
 
-    public Image getImage(MultipartFile file, String dirName) {
-        return imageRepository.save(
-                Image.builder().imagePath(s3Uploader.upload(file, dirName)).build()
-        );
+    public String getPath(MultipartFile file, String dirName) {
+        return s3Uploader.upload(file, dirName);
+    }
+
+    public void deletePath(String path) {
+        String[] paths = path.split("/");
+        s3Uploader.delete(paths[paths.length - 2] + "/" + paths[paths.length - 1]);
     }
 }
