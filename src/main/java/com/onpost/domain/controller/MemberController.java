@@ -3,7 +3,7 @@ package com.onpost.domain.controller;
 import com.onpost.domain.dto.member.FollowDto;
 import com.onpost.domain.dto.member.MemberRequest;
 import com.onpost.domain.dto.member.MemberResponse;
-import com.onpost.domain.entity.member.Member;
+import com.onpost.domain.dto.member.MemberView;
 import com.onpost.domain.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +18,11 @@ public class MemberController {
     private final MemberService memberService;
 
     @PutMapping("/edit")
-    public Member edit(@Valid @RequestBody MemberRequest memberDto) {
+    public MemberView edit(@Valid @ModelAttribute MemberRequest memberDto) {
         return memberService.editMember(memberDto);
     }
 
-    @GetMapping("/Profile")
+    @GetMapping("/profile")
     public MemberResponse show(@RequestParam Long id) {
         return memberService.showMember(id);
     }
@@ -35,5 +35,10 @@ public class MemberController {
     @DeleteMapping("/delete")
     public void delete(@RequestParam Long id) {
         memberService.deleteMember(id);
+    }
+
+    @GetMapping("/info")
+    public MemberView info() {
+        return memberService.infoMember();
     }
 }
