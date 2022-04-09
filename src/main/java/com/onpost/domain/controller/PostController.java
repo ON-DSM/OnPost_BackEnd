@@ -35,7 +35,12 @@ public class PostController {
     }
 
     @PutMapping("/edit")
-    public PostResponse edit(@Valid @RequestBody PostRequest postRequest) {
+    public PostResponse edit(@Valid @ModelAttribute PostRequest postRequest) {
         return postService.editPost(postRequest);
+    }
+
+    @DeleteMapping("/delete")
+    public void delete(@RequestParam Long id) {
+        postService.deletePost(id);
     }
 }
