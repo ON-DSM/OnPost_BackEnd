@@ -3,13 +3,15 @@ package com.onpost.domain.service;
 import com.onpost.domain.dto.member.FollowDto;
 import com.onpost.domain.dto.member.MemberRequest;
 import com.onpost.domain.dto.member.MemberResponse;
+import com.onpost.domain.dto.member.MemberView;
+import com.onpost.domain.entity.Image;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.MemberQueryRepository;
 import com.onpost.domain.repository.PostQueryRepository;
-import com.onpost.global.s3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -18,10 +20,10 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final MemberQueryRepository memberQueryRepository;
-    private final S3Uploader s3Uploader;
+    private final ImageService imageService;
     private final PostQueryRepository postQueryRepository;
 
-    public Member editMember(MemberRequest memberRequest) {
+    public MemberView editMember(MemberRequest memberRequest) {
         Member member = memberQueryRepository.getCurrentMember(memberRequest.getId());
 
         if(memberRequest.getName() != null) {
@@ -34,16 +36,17 @@ public class MemberService {
 
         if(memberRequest.getProfile() != null) {
             if(member.getProfile() != null) {
-                s3Uploader.delete(member.getProfile());
+                imageService.deletePath(member.getProfile());
             }
-            member.setProfile(s3Uploader.upload(memberRequest.getProfile(), "profile"));
+            member.setProfile(imageService.getPath(memberRequest.getProfile(), "profile"));
         }
 
-        return memberQueryRepository.save(member);
+        memberQueryRepository.save(member);
+        return new MemberView(member);
     }
 
     public MemberResponse showMember(Long id) {
-        return memberQueryRepository.getView(id);
+        return new MemberResponse(memberQueryRepository.getMemberAll(id));
     }
 
     public void followMember(FollowDto followDto) {
@@ -57,7 +60,7 @@ public class MemberService {
     }
 
     public void deleteMember(Long id) {
-        Member member = memberQueryRepository.deleteDummy(id);
+        Member member = memberQueryRepository.getMemberAll(id);
         for(Member m : member.getFollowing()) {
             m.unfollowMe(member);
         }
@@ -66,12 +69,17 @@ public class MemberService {
             member.unfollowMe(m);
         }
 
-        s3Uploader.delete(member.getProfile());
-
         for(Post p : member.getMakePost()) {
             postQueryRepository.delete(p);
         }
 
+        imageService.deletePath(member.getProfile());
         memberQueryRepository.delete(member);
+    }
+
+    public MemberView infoMember() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = memberQueryRepository.getMemberByEmail(email);
+        return new MemberView(member);
     }
 }
