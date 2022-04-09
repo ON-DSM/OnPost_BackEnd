@@ -1,5 +1,6 @@
 package com.onpost.global.config;
 
+import com.onpost.domain.entity.member.Authority;
 import com.onpost.global.error.exception.JwtAccessDeniedHandler;
 import com.onpost.global.error.exception.JwtAuthenticationEntryPoint;
 import com.onpost.global.jwt.JwtProvider;
@@ -49,7 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/post/main/**").permitAll()
+                .antMatchers("/post/show/**").permitAll()
 
                 .anyRequest().authenticated()
                 .and()
