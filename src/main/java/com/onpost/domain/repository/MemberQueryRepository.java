@@ -1,7 +1,5 @@
 package com.onpost.domain.repository;
 
-import com.onpost.domain.dto.member.MemberResponse;
-import com.onpost.domain.dto.member.QMemberResponse;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.jpa.MemberRepository;
 import com.onpost.global.error.exception.MemberNotFoundException;
@@ -23,48 +21,38 @@ public class MemberQueryRepository {
     }
 
     public Member getCurrentMember(Long Id) {
-        return jpaQueryFactory.selectFrom(member)
+        Member find = jpaQueryFactory.selectFrom(member)
                 .where(member.id.eq(Id))
                 .fetchOne();
+        return check(find);
     }
 
-    public Member save(Member member) {
-        return memberRepository.save(member);
+    public void save(Member member) {
+        memberRepository.save(member);
     }
 
-    public MemberResponse getView(Long id) {
-        return jpaQueryFactory.query().select(new QMemberResponse(member.id,
-                        member.name,
-                        member.introduce,
-                        member.profile,
-                        member.author,
-                        member.createAt,
-                        member.follower.size(),
-                        member.following.size(),
-                        member.makePost.size()))
-                .from(member)
+    public Member getMemberAll(Long id) {
+        Member find = jpaQueryFactory.selectFrom(member)
+                .leftJoin(member.makePost)
+                .fetchJoin()
+                .leftJoin(member.following)
+                .fetchJoin()
+                .leftJoin(member.follower)
+                .fetchJoin()
                 .where(member.id.eq(id))
                 .fetchOne();
+        return check(find);
     }
 
     public Member getFollowRelation(Long id) {
-        return jpaQueryFactory.selectFrom(member)
-                .leftJoin(member)
-                .fetchJoin()
-                .where(member.id.eq(id))
-                .fetchOne();
-    }
-
-    public Member deleteDummy(Long id) {
-        return jpaQueryFactory.selectFrom(member)
-                .leftJoin(member.makePost)
-                .fetchJoin()
+        Member find = jpaQueryFactory.selectFrom(member)
                 .leftJoin(member.follower)
                 .fetchJoin()
                 .leftJoin(member.following)
                 .fetchJoin()
                 .where(member.id.eq(id))
                 .fetchOne();
+        return check(find);
     }
 
     public void delete(Member member) {
@@ -72,6 +60,25 @@ public class MemberQueryRepository {
     }
 
     public Member getMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+        Member find = jpaQueryFactory.selectFrom(member)
+                .where(member.email.eq(email))
+                .fetchOne();
+        return check(find);
+    }
+
+    public Member getPostAndMember(Long id) {
+        Member find = jpaQueryFactory.selectFrom(member)
+                .leftJoin(member.makePost)
+                .fetchJoin()
+                .where(member.id.eq(id))
+                .fetchOne();
+        return check(find);
+    }
+
+    private Member check(Member m) {
+        if(m == null) {
+            throw MemberNotFoundException.EXCEPTION;
+        }
+        return m;
     }
 }
