@@ -1,7 +1,9 @@
 package com.onpost.domain.repository;
 
 import com.onpost.domain.dto.post.PostResponse;
+import com.onpost.domain.entity.Image;
 import com.onpost.domain.entity.Post;
+import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.jpa.PostRepository;
 import com.onpost.domain.service.ImageService;
 import com.onpost.global.error.exception.PostNotFoundException;
@@ -10,6 +12,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,22 +21,25 @@ import static com.onpost.domain.entity.QPost.post;
 
 @Slf4j
 @Repository
+@Transactional
 public class PostQueryRepository extends QuerydslRepositorySupport {
 
     private final PostRepository postRepository;
     private final JPAQueryFactory jpaQueryFactory;
     private final ImageService imageService;
+    private final MemberQueryRepository memberQueryRepository;
 
     public PostQueryRepository(PostRepository postRepository,
                                JPAQueryFactory jpaQueryFactory,
-                               ImageService imageService) {
+                               ImageService imageService, MemberQueryRepository memberQueryRepository) {
         super(Post.class);
         this.postRepository = postRepository;
         this.jpaQueryFactory = jpaQueryFactory;
         this.imageService = imageService;
+        this.memberQueryRepository = memberQueryRepository;
     }
 
-    public Post show(Long id) {
+    public Post findPost(Long id) {
         Post find = jpaQueryFactory.selectFrom(post)
                 .leftJoin(post.writer)
                 .fetchJoin()
@@ -47,7 +53,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         return check(find);
     }
 
-    public List<PostResponse> showPage(OrderSpecifier<?> sort, Long page) {
+    public List<PostResponse> findPage(OrderSpecifier<?> sort, Long page) {
         List<Post> posts = jpaQueryFactory.selectFrom(post)
                 .leftJoin(post.writer)
                 .fetchJoin()
@@ -66,10 +72,15 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         postRepository.save(post);
     }
 
-    public void delete(Post post) {
-        post.getWriter().deletePost(post);
-        imageService.deleteImageList(post.getImages());
-        postRepository.delete(post);
+    public void delete(Post find) {
+        deletePostImages(find.getImages());
+        postRepository.delete(find);
+    }
+
+    public void deletePostImages(List<Image> postImages) {
+        List<Image> dummy = List.copyOf(postImages);
+        postImages.clear();
+        imageService.deleteImageList(dummy);
     }
 
     private Post check(Post post) {
