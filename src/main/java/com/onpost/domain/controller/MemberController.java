@@ -1,9 +1,6 @@
 package com.onpost.domain.controller;
 
-import com.onpost.domain.dto.member.FollowDto;
-import com.onpost.domain.dto.member.MemberRequest;
-import com.onpost.domain.dto.member.MemberResponse;
-import com.onpost.domain.dto.member.MemberView;
+import com.onpost.domain.dto.member.*;
 import com.onpost.domain.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +26,17 @@ public class MemberController {
 
     @PutMapping("/follow")
     public void follow(@Valid @RequestBody FollowDto followDto) {
-        memberService.followMember(followDto);
+        memberService.followMember(followDto, true);
+    }
+
+    @DeleteMapping("/unfollow")
+    public void unfollow(@Valid @RequestBody FollowDto followDto) {
+        memberService.followMember(followDto, false);
+    }
+
+    @GetMapping("/link")
+    public FollowResponse linkMember(@RequestParam Long id) {
+        return memberService.followList(id);
     }
 
     @DeleteMapping("/delete")
