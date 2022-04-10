@@ -6,13 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -68,7 +66,7 @@ public class Member extends BaseEntity {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "post_id")}
     )
-    private List<Post> makePost = new LinkedList<>();
+    private Set<Post> makePost = new LinkedHashSet<>();
 
     public void setName(String name) {
         this.name = name;
@@ -82,14 +80,14 @@ public class Member extends BaseEntity {
         this.profile = profile;
     }
 
-    public void followMe(Member follower) {
-        this.follower.add(follower);
-        follower.following.add(this);
+    public void followMe(Member other) {
+        this.follower.add(other);
+        other.following.add(this);
     }
 
-    public void unfollowMe(Member follower) {
-        this.follower.remove(follower);
-        follower.following.remove(this);
+    public void unfollowMe(Member other) {
+        this.follower.remove(other);
+        other.following.remove(this);
     }
 
     public void updatePost(Post post) {
@@ -98,5 +96,18 @@ public class Member extends BaseEntity {
 
     public void deletePost(Post post) {
         this.makePost.remove(post);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Member member = (Member) o;
+        return id != null && Objects.equals(id, member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
