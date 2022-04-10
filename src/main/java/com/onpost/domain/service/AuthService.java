@@ -51,7 +51,7 @@ public class AuthService {
 
     public TokenDto loginMember(LoginDto loginDto) {
 
-        Member member = memberQueryRepository.getMemberByEmail(loginDto.getEmail());
+        Member member = memberQueryRepository.findOneByEmail(loginDto.getEmail());
 
         if(!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())) {
             throw PasswordNotMatchException.EXCEPTION;
