@@ -11,6 +11,7 @@ import com.onpost.global.error.exception.PageSortException;
 import com.querydsl.core.types.OrderSpecifier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -19,6 +20,7 @@ import static com.onpost.domain.entity.QPost.post;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(rollbackFor = {Exception.class})
 public class PostService {
 
     private final PostQueryRepository postQueryRepository;
@@ -29,7 +31,7 @@ public class PostService {
     public PostResponse createPost(PostRequest postRequest) {
         List<Image> images = imageService.getImageList(postRequest.getImages(), "static");
 
-        Member writer = memberQueryRepository.getPostAndMember(postRequest.getId());
+        Member writer = memberQueryRepository.findOneWithPost(postRequest.getId());
 
         Post post = Post.builder()
                 .postLike(new LinkedHashSet<>())
@@ -48,12 +50,12 @@ public class PostService {
     }
 
     public PostResponse showPost(Long id) {
-        Post find = postQueryRepository.show(id);
+        Post find = postQueryRepository.findPost(id);
         return new PostResponse(find);
     }
 
     public PostResponse editPost(PostRequest per) {
-        Post find = postQueryRepository.show(per.getId());
+        Post find = postQueryRepository.findPost(per.getId());
 
         if(per.getContext() != null) {
             find.setContext(per.getContext());
@@ -63,8 +65,9 @@ public class PostService {
             find.setTitle(per.getTitle());
         }
 
+        postQueryRepository.deletePostImages(find.getImages());
+
         if(per.getImages() != null) {
-            imageService.deleteImageList(find.getImages());
             find.setImages(imageService.getImageList(per.getImages(), "static"));
         }
 
@@ -85,11 +88,14 @@ public class PostService {
             default:
                 throw PageSortException.EXCEPTION;
         }
-        return postQueryRepository.showPage(orderBy, page);
+        return postQueryRepository.findPage(orderBy, page);
     }
 
     public void deletePost(Long id) {
-        Post post = postQueryRepository.show(id);
+        Post post = postQueryRepository.findPost(id);
+        Member member = memberQueryRepository.findOneWithPost(post.getWriter().getId());
+        member.deletePost(post);
+        memberQueryRepository.save(member);
         postQueryRepository.delete(post);
     }
 }
