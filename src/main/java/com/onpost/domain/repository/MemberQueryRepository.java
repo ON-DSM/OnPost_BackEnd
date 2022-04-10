@@ -20,7 +20,7 @@ public class MemberQueryRepository {
         return memberRepository.findByEmail(email).isPresent();
     }
 
-    public Member getCurrentMember(Long Id) {
+    public Member findMember(Long Id) {
         Member find = jpaQueryFactory.selectFrom(member)
                 .where(member.id.eq(Id))
                 .fetchOne();
@@ -31,7 +31,7 @@ public class MemberQueryRepository {
         memberRepository.save(member);
     }
 
-    public Member getMemberAll(Long id) {
+    public Member findOneWithAll(Long id) {
         Member find = jpaQueryFactory.selectFrom(member)
                 .leftJoin(member.makePost)
                 .fetchJoin()
@@ -44,7 +44,7 @@ public class MemberQueryRepository {
         return check(find);
     }
 
-    public Member getFollowRelation(Long id) {
+    public Member findOneWithFollow(Long id) {
         Member find = jpaQueryFactory.selectFrom(member)
                 .leftJoin(member.follower)
                 .fetchJoin()
@@ -59,14 +59,14 @@ public class MemberQueryRepository {
         memberRepository.delete(member);
     }
 
-    public Member getMemberByEmail(String email) {
+    public Member findOneByEmail(String email) {
         Member find = jpaQueryFactory.selectFrom(member)
                 .where(member.email.eq(email))
                 .fetchOne();
         return check(find);
     }
 
-    public Member getPostAndMember(Long id) {
+    public Member findOneWithPost(Long id) {
         Member find = jpaQueryFactory.selectFrom(member)
                 .leftJoin(member.makePost)
                 .fetchJoin()
