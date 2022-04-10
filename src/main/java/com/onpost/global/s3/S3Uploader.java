@@ -20,7 +20,6 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-@Transactional(rollbackFor = {Exception.class})
 public class S3Uploader {
 
     private final AmazonS3Client amazonS3Client;
