@@ -3,11 +3,11 @@ package com.onpost.domain.repository;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.entity.Image;
 import com.onpost.domain.entity.Post;
-import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.jpa.PostRepository;
 import com.onpost.domain.service.ImageService;
 import com.onpost.global.error.exception.PostNotFoundException;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -27,37 +27,43 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
     private final PostRepository postRepository;
     private final JPAQueryFactory jpaQueryFactory;
     private final ImageService imageService;
-    private final MemberQueryRepository memberQueryRepository;
 
     public PostQueryRepository(PostRepository postRepository,
                                JPAQueryFactory jpaQueryFactory,
-                               ImageService imageService, MemberQueryRepository memberQueryRepository) {
+                               ImageService imageService) {
         super(Post.class);
         this.postRepository = postRepository;
         this.jpaQueryFactory = jpaQueryFactory;
         this.imageService = imageService;
-        this.memberQueryRepository = memberQueryRepository;
     }
 
     public Post findPost(Long id) {
-        Post find = jpaQueryFactory.selectFrom(post)
-                .leftJoin(post.writer)
-                .fetchJoin()
-                .leftJoin(post.images)
+        Post find = findBase()
+                .leftJoin(post.images.get(0))
                 .fetchJoin()
                 .leftJoin(post.postLike)
                 .fetchJoin()
                 .where(post.id.eq(id))
                 .fetchOne();
+        return check(find);
+    }
 
+    public Post findPostAll(Long id) {
+        Post find = findBase()
+                .leftJoin(post.images)
+                .fetchJoin()
+                .leftJoin(post.postLike)
+                .fetchJoin()
+                .leftJoin(post.comments)
+                .fetchJoin()
+                .where(post.id.eq(id))
+                .fetchOne();
         return check(find);
     }
 
     public List<PostResponse> findPage(OrderSpecifier<?> sort, Long page) {
-        List<Post> posts = jpaQueryFactory.selectFrom(post)
-                .leftJoin(post.writer)
-                .fetchJoin()
-                .leftJoin(post.images)
+        List<Post> posts = findBase()
+                .leftJoin(post.images.get(0))
                 .fetchJoin()
                 .leftJoin(post.postLike)
                 .fetchJoin()
@@ -83,10 +89,23 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         imageService.deleteImageList(dummy);
     }
 
+    public Post findPostWithWriter(Long id) {
+        Post find = findBase()
+                .where(post.id.eq(id))
+                .fetchOne();
+        return check(find);
+    }
+
     private Post check(Post post) {
         if(post == null) {
             throw PostNotFoundException.EXCEPTION;
         }
         return post;
+    }
+
+    private JPAQuery<Post> findBase() {
+        return jpaQueryFactory.selectFrom(post)
+                .leftJoin(post.writer)
+                .fetchJoin();
     }
 }
