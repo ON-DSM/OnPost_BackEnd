@@ -1,5 +1,6 @@
 package com.onpost.domain.entity;
 
+import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,9 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -47,7 +46,15 @@ public class Post extends BaseEntity {
             joinColumns = {@JoinColumn(name = "post_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
-    private Set<Member> postLike;
+    private Set<Member> postLike = new LinkedHashSet<>();
+
+    @OneToMany
+    @JoinTable(
+            name = "post_comment",
+            joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = {@JoinColumn(name = "comment_id")}
+    )
+    private Set<MainComment> comments = new LinkedHashSet<>();
 
     public void setContext(String context) {
         this.context = context;
