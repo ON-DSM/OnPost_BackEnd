@@ -1,5 +1,6 @@
 package com.onpost.domain.dto.post;
 
+import com.onpost.domain.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @Getter
-public abstract class PostDto {
+public class PostDto {
 
     @NotNull(message = "게시물 Id가 없습니다!")
     private Long Id;
@@ -18,4 +19,10 @@ public abstract class PostDto {
 
     @NotBlank(message = "제목이 들어가야합니다!")
     private String title;
+
+    public PostDto(Post post) {
+        this.Id = post.getId();
+        this.title = post.getTitle();
+        this.context = post.getContext();
+    }
 }
