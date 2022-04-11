@@ -1,7 +1,9 @@
 package com.onpost.domain.service;
 
+import com.onpost.domain.dto.post.PostDto;
 import com.onpost.domain.dto.post.PostRequest;
 import com.onpost.domain.dto.post.PostResponse;
+import com.onpost.domain.dto.post.PostView;
 import com.onpost.domain.entity.Image;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.member.Member;
@@ -13,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import static com.onpost.domain.entity.QPost.post;
@@ -28,13 +29,12 @@ public class PostService {
     private final MemberQueryRepository memberQueryRepository;
 
 
-    public PostResponse createPost(PostRequest postRequest) {
+    public PostDto createPost(PostRequest postRequest) {
         List<Image> images = imageService.getImageList(postRequest.getImages(), "static");
 
         Member writer = memberQueryRepository.findOneWithPost(postRequest.getId());
 
         Post post = Post.builder()
-                .postLike(new LinkedHashSet<>())
                 .images(images)
                 .context(postRequest.getContext())
                 .title(postRequest.getTitle())
@@ -46,16 +46,16 @@ public class PostService {
         postQueryRepository.save(post);
         memberQueryRepository.save(writer);
 
-        return new PostResponse(post);
+        return new PostDto(post);
     }
 
-    public PostResponse showPost(Long id) {
-        Post find = postQueryRepository.findPost(id);
-        return new PostResponse(find);
+    public PostView showPost(Long id) {
+        Post find = postQueryRepository.findPostAll(id);
+        return new PostView(find);
     }
 
-    public PostResponse editPost(PostRequest per) {
-        Post find = postQueryRepository.findPost(per.getId());
+    public PostView editPost(PostRequest per) {
+        Post find = postQueryRepository.findPostAll(per.getId());
 
         if(per.getContext() != null) {
             find.setContext(per.getContext());
@@ -73,7 +73,7 @@ public class PostService {
 
         postQueryRepository.save(find);
 
-        return new PostResponse(find);
+        return new PostView(find);
     }
 
     public List<PostResponse> pagePost(String sort, Long page) {
@@ -92,7 +92,7 @@ public class PostService {
     }
 
     public void deletePost(Long id) {
-        Post post = postQueryRepository.findPost(id);
+        Post post = postQueryRepository.findPostWithWriter(id);
         Member member = memberQueryRepository.findOneWithPost(post.getWriter().getId());
         member.deletePost(post);
         memberQueryRepository.save(member);
