@@ -1,7 +1,9 @@
 package com.onpost.domain.controller;
 
+import com.onpost.domain.dto.post.PostDto;
 import com.onpost.domain.dto.post.PostRequest;
 import com.onpost.domain.dto.post.PostResponse;
+import com.onpost.domain.dto.post.PostView;
 import com.onpost.domain.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +21,12 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/create")
-    public PostResponse create(@Valid @ModelAttribute PostRequest postRequest) {
+    public PostDto create(@Valid @ModelAttribute PostRequest postRequest) {
         return postService.createPost(postRequest);
     }
 
     @GetMapping("/show")
-    public PostResponse show(@RequestParam Long id) {
+    public PostView show(@RequestParam Long id) {
         return postService.showPost(id);
     }
 
@@ -35,7 +37,7 @@ public class PostController {
     }
 
     @PutMapping("/edit")
-    public PostResponse edit(@Valid @ModelAttribute PostRequest postRequest) {
+    public PostView edit(@Valid @ModelAttribute PostRequest postRequest) {
         return postService.editPost(postRequest);
     }
 
