@@ -4,7 +4,7 @@ import com.onpost.domain.entity.member.Member;
 import lombok.Getter;
 
 @Getter
-public class MemberView extends MemberDto{
+public class MemberView extends MemberDto {
 
     private final String image;
     private final String email;
