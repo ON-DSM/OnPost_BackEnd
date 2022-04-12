@@ -37,19 +37,10 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         this.imageService = imageService;
     }
 
-    public Post findPost(Long id) {
-        Post find = findBase()
-                .leftJoin(post.images.get(0))
-                .fetchJoin()
-                .leftJoin(post.postLike)
-                .fetchJoin()
-                .where(post.id.eq(id))
-                .fetchOne();
-        return check(find);
-    }
-
     public Post findPostAll(Long id) {
-        Post find = findBase()
+        Post find = jpaQueryFactory.selectFrom(post)
+                .leftJoin(post.writer)
+                .fetchJoin()
                 .leftJoin(post.images)
                 .fetchJoin()
                 .leftJoin(post.postLike)
@@ -62,7 +53,10 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
     }
 
     public List<PostResponse> findPage(OrderSpecifier<?> sort, Long page) {
-        List<Post> posts = findBase()
+        List<Post> posts = jpaQueryFactory
+                .selectFrom(post)
+                .leftJoin(post.writer)
+                .fetchJoin()
                 .leftJoin(post.images.get(0))
                 .fetchJoin()
                 .leftJoin(post.postLike)
@@ -90,7 +84,19 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
     }
 
     public Post findPostWithWriter(Long id) {
-        Post find = findBase()
+        Post find = jpaQueryFactory
+                .selectFrom(post)
+                .leftJoin(post.writer)
+                .fetchJoin()
+                .where(post.id.eq(id))
+                .fetchOne();
+        return check(find);
+    }
+
+    public Post findPostWithComment(Long id) {
+        Post find = jpaQueryFactory.selectFrom(post)
+                .leftJoin(post.comments)
+                .fetchJoin()
                 .where(post.id.eq(id))
                 .fetchOne();
         return check(find);
@@ -101,11 +107,5 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
             throw PostNotFoundException.EXCEPTION;
         }
         return post;
-    }
-
-    private JPAQuery<Post> findBase() {
-        return jpaQueryFactory.selectFrom(post)
-                .leftJoin(post.writer)
-                .fetchJoin();
     }
 }
