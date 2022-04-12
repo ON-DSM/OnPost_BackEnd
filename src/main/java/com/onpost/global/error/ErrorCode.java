@@ -14,6 +14,7 @@ public enum ErrorCode {
     POST_NOT_FOUND("Post Not Found", 404),
     IMAGE_NOT_FOUND("Image Not Found", 404),
     MEMBER_NOT_FOUND("Member Not Found", 404),
+    COMMENT_NOT_FOUND("Comment Not Found", 404),
 
     PASSWORD_NOT_MATCH("Password Not Match", 400),
     DO_NOT_UNDERSTAND_SORT("Don't Understand Sort", 400);
