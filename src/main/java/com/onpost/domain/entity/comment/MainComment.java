@@ -1,10 +1,7 @@
 package com.onpost.domain.entity.comment;
 
 import com.onpost.domain.entity.member.Member;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
