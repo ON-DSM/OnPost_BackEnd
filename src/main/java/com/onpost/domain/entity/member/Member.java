@@ -50,7 +50,7 @@ public class Member extends BaseEntity {
             joinColumns = {@JoinColumn(name = "publisher")},
             inverseJoinColumns = {@JoinColumn(name = "subscriber")}
     )
-    private Set<Member> follower = new LinkedHashSet<>();
+    private final Set<Member> follower = new LinkedHashSet<>();
 
     @OneToMany
     @JoinTable(
@@ -58,7 +58,7 @@ public class Member extends BaseEntity {
             joinColumns = {@JoinColumn(name = "publisher")},
             inverseJoinColumns = {@JoinColumn(name = "subscriber")}
     )
-    private Set<Member> following = new LinkedHashSet<>();
+    private final Set<Member> following = new LinkedHashSet<>();
 
     @OneToMany
     @JoinTable(
@@ -66,7 +66,7 @@ public class Member extends BaseEntity {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "post_id")}
     )
-    private Set<Post> makePost = new LinkedHashSet<>();
+    private final Set<Post> makePost = new LinkedHashSet<>();
 
     public void setName(String name) {
         this.name = name;
