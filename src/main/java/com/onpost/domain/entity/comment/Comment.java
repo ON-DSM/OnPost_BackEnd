@@ -7,21 +7,24 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@DiscriminatorColumn
 @Getter
-public class Comment extends BaseEntity {
+public abstract class Comment extends BaseEntity {
 
     @Id
+    @Column(name = "comment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
+    @JoinColumn(referencedColumnName = "user_id")
     private Member writer;
 
     private String context;
 
-    @Builder
     public Comment(Member writer, String context) {
         this.context = context;
         this.writer = writer;
