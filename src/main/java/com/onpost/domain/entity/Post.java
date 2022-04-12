@@ -46,7 +46,7 @@ public class Post extends BaseEntity {
             joinColumns = {@JoinColumn(name = "post_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
-    private Set<Member> postLike = new LinkedHashSet<>();
+    private final Set<Member> postLike = new LinkedHashSet<>();
 
     @OneToMany
     @JoinTable(
@@ -54,7 +54,7 @@ public class Post extends BaseEntity {
             joinColumns = {@JoinColumn(name = "post_id")},
             inverseJoinColumns = {@JoinColumn(name = "comment_id")}
     )
-    private Set<MainComment> comments = new LinkedHashSet<>();
+    private final Set<MainComment> comments = new LinkedHashSet<>();
 
     public void setContext(String context) {
         this.context = context;
