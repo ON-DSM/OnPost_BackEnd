@@ -2,7 +2,6 @@ package com.onpost.domain.service;
 
 import com.onpost.domain.dto.comment.CommentRequest;
 import com.onpost.domain.dto.comment.CommentResponse;
-import com.onpost.domain.dto.comment.CommentView;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.comment.SubComment;
@@ -24,7 +23,7 @@ public class CommentService {
     private final MemberQueryRepository memberQueryRepository;
     private final PostQueryRepository postQueryRepository;
 
-    public CommentView leaveSubComment(CommentRequest commentRequest) {
+    public void leaveSubComment(CommentRequest commentRequest) {
         SubComment comment = SubComment.builder()
                 .context(commentRequest.getContext())
                 .writer(memberQueryRepository.findMember(commentRequest.getWriterId()))
@@ -32,13 +31,12 @@ public class CommentService {
 
         MainComment parent = commentQueryRepository.findParent(commentRequest.getParentId());
         parent.getSubComments().add(comment);
-        comment = commentQueryRepository.subLeave(comment);
+        commentQueryRepository.subLeave(comment);
 
         commentQueryRepository.mainLeave(parent);
-        return new CommentView(comment);
     }
 
-    public CommentView leaveComment(CommentRequest commentRequest) {
+    public void leaveComment(CommentRequest commentRequest) {
         MainComment comment = MainComment.builder()
                 .context(commentRequest.getContext())
                 .writer(memberQueryRepository.findMember(commentRequest.getWriterId()))
@@ -46,10 +44,9 @@ public class CommentService {
 
         Post post = postQueryRepository.findPostWithComment(commentRequest.getParentId());
         post.getComments().add(comment);
-        comment = commentQueryRepository.mainLeave(comment);
+        commentQueryRepository.mainLeave(comment);
 
         postQueryRepository.save(post);
-        return new CommentView(comment);
     }
 
     public CommentResponse showMain(Long id) {
