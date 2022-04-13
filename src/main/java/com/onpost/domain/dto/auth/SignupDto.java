@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 public class SignupDto {
 
     @NotBlank(message = "이메일 유형이여야 합니다.")
-    @Email
+    @Email(message = "이메일 유형이여야 합니다.")
     private String email;
 
     @NotBlank(message = "이름은 6자 이상, 16자 이하이여야 합니다.")
