@@ -21,8 +21,8 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/create")
-    public PostDto create(@Valid @ModelAttribute PostRequest postRequest) {
-        return postService.createPost(postRequest);
+    public void create(@Valid @ModelAttribute PostRequest postRequest) {
+        postService.createPost(postRequest);
     }
 
     @GetMapping("/show")
