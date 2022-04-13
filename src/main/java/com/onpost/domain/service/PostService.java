@@ -29,7 +29,7 @@ public class PostService {
     private final MemberQueryRepository memberQueryRepository;
 
 
-    public PostDto createPost(PostRequest postRequest) {
+    public void createPost(PostRequest postRequest) {
         List<Image> images = imageService.getImageList(postRequest.getImages(), "static");
 
         Member writer = memberQueryRepository.findOneWithPost(postRequest.getId());
@@ -45,8 +45,6 @@ public class PostService {
 
         postQueryRepository.save(post);
         memberQueryRepository.save(writer);
-
-        return new PostDto(post);
     }
 
     public PostView showPost(Long id) {
