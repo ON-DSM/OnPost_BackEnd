@@ -20,13 +20,13 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/leave")
-    public CommentView mainLeave(@Valid @RequestBody CommentRequest commentRequest) {
-        return commentService.leaveComment(commentRequest);
+    public void mainLeave(@Valid @RequestBody CommentRequest commentRequest) {
+        commentService.leaveComment(commentRequest);
     }
 
     @PostMapping("/leave/sub")
-    public CommentView subLeave(@Valid @RequestBody CommentRequest commentRequest) {
-        return commentService.leaveSubComment(commentRequest);
+    public void subLeave(@Valid @RequestBody CommentRequest commentRequest) {
+        commentService.leaveSubComment(commentRequest);
     }
 
     @GetMapping("/show")
