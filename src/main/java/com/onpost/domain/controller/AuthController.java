@@ -18,8 +18,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public MemberView signup(@Valid @RequestBody SignupDto signupDto) {
-        return authService.signupMember(signupDto);
+    public void signup(@Valid @RequestBody SignupDto signupDto) {
+        authService.signupMember(signupDto);
     }
 
     @PostMapping("/login")
