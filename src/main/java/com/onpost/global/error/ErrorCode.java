@@ -16,8 +16,12 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND("Member Not Found", 404),
     COMMENT_NOT_FOUND("Comment Not Found", 404),
 
-    PASSWORD_NOT_MATCH("Password Not Match", 400),
-    DO_NOT_UNDERSTAND_SORT("Don't Understand Sort", 400);
+    FILE_CONVERSION_FAILED("File Change Failed", 400),
+
+    PARAMETER_NOT_CONTAIN("Parameter Not Contain", 404),
+    HEADER_NOT_CONTAIN("Header Not Contain", 400),
+    PASSWORD_NOT_MATCH("Password Not Match", 401),
+    DO_NOT_UNDERSTAND_SORT("Don't Understand Sort", 404);
 
     private final String message;
     private final int status;
