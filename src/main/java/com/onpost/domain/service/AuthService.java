@@ -31,7 +31,7 @@ public class AuthService {
     private final RefreshRepository refreshRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public MemberView signupMember(SignupDto signupDto) {
+    public void signupMember(SignupDto signupDto) {
 
         if (memberQueryRepository.checkEmail(signupDto.getEmail())) {
             throw EmailAlreadyExistsException.EXCEPTION;
@@ -45,8 +45,6 @@ public class AuthService {
                 .certified(certifiedKey()).build();
 
         memberQueryRepository.save(member);
-
-        return new MemberView(member);
     }
 
     public TokenDto loginMember(LoginDto loginDto) {
