@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 public class LoginDto {
 
     @NotBlank(message = "이메일 유형이여야 합니다.")
-    @Email
+    @Email(message = "이메일 유형이여야 합니다.")
     private String email;
 
     @NotBlank(message = "패스워드는 8자 이상, 20자 이하여야 합니다.")
