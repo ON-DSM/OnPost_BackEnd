@@ -2,9 +2,14 @@ package com.onpost.domain.entity.comment;
 
 import com.onpost.domain.entity.BaseEntity;
 import com.onpost.domain.entity.member.Member;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -25,8 +30,25 @@ public abstract class Comment extends BaseEntity {
 
     private String context;
 
+    public void setContext(String context) {
+        this.context = context;
+    }
+
     public Comment(Member writer, String context) {
         this.context = context;
         this.writer = writer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Comment comment = (Comment) o;
+        return id != null && Objects.equals(id, comment.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
