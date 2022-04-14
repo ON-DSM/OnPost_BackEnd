@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +16,7 @@ public class ImageService {
     private final S3Uploader s3Uploader;
     private final ImageRepository imageRepository;
 
-    public void deleteImageList(List<Image> images) {
+    public void deleteImageList(Set<Image> images) {
         for(Image image : images) {
             String[] paths = image.getImagePath().split("/");
             s3Uploader.delete(paths[paths.length - 2] + "/" + paths[paths.length - 1]);
@@ -25,8 +24,8 @@ public class ImageService {
         }
     }
 
-    public List<Image> getImageList(List<MultipartFile> images, String dirName) {
-        LinkedList<Image> imageList = new LinkedList<>();
+    public Set<Image> getImageList(List<MultipartFile> images, String dirName) {
+        Set<Image> imageList = new LinkedHashSet<>();
         if(images != null) {
             for (MultipartFile im : images) {
                 imageList.add(imageRepository.save(Image.builder().imagePath(s3Uploader.upload(im, dirName)).build()));
