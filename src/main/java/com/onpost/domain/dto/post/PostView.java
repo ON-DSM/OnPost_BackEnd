@@ -24,7 +24,7 @@ public class PostView extends PostDto {
         this.writer = new MemberView(post.getWriter());
         this.createAt = post.getCreateAt();
         this.like = post.getPostLike().size();
-        this.images = post.getImages();
+        this.images = post.getImages().stream().toList();
         this.comments = post.getComments().stream().map(MainCommentResponse::new).collect(Collectors.toList());
     }
 }
