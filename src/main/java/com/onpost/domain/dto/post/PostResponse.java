@@ -17,7 +17,7 @@ public class PostResponse extends PostDto {
 
     public PostResponse(Post post) {
         super(post.getId(), post.getContext(), post.getTitle());
-        this.image = post.getImages().get(0);
+        this.image = post.getImages().stream().findFirst().orElse(null);
         this.like = post.getPostLike().size();
         this.writer = new MemberView(post.getWriter());
         this.createAt = post.getCreateAt();
