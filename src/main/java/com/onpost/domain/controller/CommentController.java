@@ -1,9 +1,6 @@
 package com.onpost.domain.controller;
 
-import com.onpost.domain.dto.comment.CommentRequest;
-import com.onpost.domain.dto.comment.CommentResponse;
-import com.onpost.domain.dto.comment.CommentView;
-import com.onpost.domain.dto.comment.MainCommentResponse;
+import com.onpost.domain.dto.comment.*;
 import com.onpost.domain.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,5 +29,15 @@ public class CommentController {
     @GetMapping("/show")
     public CommentResponse show(@RequestParam Long id) {
         return commentService.showMain(id);
+    }
+
+    @PutMapping("/edit")
+    public CommentView edit(@Valid @RequestBody CommentEditRequest commentEditRequest) {
+        return commentService.editComment(commentEditRequest);
+    }
+
+    @DeleteMapping("/delete")
+    public void delete(@RequestParam Long id, @RequestParam Long parent) {
+        commentService.deleteComment(id, parent);
     }
 }
