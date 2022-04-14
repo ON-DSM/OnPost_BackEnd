@@ -4,7 +4,6 @@ import com.onpost.domain.dto.member.*;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.MemberQueryRepository;
-import com.onpost.domain.repository.PostQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +21,7 @@ public class MemberService {
 
     private final MemberQueryRepository memberQueryRepository;
     private final ImageService imageService;
-    private final PostQueryRepository postQueryRepository;
+    private final PostService postService;
 
     public MemberView editMember(MemberRequest memberRequest) {
         Member member = memberQueryRepository.findMember(memberRequest.getId());
@@ -79,7 +78,7 @@ public class MemberService {
         member.getFollower().forEach(member::unfollowMe);
 
         List<Post> posts = List.copyOf(member.getMakePost());
-        posts.forEach(postQueryRepository::delete);
+        posts.forEach(p -> postService.deletePost(p.getId()));
 
         if(member.getProfile() != null) {
             imageService.deletePath(member.getProfile());
