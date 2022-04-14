@@ -38,7 +38,7 @@ public class Post extends BaseEntity {
             joinColumns = {@JoinColumn(name = "post_id")},
             inverseJoinColumns = {@JoinColumn(name = "image_id")}
     )
-    private List<Image> images;
+    private Set<Image> images;
 
     @OneToMany
     @JoinTable(
@@ -64,7 +64,7 @@ public class Post extends BaseEntity {
         this.title = title;
     }
 
-    public void setImages(List<Image> images) {
+    public void setImages(Set<Image> images) {
         this.images = images;
     }
 
