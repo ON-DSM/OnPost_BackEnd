@@ -1,8 +1,11 @@
 package com.onpost.domain.service;
 
+import com.onpost.domain.dto.comment.CommentEditRequest;
 import com.onpost.domain.dto.comment.CommentRequest;
 import com.onpost.domain.dto.comment.CommentResponse;
+import com.onpost.domain.dto.comment.CommentView;
 import com.onpost.domain.entity.Post;
+import com.onpost.domain.entity.comment.Comment;
 import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.comment.SubComment;
 import com.onpost.domain.repository.CommentQueryRepository;
@@ -29,11 +32,11 @@ public class CommentService {
                 .writer(memberQueryRepository.findMember(commentRequest.getWriterId()))
                 .build();
 
-        MainComment parent = commentQueryRepository.findParent(commentRequest.getParentId());
+        MainComment parent = commentQueryRepository.findMain(commentRequest.getParentId());
         parent.getSubComments().add(comment);
-        commentQueryRepository.subLeave(comment);
+        commentQueryRepository.leave(comment);
 
-        commentQueryRepository.mainLeave(parent);
+        commentQueryRepository.leave(parent);
     }
 
     public void leaveComment(CommentRequest commentRequest) {
@@ -44,13 +47,49 @@ public class CommentService {
 
         Post post = postQueryRepository.findPostWithComment(commentRequest.getParentId());
         post.getComments().add(comment);
-        commentQueryRepository.mainLeave(comment);
+        commentQueryRepository.leave(comment);
 
         postQueryRepository.save(post);
     }
 
     public CommentResponse showMain(Long id) {
-        MainComment comment = commentQueryRepository.findParent(id);
+        MainComment comment = commentQueryRepository.findMain(id);
         return new CommentResponse(comment);
+    }
+
+    public CommentView editComment(CommentEditRequest commentEditRequest) {
+        Comment comment = commentQueryRepository.findComment(commentEditRequest.getId());
+        comment.setContext(commentEditRequest.getContext());
+        comment = commentQueryRepository.leave(comment);
+        return new CommentView(comment);
+    }
+
+    public void deleteComment(Long id, Long parent) {
+        Comment comment = commentQueryRepository.findComment(id);
+        if(comment instanceof SubComment) {
+            deleteSubComment(comment, parent);
+        }
+        else {
+            deleteMainComment((MainComment) comment, parent);
+        }
+    }
+
+    private void deleteMainComment(MainComment comment, Long parent) {
+        Post post = postQueryRepository.findPostWithComment(parent);
+
+        post.getComments().remove(comment);
+        postQueryRepository.save(post);
+
+        comment.getSubComments().forEach(commentQueryRepository::delete);
+        commentQueryRepository.delete(comment);
+    }
+
+    private void deleteSubComment(Comment comment, Long parent) {
+        MainComment main = commentQueryRepository.findMain(parent);
+
+        main.getSubComments().remove(comment);
+        commentQueryRepository.leave(main);
+
+        commentQueryRepository.delete(comment);
     }
 }
