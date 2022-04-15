@@ -1,6 +1,6 @@
 package com.onpost.domain.controller;
 
-import com.onpost.domain.dto.post.PostDto;
+import com.onpost.domain.dto.IDValueDto;
 import com.onpost.domain.dto.post.PostRequest;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.dto.post.PostView;
@@ -44,5 +44,15 @@ public class PostController {
     @DeleteMapping("/delete")
     public void delete(@RequestParam Long id) {
         postService.deletePost(id);
+    }
+
+    @PostMapping("/like")
+    public void like(@Valid @RequestBody IDValueDto idValueDto) {
+        postService.like(idValueDto.getId(), idValueDto.getTargetId());
+    }
+
+    @PostMapping("/unlike")
+    public void unlike(@Valid @RequestBody IDValueDto idValueDto) {
+        postService.unlike(idValueDto.getId(), idValueDto.getTargetId());
     }
 }
