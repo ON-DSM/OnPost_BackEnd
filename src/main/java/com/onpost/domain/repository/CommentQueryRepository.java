@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.onpost.domain.entity.comment.QMainComment.mainComment;
 import static com.onpost.domain.entity.comment.QComment.comment;
@@ -15,6 +16,7 @@ import static com.onpost.domain.entity.comment.QComment.comment;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
+@Transactional(rollbackFor = {Exception.class})
 public class CommentQueryRepository {
 
     private final CommentRepository commentRepository;

@@ -11,20 +11,13 @@ import com.onpost.domain.entity.comment.SubComment;
 import com.onpost.domain.repository.CommentQueryRepository;
 import com.onpost.domain.repository.MemberQueryRepository;
 import com.onpost.domain.repository.PostQueryRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
-@Transactional(rollbackFor = {Exception.class})
-public class CommentService {
-
-    private final CommentQueryRepository commentQueryRepository;
-    private final MemberQueryRepository memberQueryRepository;
-    private final PostQueryRepository postQueryRepository;
+public record CommentService(CommentQueryRepository commentQueryRepository, MemberQueryRepository memberQueryRepository,
+                             PostQueryRepository postQueryRepository) {
 
     public void leaveSubComment(CommentRequest commentRequest) {
         SubComment comment = SubComment.builder()
@@ -66,12 +59,11 @@ public class CommentService {
 
     public void deleteComment(Long id, Long parent) {
         Comment comment = commentQueryRepository.findComment(id);
-        if(comment instanceof SubComment) {
-            deleteSubComment(comment, parent);
+        if (comment instanceof MainComment main) {
+            deleteMainComment(main, parent);
+            return;
         }
-        else {
-            deleteMainComment((MainComment) comment, parent);
-        }
+        deleteSubComment(comment, parent);
     }
 
     private void deleteMainComment(MainComment comment, Long parent) {

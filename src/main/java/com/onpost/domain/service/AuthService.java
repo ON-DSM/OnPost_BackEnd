@@ -3,7 +3,6 @@ package com.onpost.domain.service;
 import com.onpost.domain.dto.auth.LoginDto;
 import com.onpost.domain.dto.auth.SignupDto;
 import com.onpost.domain.dto.auth.TokenDto;
-import com.onpost.domain.dto.member.MemberView;
 import com.onpost.domain.entity.member.Authority;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.entity.member.RefreshToken;
@@ -22,14 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
-@Transactional(rollbackFor = {Exception.class})
-@RequiredArgsConstructor
-public class AuthService {
-
-    private final JwtProvider jwtProvider;
-    private final MemberQueryRepository memberQueryRepository;
-    private final RefreshRepository refreshRepository;
-    private final PasswordEncoder passwordEncoder;
+public record AuthService(JwtProvider jwtProvider, MemberQueryRepository memberQueryRepository,
+                          RefreshRepository refreshRepository, PasswordEncoder passwordEncoder) {
 
     public void signupMember(SignupDto signupDto) {
 
@@ -51,7 +44,7 @@ public class AuthService {
 
         Member member = memberQueryRepository.findOneByEmail(loginDto.getEmail());
 
-        if(!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())) {
+        if (!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())) {
             throw PasswordNotMatchException.EXCEPTION;
         }
 

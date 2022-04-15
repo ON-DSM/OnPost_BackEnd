@@ -5,29 +5,22 @@ import com.onpost.domain.dto.member.*;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.MemberQueryRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
-@Transactional(rollbackFor = {Exception.class})
-public class MemberService {
-
-    private final MemberQueryRepository memberQueryRepository;
-    private final ImageService imageService;
-    private final PostService postService;
+public record MemberService(MemberQueryRepository memberQueryRepository, ImageService imageService,
+                            PostService postService) {
 
     public MemberView editMember(MemberRequest memberRequest) {
         Member member = memberQueryRepository.findMember(memberRequest.getId());
 
-        if(memberRequest.getName() != null) {
+        if (memberRequest.getName() != null) {
             member.setName(memberRequest.getName());
         }
 
@@ -35,8 +28,8 @@ public class MemberService {
             member.setIntroduce(memberRequest.getIntroduce());
         }
 
-        if(memberRequest.getProfile() != null) {
-            if(member.getProfile() != null) {
+        if (memberRequest.getProfile() != null) {
+            if (member.getProfile() != null) {
                 imageService.deletePath(member.getProfile());
             }
             member.setProfile(imageService.getPath(memberRequest.getProfile(), "profile"));
@@ -54,7 +47,7 @@ public class MemberService {
         Member me = memberQueryRepository.findOneWithFollow(IDValueDto.getId());
         Member follow = memberQueryRepository.findOneWithFollow(IDValueDto.getTargetId());
 
-        if(positive) {
+        if (positive) {
             follow.followMe(me);
         } else {
             follow.unfollowMe(me);
@@ -81,7 +74,7 @@ public class MemberService {
         List<Post> posts = List.copyOf(member.getMakePost());
         posts.forEach(p -> postService.deletePost(p.getId()));
 
-        if(member.getProfile() != null) {
+        if (member.getProfile() != null) {
             imageService.deletePath(member.getProfile());
         }
 

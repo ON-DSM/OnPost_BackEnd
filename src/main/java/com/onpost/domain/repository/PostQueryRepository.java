@@ -18,7 +18,7 @@ import static com.onpost.domain.entity.QPost.post;
 
 @Slf4j
 @Repository
-@Transactional
+@Transactional(rollbackFor = {Exception.class})
 public class PostQueryRepository extends QuerydslRepositorySupport {
 
     private final PostRepository postRepository;

@@ -6,11 +6,13 @@ import com.onpost.global.error.exception.MemberNotFoundException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.onpost.domain.entity.member.QMember.member;
 
 @Repository
 @RequiredArgsConstructor
+@Transactional(rollbackFor = {Exception.class})
 public class MemberQueryRepository {
 
     private final MemberRepository memberRepository;

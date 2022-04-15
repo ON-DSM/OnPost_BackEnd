@@ -12,10 +12,8 @@ import com.onpost.domain.repository.MemberQueryRepository;
 import com.onpost.domain.repository.PostQueryRepository;
 import com.onpost.global.error.exception.PageSortException;
 import com.querydsl.core.types.OrderSpecifier;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -24,15 +22,8 @@ import static com.onpost.domain.entity.QPost.post;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
-@Transactional(rollbackFor = {Exception.class})
-public class PostService {
-
-    private final PostQueryRepository postQueryRepository;
-    private final ImageService imageService;
-    private final MemberQueryRepository memberQueryRepository;
-    private final CommentQueryRepository commentQueryRepository;
-
+public record PostService(PostQueryRepository postQueryRepository, ImageService imageService,
+                          MemberQueryRepository memberQueryRepository, CommentQueryRepository commentQueryRepository) {
 
     public void createPost(PostRequest postRequest) {
         Set<Image> images = imageService.getImageList(postRequest.getImages(), "static");
@@ -75,17 +66,17 @@ public class PostService {
     public PostView editPost(PostRequest per) {
         Post find = postQueryRepository.findPostAll(per.getId());
 
-        if(per.getContext() != null) {
+        if (per.getContext() != null) {
             find.setContext(per.getContext());
         }
 
-        if(per.getTitle() != null) {
+        if (per.getTitle() != null) {
             find.setTitle(per.getTitle());
         }
 
         imageService.deleteImageList(find.getImages());
 
-        if(per.getImages() != null) {
+        if (per.getImages() != null) {
             find.setImages(imageService.getImageList(per.getImages(), "static"));
         }
 
