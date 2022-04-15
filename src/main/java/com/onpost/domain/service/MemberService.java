@@ -52,7 +52,7 @@ public class MemberService {
 
     public void followMember(IDValueDto IDValueDto, boolean positive) {
         Member me = memberQueryRepository.findOneWithFollow(IDValueDto.getId());
-        Member follow = memberQueryRepository.findOneWithFollow(IDValueDto.getFollowId());
+        Member follow = memberQueryRepository.findOneWithFollow(IDValueDto.getTargetId());
 
         if(positive) {
             follow.followMe(me);
