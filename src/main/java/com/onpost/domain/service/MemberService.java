@@ -1,5 +1,6 @@
 package com.onpost.domain.service;
 
+import com.onpost.domain.dto.IDValueDto;
 import com.onpost.domain.dto.member.*;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.member.Member;
@@ -49,9 +50,9 @@ public class MemberService {
         return new MemberResponse(memberQueryRepository.findOneWithAll(id));
     }
 
-    public void followMember(FollowDto followDto, boolean positive) {
-        Member me = memberQueryRepository.findOneWithFollow(followDto.getId());
-        Member follow = memberQueryRepository.findOneWithFollow(followDto.getFollowId());
+    public void followMember(IDValueDto IDValueDto, boolean positive) {
+        Member me = memberQueryRepository.findOneWithFollow(IDValueDto.getId());
+        Member follow = memberQueryRepository.findOneWithFollow(IDValueDto.getFollowId());
 
         if(positive) {
             follow.followMe(me);
