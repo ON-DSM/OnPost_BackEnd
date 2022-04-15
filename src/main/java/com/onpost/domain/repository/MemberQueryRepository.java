@@ -75,6 +75,15 @@ public class MemberQueryRepository {
         return check(find);
     }
 
+    public Member findOneWithLike(Long id) {
+        Member find = jpaQueryFactory.selectFrom(member)
+                .leftJoin(member.postLike)
+                .fetchJoin()
+                .where(member.id.eq(id))
+                .fetchOne();
+        return check(find);
+    }
+
     private Member check(Member m) {
         if(m == null) {
             throw MemberNotFoundException.EXCEPTION;
