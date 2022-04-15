@@ -57,6 +57,24 @@ public class PostService {
         return new PostView(find);
     }
 
+    public void like(Long id, Long people) {
+        Post find = postQueryRepository.findPostWithLike(id);
+        Member member = memberQueryRepository.findOneWithLike(people);
+        find.getPostLike().add(member);
+        member.getPostLike().add(find);
+        postQueryRepository.save(find);
+        memberQueryRepository.save(member);
+    }
+
+    public void unlike(Long id, Long people) {
+        Post find = postQueryRepository.findPostWithLike(id);
+        Member member = memberQueryRepository.findOneWithLike(people);
+        find.getPostLike().remove(member);
+        member.getPostLike().remove(find);
+        postQueryRepository.save(find);
+        memberQueryRepository.save(member);
+    }
+
     public PostView editPost(PostRequest per) {
         Post find = postQueryRepository.findPostAll(per.getId());
 
