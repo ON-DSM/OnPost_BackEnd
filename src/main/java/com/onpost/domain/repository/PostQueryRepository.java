@@ -70,19 +70,18 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         postRepository.delete(find);
     }
 
-    public Post findPostWithWriter(Long id) {
-        Post find = jpaQueryFactory
-                .selectFrom(post)
-                .leftJoin(post.writer)
+    public Post findPostWithComment(Long id) {
+        Post find = jpaQueryFactory.selectFrom(post)
+                .leftJoin(post.comments)
                 .fetchJoin()
                 .where(post.id.eq(id))
                 .fetchOne();
         return check(find);
     }
 
-    public Post findPostWithComment(Long id) {
+    public Post findPostWithLike(Long id) {
         Post find = jpaQueryFactory.selectFrom(post)
-                .leftJoin(post.comments)
+                .leftJoin(post.postLike)
                 .fetchJoin()
                 .where(post.id.eq(id))
                 .fetchOne();
