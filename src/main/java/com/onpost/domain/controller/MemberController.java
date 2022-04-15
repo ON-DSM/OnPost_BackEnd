@@ -1,5 +1,6 @@
 package com.onpost.domain.controller;
 
+import com.onpost.domain.dto.IDValueDto;
 import com.onpost.domain.dto.member.*;
 import com.onpost.domain.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +26,13 @@ public class MemberController {
     }
 
     @PutMapping("/follow")
-    public void follow(@Valid @RequestBody FollowDto followDto) {
-        memberService.followMember(followDto, true);
+    public void follow(@Valid @RequestBody IDValueDto IDValueDto) {
+        memberService.followMember(IDValueDto, true);
     }
 
     @DeleteMapping("/unfollow")
-    public void unfollow(@Valid @RequestBody FollowDto followDto) {
-        memberService.followMember(followDto, false);
+    public void unfollow(@Valid @RequestBody IDValueDto IDValueDto) {
+        memberService.followMember(IDValueDto, false);
     }
 
     @GetMapping("/link")
