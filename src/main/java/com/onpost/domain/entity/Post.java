@@ -40,7 +40,7 @@ public class Post extends BaseEntity {
     )
     private Set<Image> images;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(
             name = "post_like",
             joinColumns = {@JoinColumn(name = "post_id")},
