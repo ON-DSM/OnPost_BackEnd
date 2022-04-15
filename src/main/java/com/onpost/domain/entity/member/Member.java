@@ -68,6 +68,14 @@ public class Member extends BaseEntity {
     )
     private final Set<Post> makePost = new LinkedHashSet<>();
 
+    @OneToMany
+    @JoinTable(
+            name = "like",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "post_id")}
+    )
+    private final Set<Post> postLike = new LinkedHashSet<>();
+
     public void setName(String name) {
         this.name = name;
     }
