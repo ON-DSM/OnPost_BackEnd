@@ -77,6 +77,13 @@ public class MemberQueryRepository {
         return check(find);
     }
 
+    public void Certified(String email, String certified) {
+        jpaQueryFactory.update(member)
+                .setNull(member.certified)
+                .where(member.email.eq(email).and(member.certified.eq(certified)))
+                .execute();
+    }
+
     private Member check(Member m) {
         if(m == null) {
             throw MemberNotFoundException.EXCEPTION;
