@@ -21,7 +21,9 @@ public enum ErrorCode {
     PARAMETER_NOT_CONTAIN("Parameter Not Contain", 404),
     HEADER_NOT_CONTAIN("Header Not Contain", 400),
     PASSWORD_NOT_MATCH("Password Not Match", 401),
-    DO_NOT_UNDERSTAND_SORT("Don't Understand Sort", 404);
+    DO_NOT_UNDERSTAND_SORT("Don't Understand Sort", 404),
+
+    NEED_EMAIL_CERTIFICATION("Need Email Certification", 401);
 
     private final String message;
     private final int status;
