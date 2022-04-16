@@ -5,7 +5,6 @@ import com.onpost.domain.entity.member.RefreshToken;
 import com.onpost.domain.repository.jpa.RefreshRepository;
 import com.onpost.global.error.exception.InvalidTokenException;
 import io.jsonwebtoken.*;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,12 +16,8 @@ import java.util.Date;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
-public class JwtProvider {
-
-    private final JwtProperties jwtProperties;
-    private final CustomUserDetailsService userDetailsService;
-    private final RefreshRepository refreshRepository;
+public record JwtProvider(JwtProperties jwtProperties, CustomUserDetailsService userDetailsService,
+                          RefreshRepository refreshRepository) {
 
     public String generateAccessToken(String authorities, String email) {
         return generateToken(authorities, email, jwtProperties.getAccessTokenExpiration(), "ACCESS");
