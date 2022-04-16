@@ -1,5 +1,6 @@
 package com.onpost.global.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onpost.domain.entity.member.Authority;
 import com.onpost.global.error.exception.JwtAccessDeniedHandler;
 import com.onpost.global.error.exception.JwtAuthenticationEntryPoint;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
     private final JwtAccessDeniedHandler accessDeniedHandler;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
@@ -53,10 +55,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/post/main/**").permitAll()
                 .antMatchers("/post/show/**").permitAll()
+                .antMatchers("/mail/**").permitAll()
 
                 .anyRequest().authenticated()
                 .and()
-                .apply(new FilterConfig(jwtProvider));
+                .apply(new FilterConfig(jwtProvider, objectMapper));
     }
 
     @Override
