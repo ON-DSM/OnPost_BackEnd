@@ -2,7 +2,7 @@ package com.onpost.domain.service;
 
 import com.onpost.domain.entity.Image;
 import com.onpost.domain.repository.jpa.ImageRepository;
-import com.onpost.global.s3.S3Uploader;
+import com.onpost.global.aws.S3Uploader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
