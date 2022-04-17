@@ -1,11 +1,14 @@
 package com.onpost.domain.controller;
 
+import com.onpost.domain.dto.SenderDto;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.MemberQueryRepository;
 import com.onpost.domain.service.EmailService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/mail")
@@ -45,9 +48,14 @@ public class EmailController {
                 " </div>" +
                 "</body>" +
                 "</html>";
-
-
-        emailService.sendMail(email, "OnPost Email 인증", stringBuilder);
+//        emailService.sendMail(email, "[OnPost] Email 인증", stringBuilder);
+        log.info("SEND");
+        emailService.sendSESMail(SenderDto.builder()
+                .to(email)
+                .content(stringBuilder)
+                .subject("[OnPost] Email 인증")
+                .from("khcho0125@dsm.hs.kr")
+                .build());
     }
 
     @GetMapping("/certified/success")
