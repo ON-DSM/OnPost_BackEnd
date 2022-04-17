@@ -1,4 +1,4 @@
-package com.onpost.global.s3;
+package com.onpost.global.aws;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -22,10 +22,9 @@ public class AmazonConfig {
     @Value("${cloud.aws.region.static}")
     private String region;
 
-    private final BasicAWSCredentials AWS_CREDENTIALS = new BasicAWSCredentials(accessKey, secretKey);
-
     @Bean
     public AmazonS3Client amazonS3Client() {
+        BasicAWSCredentials AWS_CREDENTIALS = new BasicAWSCredentials(accessKey, secretKey);
         return (AmazonS3Client) AmazonS3ClientBuilder.standard().withRegion(region)
                 .withCredentials(new AWSStaticCredentialsProvider(AWS_CREDENTIALS))
                 .build();
@@ -33,6 +32,7 @@ public class AmazonConfig {
 
     @Bean
     public AmazonSimpleEmailService amazonSimpleEmailService() {
+        BasicAWSCredentials AWS_CREDENTIALS = new BasicAWSCredentials(accessKey, secretKey);
         return AmazonSimpleEmailServiceClientBuilder.standard()
                 .withRegion(region)
                 .withCredentials(new AWSStaticCredentialsProvider(AWS_CREDENTIALS))
