@@ -53,6 +53,7 @@ dependencies {
     implementation('it.ozimov:embedded-redis:0.7.3') {
         exclude group: "org.slf4j", module: "slf4j-simple"
     }
+    implementation 'com.amazonaws:aws-java-sdk-ses:1.12.201'
 }
 
 def querydslDir = "$buildDir/generated/querydsl" as Object
