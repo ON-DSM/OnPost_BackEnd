@@ -12,11 +12,13 @@ public class PostResponse extends PostDto {
 
     private final MemberView writer;
     private final Integer like;
+    private final Integer comments;
     private final Image image;
     private final LocalDateTime createAt;
 
     public PostResponse(Post post) {
         super(post.getId(), post.getContext(), post.getTitle());
+        this.comments = post.getComments().size();
         this.image = post.getImages().stream().findFirst().orElse(null);
         this.like = post.getPostLike().size();
         this.writer = new MemberView(post.getWriter());
