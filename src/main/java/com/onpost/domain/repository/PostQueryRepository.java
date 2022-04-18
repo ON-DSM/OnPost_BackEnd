@@ -55,6 +55,8 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
                 .fetchJoin()
                 .leftJoin(post.postLike)
                 .fetchJoin()
+                .leftJoin(post.comments)
+                .fetchJoin()
                 .orderBy(sort)
                 .limit(16L)
                 .offset((page - 1L) * 16L)
