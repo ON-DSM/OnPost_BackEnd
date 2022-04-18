@@ -48,16 +48,16 @@ public record PostService(PostQueryRepository postQueryRepository, ImageService 
         return new PostView(find);
     }
 
-    public void like(Long id, Long people) {
-        Post find = postQueryRepository.findPostWithLike(id);
-        Member member = memberQueryRepository.findMember(people);
+    public void like(Long id, Long target) {
+        Post find = postQueryRepository.findPostWithLike(target);
+        Member member = memberQueryRepository.findMember(id);
         find.getPostLike().add(member);
         postQueryRepository.save(find);
     }
 
-    public void unlike(Long id, Long people) {
-        Post find = postQueryRepository.findPostWithLike(id);
-        Member member = memberQueryRepository.findMember(people);
+    public void unlike(Long id, Long target) {
+        Post find = postQueryRepository.findPostWithLike(target);
+        Member member = memberQueryRepository.findMember(id);
         find.getPostLike().remove(member);
         postQueryRepository.save(find);
         memberQueryRepository.save(member);
@@ -74,13 +74,16 @@ public record PostService(PostQueryRepository postQueryRepository, ImageService 
             find.setTitle(per.getTitle());
         }
 
-        imageService.deleteImageList(find.getImages());
+        Set<Image> dummy = Set.copyOf(find.getImages());
+        find.getImages().clear();
 
         if (per.getImages() != null) {
             find.setImages(imageService.getImageList(per.getImages(), "static"));
         }
 
         postQueryRepository.save(find);
+
+        imageService.deleteImageList(dummy);
 
         return new PostView(find);
     }
@@ -95,22 +98,23 @@ public record PostService(PostQueryRepository postQueryRepository, ImageService 
     }
 
     public void deletePost(Long id) {
-        Post post = postQueryRepository.findPostAll(id);
+        Post find = postQueryRepository.findPostAll(id);
 
-        Member member = memberQueryRepository.findOneWithPost(post.getWriter().getId());
-        member.deletePost(post);
+        Member member = memberQueryRepository.findOneWithPost(find.getWriter().getId());
+        member.deletePost(find);
         memberQueryRepository.save(member);
 
-        Set<Image> dummy = Set.copyOf(post.getImages());
-        post.getImages().clear();
-        imageService.deleteImageList(dummy);
+        Set<Image> images = Set.copyOf(find.getImages());
+        find.getImages().clear();
 
-        Set<MainComment> comments = Set.copyOf(post.getComments());
-        post.getComments().clear();
+        Set<MainComment> comments = Set.copyOf(find.getComments());
+        find.getComments().clear();
         comments.forEach(commentQueryRepository::delete);
 
-        post.getPostLike().clear();
+        find.getPostLike().clear();
 
-        postQueryRepository.delete(post);
+        postQueryRepository.delete(find);
+
+        imageService.deleteImageList(images);
     }
 }
