@@ -13,7 +13,7 @@ import java.util.Set;
 @Getter
 public class MainComment extends Comment {
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "child",
             joinColumns = {@JoinColumn(name = "parent_id")},
