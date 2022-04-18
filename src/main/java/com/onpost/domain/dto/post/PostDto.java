@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class PostDto {
 
-    @NotNull(message = "게시물 Id가 없습니다!")
+    @NotNull(message = "Id가 없습니다!")
     private Long Id;
 
     @NotBlank(message = "내용이 들어가야합니다!")
