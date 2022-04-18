@@ -16,14 +16,6 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${GOOGLE_ID}
-    password: ${GOOGLE_PW}
-    properties.mail.smtp:
-      auth: true
-      starttls.enable: true
 
 
 logging:
@@ -46,6 +38,7 @@ cloud.aws:
     accessKey: ${ACCESSKEY}
   s3.bucket: ${BUCKET}
   stack.auto: false
+  mail: ${EMAIL_SEND}
 
 redis:
   port: ${REDIS_PORT}
