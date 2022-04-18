@@ -37,7 +37,7 @@ public class PostController {
     }
 
     @PutMapping("/edit")
-    public PostView edit(@Valid @ModelAttribute PostRequest postRequest) {
+    public PostView edit(@ModelAttribute PostRequest postRequest) {
         return postService.editPost(postRequest);
     }
 
