@@ -6,6 +6,7 @@ import com.onpost.domain.repository.MemberQueryRepository;
 import com.onpost.domain.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -16,6 +17,9 @@ public class EmailController {
 
     private final EmailService emailService;
     private final MemberQueryRepository memberQueryRepository;
+
+    @Value("${cloud.aws.mail}")
+    private String sender;
 
     @PostMapping("/certified")
     public void Send(@RequestParam String email) {
@@ -48,13 +52,11 @@ public class EmailController {
                 " </div>" +
                 "</body>" +
                 "</html>";
-//        emailService.sendMail(email, "[OnPost] Email 인증", stringBuilder);
-        log.info("SEND");
-        emailService.sendSESMail(SenderDto.builder()
+        emailService.sendMail(SenderDto.builder()
                 .to(email)
                 .content(stringBuilder)
                 .subject("[OnPost] Email 인증")
-                .from("khcho0125@dsm.hs.kr")
+                .from(sender)
                 .build());
     }
 
