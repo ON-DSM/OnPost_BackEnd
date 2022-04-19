@@ -21,6 +21,9 @@ public class EmailController {
     @Value("${cloud.aws.mail}")
     private String sender;
 
+    @Value("${cloud.aws.url}")
+    private String url;
+
     @PostMapping("/certified")
     public void Send(@RequestParam String email) {
         Member member = memberQueryRepository.findOneByEmail(email);
@@ -43,7 +46,7 @@ public class EmailController {
                 "		감사합니다." +
                 "	</p>" +
                 "	<a style=\"color: #FFF; text-decoration: none; text-align: center;\"" +
-                "	href=\"http://localhost:8080/mail/certified/success?email=" + member.getEmail() + "&certified=" + member.getCertified() + "\" target=\"_blank\">" +
+                "	href=\"" + url + "/mail/certified/success?email=" + member.getEmail() + "&certified=" + member.getCertified() + "\" target=\"_blank\">" +
                 "		<p" +
                 "			style=\"display: inline-block; width: 210px; height: 45px; margin: 30px 5px 40px; background: #02b875; line-height: 45px; vertical-align: middle; font-size: 16px;\">" +
                 "			메일 인증</p>" +
