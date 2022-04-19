@@ -39,6 +39,7 @@ cloud.aws:
   s3.bucket: ${BUCKET}
   stack.auto: false
   mail: ${EMAIL_SEND}
+  url: ${MAIL_URL}
 
 redis:
   port: ${REDIS_PORT}
