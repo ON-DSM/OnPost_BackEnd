@@ -94,10 +94,6 @@ public class Member extends BaseEntity {
         this.makePost.add(post);
     }
 
-    public void deletePost(Post post) {
-        this.makePost.remove(post);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
