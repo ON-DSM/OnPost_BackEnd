@@ -13,7 +13,7 @@ import java.util.Set;
 @Getter
 public class MainComment extends Comment {
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany
     @JoinTable(
             name = "child",
             joinColumns = {@JoinColumn(name = "parent_id")},
@@ -22,7 +22,7 @@ public class MainComment extends Comment {
     private final Set<SubComment> subComments = new LinkedHashSet<>();
 
     @Builder
-    public MainComment(String context, Member writer) {
-        super(writer, context);
+    public MainComment(String context, Member writer, Long parent) {
+        super(writer, context, parent);
     }
 }
