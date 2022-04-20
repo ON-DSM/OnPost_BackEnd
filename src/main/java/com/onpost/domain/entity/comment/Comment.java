@@ -30,13 +30,16 @@ public abstract class Comment extends BaseEntity {
 
     private String context;
 
+    private Long parent;
+
     public void setContext(String context) {
         this.context = context;
     }
 
-    public Comment(Member writer, String context) {
+    public Comment(Member writer, String context, Long parent) {
         this.context = context;
         this.writer = writer;
+        this.parent = parent;
     }
 
     @Override
