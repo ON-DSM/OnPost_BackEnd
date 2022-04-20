@@ -1,6 +1,7 @@
 package com.onpost.domain.controller;
 
 import com.onpost.domain.dto.comment.*;
+import com.onpost.domain.entity.comment.Comment;
 import com.onpost.domain.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +19,12 @@ public class CommentController {
 
     @PostMapping("/leave")
     public void mainLeave(@Valid @RequestBody CommentRequest commentRequest) {
-        commentService.leaveComment(commentRequest);
+        commentService.saveMain(commentRequest);
     }
 
     @PostMapping("/leave/sub")
     public void subLeave(@Valid @RequestBody CommentRequest commentRequest) {
-        commentService.leaveSubComment(commentRequest);
+        commentService.saveSub(commentRequest);
     }
 
     @GetMapping("/show")
@@ -37,7 +38,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/delete")
-    public void delete(@RequestParam Long id, @RequestParam Long parent) {
-        commentService.deleteComment(id, parent);
+    public void delete(@RequestParam Long id) {
+        commentService.deleteComment(id);
     }
 }
