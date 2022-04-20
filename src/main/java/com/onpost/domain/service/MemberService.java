@@ -5,19 +5,27 @@ import com.onpost.domain.dto.member.*;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.MemberQueryRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public record MemberService(MemberQueryRepository memberQueryRepository, ImageService imageService,
-                            PostService postService) {
+@RequiredArgsConstructor
+@Transactional(rollbackFor = {Exception.class})
+public class MemberService {
 
-    public MemberView editMember(MemberRequest memberRequest) {
+    private final MemberQueryRepository memberQueryRepository;
+    private final ImageService imageService;
+    private final PostService postService;
+    private final CommentService commentService;
+
+    public void editMember(MemberRequest memberRequest) {
         Member member = memberQueryRepository.findMember(memberRequest.getId());
 
         if (memberRequest.getName() != null) {
@@ -36,7 +44,6 @@ public record MemberService(MemberQueryRepository memberQueryRepository, ImageSe
         }
 
         memberQueryRepository.save(member);
-        return new MemberView(member);
     }
 
     public MemberResponse showMember(Long id) {
@@ -77,6 +84,8 @@ public record MemberService(MemberQueryRepository memberQueryRepository, ImageSe
         if (member.getProfile() != null) {
             imageService.deletePath(member.getProfile());
         }
+
+        commentService.deleteWriter(id);
 
         memberQueryRepository.delete(member);
     }
