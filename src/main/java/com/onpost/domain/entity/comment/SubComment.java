@@ -15,7 +15,7 @@ import javax.persistence.Entity;
 public class SubComment extends Comment {
 
     @Builder
-    public SubComment(String context, Member writer) {
-        super(writer, context);
+    public SubComment(String context, Member writer, Long parent) {
+        super(writer, context, parent);
     }
 }
