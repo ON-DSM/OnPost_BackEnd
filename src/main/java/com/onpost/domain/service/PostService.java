@@ -12,8 +12,10 @@ import com.onpost.domain.repository.MemberQueryRepository;
 import com.onpost.domain.repository.PostQueryRepository;
 import com.onpost.global.error.exception.PageSortException;
 import com.querydsl.core.types.OrderSpecifier;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -22,13 +24,21 @@ import static com.onpost.domain.entity.QPost.post;
 
 @Slf4j
 @Service
-public record PostService(PostQueryRepository postQueryRepository, ImageService imageService,
-                          MemberQueryRepository memberQueryRepository, CommentQueryRepository commentQueryRepository) {
+@Transactional(rollbackFor = {Exception.class})
+@RequiredArgsConstructor
+public class PostService {
+
+    private final PostQueryRepository postQueryRepository;
+    private final ImageService imageService;
+    private final MemberQueryRepository memberQueryRepository;
+    private final CommentQueryRepository commentQueryRepository;
+    private final CommentService commentService;
 
     public void createPost(PostRequest postRequest) {
-        Set<Image> images = imageService.getImageList(postRequest.getImages(), "static");
 
         Member writer = memberQueryRepository.findOneWithPost(postRequest.getId());
+
+        Set<Image> images = imageService.getImageList(postRequest.getImages(), "static");
 
         Post post = Post.builder()
                 .images(images)
@@ -44,27 +54,28 @@ public record PostService(PostQueryRepository postQueryRepository, ImageService 
     }
 
     public PostView showPost(Long id) {
-        Post find = postQueryRepository.findPostAll(id);
-        return new PostView(find);
+        Post find = postQueryRepository.findOneWithAll(id);
+        List<MainComment> comments = commentQueryRepository.findMainByParent(id);
+        return new PostView(find, comments);
     }
 
     public void like(Long id, Long target) {
-        Post find = postQueryRepository.findPostWithLike(target);
+        Post find = postQueryRepository.findOneWithLike(target);
         Member member = memberQueryRepository.findMember(id);
         find.getPostLike().add(member);
         postQueryRepository.save(find);
     }
 
     public void unlike(Long id, Long target) {
-        Post find = postQueryRepository.findPostWithLike(target);
+        Post find = postQueryRepository.findOneWithLike(target);
         Member member = memberQueryRepository.findMember(id);
         find.getPostLike().remove(member);
         postQueryRepository.save(find);
         memberQueryRepository.save(member);
     }
 
-    public PostView editPost(PostRequest per) {
-        Post find = postQueryRepository.findPostAll(per.getId());
+    public void editPost(PostRequest per) {
+        Post find = postQueryRepository.findOneEdit(per.getId());
 
         if (per.getContext() != null) {
             find.setContext(per.getContext());
@@ -84,8 +95,6 @@ public record PostService(PostQueryRepository postQueryRepository, ImageService 
         postQueryRepository.save(find);
 
         imageService.deleteImageList(dummy);
-
-        return new PostView(find);
     }
 
     public List<PostResponse> pagePost(String sort, Long page) {
@@ -98,23 +107,20 @@ public record PostService(PostQueryRepository postQueryRepository, ImageService 
     }
 
     public void deletePost(Long id) {
-        Post find = postQueryRepository.findPostAll(id);
-
+        Post find = postQueryRepository.findOneWithAll(id);
+        List<MainComment> comments = commentQueryRepository.findMainByParent(id);
         Member member = memberQueryRepository.findOneWithPost(find.getWriter().getId());
-        member.deletePost(find);
+        member.getMakePost().remove(find);
         memberQueryRepository.save(member);
 
         Set<Image> images = Set.copyOf(find.getImages());
         find.getImages().clear();
-
-        Set<MainComment> comments = Set.copyOf(find.getComments());
         find.getComments().clear();
-        comments.forEach(commentQueryRepository::delete);
-
         find.getPostLike().clear();
 
         postQueryRepository.delete(find);
 
+        comments.forEach(commentService::deleteMain);
         imageService.deleteImageList(images);
     }
 }
