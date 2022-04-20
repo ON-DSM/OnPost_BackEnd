@@ -16,8 +16,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @PutMapping("/edit")
-    public MemberView edit(@Valid @ModelAttribute MemberRequest memberDto) {
-        return memberService.editMember(memberDto);
+    public void edit(@Valid @ModelAttribute MemberRequest memberDto) {
+        memberService.editMember(memberDto);
     }
 
     @GetMapping("/profile")
