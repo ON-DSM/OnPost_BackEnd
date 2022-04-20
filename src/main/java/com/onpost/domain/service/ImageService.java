@@ -15,8 +15,8 @@ public record ImageService(S3Uploader s3Uploader, ImageRepository imageRepositor
         for (Image image : images) {
             String[] paths = image.getImagePath().split("/");
             s3Uploader.delete(paths[paths.length - 2] + "/" + paths[paths.length - 1]);
-            imageRepository.delete(image);
         }
+        imageRepository.deleteAll(images);
     }
 
     public Set<Image> getImageList(List<MultipartFile> images, String dirName) {
