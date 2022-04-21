@@ -1,6 +1,7 @@
 package com.onpost.domain.dto.member;
 
 import com.onpost.domain.entity.member.Member;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 
 @Getter
@@ -13,5 +14,12 @@ public class MemberView extends MemberDto {
         super(writer.getId(), writer.getName(), writer.getIntroduce());
         this.image = writer.getProfile();
         this.email = writer.getEmail();
+    }
+
+    @QueryProjection
+    public MemberView(Long id, String name, String introduce, String image, String email) {
+        super(id, name, introduce);
+        this.image = image;
+        this.email = email;
     }
 }
