@@ -16,7 +16,7 @@ public class CommentView {
 
     public CommentView(Comment comment) {
         this.id = comment.getId();
-        this.context = comment.getContext();
+        this.context = comment.getContent();
         this.createAt = comment.getCreateAt();
         this.writer = new MemberView(comment.getWriter());
     }
