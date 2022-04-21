@@ -39,6 +39,6 @@ public class CommentController {
 
     @DeleteMapping("/delete")
     public void delete(@RequestParam Long id) {
-        commentService.deleteComment(id);
+        commentService.deleteOne(id);
     }
 }
