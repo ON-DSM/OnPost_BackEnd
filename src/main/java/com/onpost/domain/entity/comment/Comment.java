@@ -28,18 +28,15 @@ public abstract class Comment extends BaseEntity {
     @JoinColumn(referencedColumnName = "user_id")
     private Member writer;
 
-    private String context;
+    private String content;
 
-    private Long parent;
-
-    public void setContext(String context) {
-        this.context = context;
+    public void setContext(String content) {
+        this.content = content;
     }
 
-    public Comment(Member writer, String context, Long parent) {
-        this.context = context;
+    public Comment(Member writer, String content) {
+        this.content = content;
         this.writer = writer;
-        this.parent = parent;
     }
 
     @Override
