@@ -1,24 +1,27 @@
 package com.onpost.domain.repository;
 
+import com.onpost.domain.dto.member.QMemberView;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.repository.jpa.PostRepository;
 import com.onpost.global.error.exception.PostNotFoundException;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.onpost.domain.entity.QPost.post;
+import static com.onpost.domain.entity.comment.QMainComment.mainComment;
+import static com.onpost.domain.entity.member.QMember.member;
+import static com.querydsl.core.types.ExpressionUtils.count;
+import static com.querydsl.jpa.JPAExpressions.select;
 
 @Slf4j
 @Repository
-@Transactional(rollbackFor = {Exception.class})
 public class PostQueryRepository extends QuerydslRepositorySupport {
 
     private final PostRepository postRepository;
@@ -31,10 +34,30 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public Post findPostAll(Long id) {
+    public Post findOneWithImages(Long id) {
         Post find = jpaQueryFactory.selectFrom(post)
-                .leftJoin(post.comments)
+                .leftJoin(post.images)
                 .fetchJoin()
+                .where(post.id.eq(id))
+                .fetchOne();
+        return check(find);
+    }
+
+    public Post findOneWithAll(Long id) {
+        Post find = jpaQueryFactory.selectFrom(post)
+                .leftJoin(post.writer)
+                .fetchJoin()
+                .leftJoin(post.images)
+                .fetchJoin()
+                .leftJoin(post.postLike)
+                .fetchJoin()
+                .where(post.id.eq(id))
+                .fetchOne();
+        return check(find);
+    }
+
+    public Post findOneWithWriterAndImagesAndPostLike(Long id) {
+        Post find = jpaQueryFactory.selectFrom(post)
                 .leftJoin(post.writer)
                 .fetchJoin()
                 .leftJoin(post.images)
@@ -47,21 +70,18 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
     }
 
     public List<PostResponse> findPage(OrderSpecifier<?> sort, Long page) {
-        List<Post> posts = jpaQueryFactory
-                .selectFrom(post)
-                .leftJoin(post.writer)
-                .fetchJoin()
-                .leftJoin(post.images)
-                .fetchJoin()
-                .leftJoin(post.postLike)
-                .fetchJoin()
-                .leftJoin(post.comments)
-                .fetchJoin()
+        return jpaQueryFactory.select(Projections.constructor(
+                        PostResponse.class,
+                        post.id, post.content, post.title, post.introduce, post.profileImage,
+                        select(count(mainComment)).from(mainComment).where(mainComment.parent_post.eq(post)),
+                        select(count(member)).from(member).where(post.postLike.contains(member)),
+                        new QMemberView(post.writer),
+                        post.createAt
+                )).from(post)
                 .orderBy(sort)
                 .limit(16L)
                 .offset((page - 1L) * 16L)
                 .fetch();
-        return posts.stream().map(PostResponse::new).collect(Collectors.toList());
     }
 
     public void save(Post post) {
@@ -72,7 +92,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         postRepository.delete(find);
     }
 
-    public Post findPostWithComment(Long id) {
+    public Post findOneWithComment(Long id) {
         Post find = jpaQueryFactory.selectFrom(post)
                 .leftJoin(post.comments)
                 .fetchJoin()
@@ -81,7 +101,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         return check(find);
     }
 
-    public Post findPostWithLike(Long id) {
+    public Post findOneWithLike(Long id) {
         Post find = jpaQueryFactory.selectFrom(post)
                 .leftJoin(post.postLike)
                 .fetchJoin()
