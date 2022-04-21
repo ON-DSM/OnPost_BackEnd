@@ -8,16 +8,17 @@ import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.comment.Comment;
 import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.comment.SubComment;
+import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.CommentQueryRepository;
 import com.onpost.domain.repository.MemberQueryRepository;
 import com.onpost.domain.repository.PostQueryRepository;
+import com.onpost.domain.repository.jpa.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -28,33 +29,30 @@ public class CommentService {
     private final CommentQueryRepository commentQueryRepository;
     private final MemberQueryRepository memberQueryRepository;
     private final PostQueryRepository postQueryRepository;
+    private final CommentRepository commentRepository;
 
     public void saveSub(CommentRequest commentRequest) {
-        SubComment comment = SubComment.builder()
-                .context(commentRequest.getContext())
-                .writer(memberQueryRepository.findMember(commentRequest.getWriterId()))
-                .parent(commentRequest.getParentId())
-                .build();
-
         MainComment parent = commentQueryRepository.findMainById(commentRequest.getParentId());
+        SubComment comment = SubComment.builder()
+                .content(commentRequest.getContext())
+                .writer(memberQueryRepository.findMember(commentRequest.getWriterId()))
+                .main(parent)
+                .build();
         parent.getSubComments().add(comment);
-        commentQueryRepository.save(comment);
 
-        commentQueryRepository.save(parent);
+        commentRepository.save(comment);
     }
 
     public void saveMain(CommentRequest commentRequest) {
-        MainComment comment = MainComment.builder()
-                .context(commentRequest.getContext())
-                .writer(memberQueryRepository.findMember(commentRequest.getWriterId()))
-                .parent(commentRequest.getParentId())
-                .build();
-
         Post post = postQueryRepository.findOneWithComment(commentRequest.getParentId());
+        MainComment comment = MainComment.builder()
+                .content(commentRequest.getContext())
+                .writer(memberQueryRepository.findMember(commentRequest.getWriterId()))
+                .post(post)
+                .build();
         post.getComments().add(comment);
-        commentQueryRepository.save(comment);
 
-        postQueryRepository.save(post);
+        commentRepository.save(comment);
     }
 
     public CommentResponse showMain(Long id) {
@@ -65,42 +63,43 @@ public class CommentService {
     public CommentView editComment(CommentEditRequest commentEditRequest) {
         Comment comment = commentQueryRepository.findOneById(commentEditRequest.getId());
         comment.setContext(commentEditRequest.getContext());
-        comment = commentQueryRepository.save(comment);
+        comment = commentRepository.save(comment);
         return new CommentView(comment);
     }
 
-    public void deleteComment(Long id) {
+    public void deleteOne(Long id) {
         Comment comment = commentQueryRepository.findOneById(id);
+        deleteComment(comment);
+    }
+
+    public void deleteComment(Comment comment) {
         if (comment instanceof MainComment main) {
 
-            Post post = postQueryRepository.findOneWithComment(comment.getParent());
+            Post post = main.getParent_post();
             post.getComments().remove(comment);
-            postQueryRepository.save(post);
 
             deleteMain(main);
-            return;
         }
-        MainComment main = commentQueryRepository.findMainById(comment.getParent());
-        main.getSubComments().remove(comment);
-        commentQueryRepository.save(main);
+        else if(comment instanceof SubComment sub) {
 
-        deleteSub(comment);
+            MainComment mainComment = sub.getMain();
+            mainComment.getSubComments().add(sub);
+
+            deleteSub(comment);
+        }
     }
 
     public void deleteMain(MainComment comment) {
-        Set<SubComment> subComments = Set.copyOf(comment.getSubComments());
         comment.getSubComments().clear();
-        commentQueryRepository.delete(comment);
-
-        subComments.forEach(commentQueryRepository::delete);
+        commentRepository.delete(comment);
     }
 
     public void deleteSub(Comment comment) {
-        commentQueryRepository.delete(comment);
+        commentRepository.delete(comment);
     }
 
-    public void deleteWriter(Long memberId) {
-        List<Comment> comments = commentQueryRepository.findAllByWriter(memberId);
-        comments.forEach(comment -> deleteComment(comment.getId()));
+    public void deleteWriter(Member member) {
+        List<Comment> comments = commentQueryRepository.findAllByWriter(member);
+        comments.forEach(this::deleteComment);
     }
 }
