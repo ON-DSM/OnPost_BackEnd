@@ -44,7 +44,7 @@ public class Member extends BaseEntity {
 
     private String certified;
 
-    @OneToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "follower",
             joinColumns = {@JoinColumn(name = "publisher")},
@@ -52,7 +52,7 @@ public class Member extends BaseEntity {
     )
     private final Set<Member> follower = new LinkedHashSet<>();
 
-    @OneToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "following",
             joinColumns = {@JoinColumn(name = "publisher")},
@@ -60,12 +60,7 @@ public class Member extends BaseEntity {
     )
     private final Set<Member> following = new LinkedHashSet<>();
 
-    @OneToMany
-    @JoinTable(
-            name = "posts",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "post_id")}
-    )
+    @OneToMany(mappedBy = "writer")
     private final Set<Post> makePost = new LinkedHashSet<>();
 
     public void setName(String name) {
