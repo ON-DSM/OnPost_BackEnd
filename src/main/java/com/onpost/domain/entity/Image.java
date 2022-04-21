@@ -20,4 +20,8 @@ public class Image {
     private Long id;
 
     private String imagePath;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "using_post")
+    private Post usingPost;
 }
