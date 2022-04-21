@@ -1,8 +1,6 @@
 package com.onpost.domain.dto.post;
 
 import com.onpost.domain.dto.member.MemberView;
-import com.onpost.domain.entity.Image;
-import com.onpost.domain.entity.Post;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -11,17 +9,17 @@ import java.time.LocalDateTime;
 public class PostResponse extends PostDto {
 
     private final MemberView writer;
-    private final Integer like;
-    private final Integer comments;
-    private final Image image;
+    private final Long like;
+    private final Long comments;
+    private final String profileImage;
     private final LocalDateTime createAt;
 
-    public PostResponse(Post post) {
-        super(post.getId(), post.getContext(), post.getTitle());
-        this.comments = post.getComments().size();
-        this.image = post.getImages().stream().findFirst().orElse(null);
-        this.like = post.getPostLike().size();
-        this.writer = new MemberView(post.getWriter());
-        this.createAt = post.getCreateAt();
+    public PostResponse(Long id, String content, String title, String introduce, String profile, Long comments, Long like, MemberView memberView, LocalDateTime createAt) {
+        super(id, content, title, introduce);
+        this.comments = comments;
+        this.like = like;
+        this.writer = memberView;
+        this.createAt = createAt;
+        this.profileImage = profile;
     }
 }
