@@ -1,6 +1,7 @@
 package com.onpost.domain.service;
 
 import com.onpost.domain.entity.Image;
+import com.onpost.domain.entity.Post;
 import com.onpost.domain.repository.jpa.ImageRepository;
 import com.onpost.global.aws.S3Uploader;
 import org.springframework.stereotype.Service;
@@ -16,17 +17,18 @@ public record ImageService(S3Uploader s3Uploader, ImageRepository imageRepositor
             String[] paths = image.getImagePath().split("/");
             s3Uploader.delete(paths[paths.length - 2] + "/" + paths[paths.length - 1]);
         }
-        imageRepository.deleteAll(images);
     }
 
-    public Set<Image> getImageList(List<MultipartFile> images, String dirName) {
+    public void addImageList(List<MultipartFile> images, String dirName, Post post) {
         Set<Image> imageList = new LinkedHashSet<>();
         if (images != null) {
             for (MultipartFile im : images) {
-                imageList.add(imageRepository.save(Image.builder().imagePath(s3Uploader.upload(im, dirName)).build()));
+                imageList.add(Image.builder()
+                        .usingPost(post)
+                        .imagePath(s3Uploader.upload(im, dirName)).build());
             }
         }
-        return imageList;
+        post.setImages(imageList);
     }
 
     public String getPath(MultipartFile file, String dirName) {
