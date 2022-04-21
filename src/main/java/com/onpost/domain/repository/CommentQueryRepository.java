@@ -1,10 +1,9 @@
 package com.onpost.domain.repository;
 
+import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.comment.Comment;
 import com.onpost.domain.entity.comment.MainComment;
-import com.onpost.domain.entity.comment.SubComment;
 import com.onpost.domain.entity.member.Member;
-import com.onpost.domain.repository.jpa.CommentRepository;
 import com.onpost.global.error.exception.CommentNotFoundException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 
 import static com.onpost.domain.entity.comment.QMainComment.mainComment;
@@ -24,12 +22,7 @@ import static com.onpost.domain.entity.comment.QComment.comment;
 @Transactional(rollbackFor = {Exception.class})
 public class CommentQueryRepository {
 
-    private final CommentRepository commentRepository;
     private final JPAQueryFactory jpaQueryFactory;
-
-    public Comment save(Comment comment) {
-        return commentRepository.save(comment);
-    }
 
     public MainComment findMainById(Long id) {
         MainComment find = jpaQueryFactory.selectFrom(mainComment)
@@ -53,24 +46,17 @@ public class CommentQueryRepository {
         return find;
     }
 
-    public List<MainComment> findMainByParent(Long parent) {
+    public List<MainComment> findMainByParent(Post parent) {
         return jpaQueryFactory.selectFrom(mainComment)
-                .leftJoin(mainComment.writer)
-                .fetchJoin()
                 .leftJoin(mainComment.subComments)
                 .fetchJoin()
-                .distinct()
-                .where(mainComment.parent.eq(parent))
+                .where(mainComment.parent_post.eq(parent))
                 .fetch();
     }
 
-    public void delete(Comment comment) {
-        commentRepository.delete(comment);
-    }
-
-    public List<Comment> findAllByWriter(Long memberId) {
+    public List<Comment> findAllByWriter(Member member) {
         return jpaQueryFactory.selectFrom(comment)
-                .where(comment.writer.id.eq(memberId))
+                .where(comment.writer.eq(member))
                 .fetch();
     }
 
