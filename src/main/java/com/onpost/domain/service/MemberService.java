@@ -1,8 +1,10 @@
 package com.onpost.domain.service;
 
 import com.onpost.domain.dto.IDValueDto;
-import com.onpost.domain.dto.member.*;
-import com.onpost.domain.entity.Post;
+import com.onpost.domain.dto.member.FollowResponse;
+import com.onpost.domain.dto.member.MemberRequest;
+import com.onpost.domain.dto.member.MemberResponse;
+import com.onpost.domain.dto.member.MemberView;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.repository.MemberQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -75,17 +76,16 @@ public class MemberService {
     public void deleteMember(Long id) {
         Member member = memberQueryRepository.findOneWithAll(id);
 
-        member.getFollower().forEach(m -> m.followMe(member));
-        member.getFollower().forEach(member::unfollowMe);
-
-        List<Post> posts = List.copyOf(member.getMakePost());
-        posts.forEach(p -> postService.deletePost(p.getId()));
+        member.getFollower().forEach(m -> m.unfollowMe(member));
+        member.getFollowing().forEach(member::unfollowMe);
 
         if (member.getProfile() != null) {
             imageService.deletePath(member.getProfile());
         }
 
-        commentService.deleteWriter(id);
+        member.getMakePost().forEach(p -> postService.deletePost(p.getId()));
+
+        commentService.deleteWriter(member);
 
         memberQueryRepository.delete(member);
     }
