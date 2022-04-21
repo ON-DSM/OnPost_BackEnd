@@ -1,6 +1,7 @@
 package com.onpost.domain.controller;
 
 import com.onpost.domain.dto.auth.LoginDto;
+import com.onpost.domain.dto.auth.LoginResponse;
 import com.onpost.domain.dto.auth.SignupDto;
 import com.onpost.domain.dto.auth.TokenDto;
 import com.onpost.domain.dto.member.MemberView;
@@ -23,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public TokenDto login(@Valid @RequestBody LoginDto loginDto) {
+    public LoginResponse login(@Valid @RequestBody LoginDto loginDto) {
         return authService.loginMember(loginDto);
     }
 
