@@ -1,5 +1,6 @@
 package com.onpost.domain.entity.comment;
 
+import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.member.Member;
 import lombok.*;
 
@@ -13,16 +14,16 @@ import java.util.Set;
 @Getter
 public class MainComment extends Comment {
 
-    @OneToMany
-    @JoinTable(
-            name = "child",
-            joinColumns = {@JoinColumn(name = "parent_id")},
-            inverseJoinColumns = {@JoinColumn(name = "child_id")}
-    )
+    @OneToMany(mappedBy = "main")
     private final Set<SubComment> subComments = new LinkedHashSet<>();
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "parent_post_post_id")
+    private Post parent_post;
+
     @Builder
-    public MainComment(String context, Member writer, Long parent) {
-        super(writer, context, parent);
+    public MainComment(String content, Member writer, Post post) {
+        super(writer, content);
+        this.parent_post = post;
     }
 }
