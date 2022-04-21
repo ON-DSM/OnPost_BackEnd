@@ -23,24 +23,23 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn
     private Member writer;
 
     private String title;
 
     @Column(columnDefinition = "LONGTEXT")
-    private String context;
+    private String content;
 
-    @OneToMany
-    @JoinTable(
-            name = "images",
-            joinColumns = {@JoinColumn(name = "post_id")},
-            inverseJoinColumns = {@JoinColumn(name = "image_id")}
-    )
+    private String profileImage;
+
+    private String introduce;
+
+    @OneToMany(mappedBy = "usingPost")
     private Set<Image> images;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "post_like",
             joinColumns = {@JoinColumn(name = "post_id")},
@@ -48,20 +47,23 @@ public class Post extends BaseEntity {
     )
     private final Set<Member> postLike = new LinkedHashSet<>();
 
-    @OneToMany
-    @JoinTable(
-            name = "post_comment",
-            joinColumns = {@JoinColumn(name = "post_id")},
-            inverseJoinColumns = {@JoinColumn(name = "comment_id")}
-    )
+    @OneToMany(mappedBy = "parent_post")
     private final Set<MainComment> comments = new LinkedHashSet<>();
 
-    public void setContext(String context) {
-        this.context = context;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
+    }
+
+    public void setProfileImage(String image) {
+        this.profileImage = image;
     }
 
     public void setImages(Set<Image> images) {
