@@ -24,7 +24,7 @@ public class ErrorHandler {
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(BindException e){
         String[] message = e.getMessage().split("default message");
-        ErrorResponse errorResponse = new ErrorResponse(message[message.length - 1].replaceAll("[\\[|\\]]", "").trim(), 400);
+        ErrorResponse errorResponse = new ErrorResponse(message[message.length - 1].replaceAll("[\\[|\\]]", "").trim(), "GLOBAL-400-3", 400);
         return result(errorResponse);
     }
 
@@ -42,12 +42,12 @@ public class ErrorHandler {
 
     @ExceptionHandler(FileSizeLimitExceededException.class)
     public ResponseEntity<ErrorResponse> handleFileSizeLimitsExceptions(FileSizeLimitExceededException e) {
-        ErrorResponse errorResponse = new ErrorResponse("File size limit : " + e.getFileName(), 413);
+        ErrorResponse errorResponse = new ErrorResponse("File size limit : " + e.getFileName(), "GLOBAL-413-1", 413);
         return result(errorResponse);
     }
 
     private ResponseEntity<ErrorResponse> result(ErrorResponse errorResponse) {
-        log.error("Error status : {}\nError reason : {}", errorResponse.getStatus(), errorResponse.getMessage());
+        log.error("Error code : {}\nError reason : {}", errorResponse.getCode(), errorResponse.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(errorResponse.getStatus()));
     }
 }
