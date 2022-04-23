@@ -5,11 +5,14 @@ import com.onpost.domain.dto.post.PostRequest;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.dto.post.PostView;
 import com.onpost.domain.service.PostService;
+import com.onpost.global.error.validation.EditGroup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Slf4j
@@ -32,12 +35,12 @@ public class PostController {
 
     @GetMapping("/main")
     public List<PostResponse> mainPage(@RequestParam(defaultValue = "like") String sort,
-                                       @RequestParam(defaultValue = "1") Long page) {
+                                       @RequestParam(defaultValue = "1") @Positive Long page) {
         return postService.pagePost(sort, page);
     }
 
     @PutMapping("/edit")
-    public void edit(@ModelAttribute PostRequest postRequest) {
+    public void edit(@ModelAttribute @Validated(EditGroup.class) PostRequest postRequest) {
         postService.editPost(postRequest);
     }
 
