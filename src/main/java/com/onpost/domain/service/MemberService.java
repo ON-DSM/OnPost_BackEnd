@@ -61,7 +61,6 @@ public class MemberService {
             follow.unfollowMe(me);
         }
 
-        memberQueryRepository.save(me);
         memberQueryRepository.save(follow);
     }
 
