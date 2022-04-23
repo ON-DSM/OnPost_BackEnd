@@ -2,7 +2,6 @@ package com.onpost.domain.service;
 
 import com.onpost.domain.entity.Image;
 import com.onpost.domain.entity.Post;
-import com.onpost.domain.repository.jpa.ImageRepository;
 import com.onpost.global.aws.S3Uploader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 
 @Service
-public record ImageService(S3Uploader s3Uploader, ImageRepository imageRepository) {
+public record ImageService(S3Uploader s3Uploader) {
 
     public void deleteImageList(Set<Image> images) {
         for (Image image : images) {
