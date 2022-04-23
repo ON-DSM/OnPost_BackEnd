@@ -16,6 +16,6 @@ public class LoginDto {
     private String email;
 
     @NotBlank(message = "패스워드는 8자 이상, 20자 이하여야 합니다.")
-    @Size(min = 8, max = 20)
+    @Size(min = 8, max = 20, message = "패스워드는 8자 이상, 20자 이하여야 합니다.")
     private String password;
 }
