@@ -10,10 +10,16 @@ public class MemberView extends MemberDto {
     private final String image;
     private final String email;
 
-    @QueryProjection
     public MemberView(Member writer) {
         super(writer.getId(), writer.getName(), writer.getIntroduce());
         this.image = writer.getProfile();
         this.email = writer.getEmail();
+    }
+
+    @QueryProjection
+    public MemberView(Long id, String name, String introduce, String profile, String email) {
+        super(id, name, introduce);
+        this.image = profile;
+        this.email = email;
     }
 }
