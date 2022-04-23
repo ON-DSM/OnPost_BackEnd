@@ -40,10 +40,13 @@ public class PostService {
                 .introduce(postRequest.getIntroduce())
                 .content(postRequest.getContent())
                 .title(postRequest.getTitle())
+                .tags(postRequest.getTags())
                 .writer(writer)
                 .build();
 
-        post.setProfileImage(imageService.getPath(postRequest.getProfile(), "profile"));
+        if(postRequest.getProfile() != null) {
+            post.setProfileImage(imageService.getPath(postRequest.getProfile(), "profile"));
+        }
         imageService.addImageList(postRequest.getImages(), "static", post);
 
         writer.updatePost(post);
@@ -93,6 +96,8 @@ public class PostService {
         }
 
         imageService.deleteImageList(find.getImages());
+
+        find.setTags(per.getTags());
 
         if (per.getImages() != null) {
             imageService.addImageList(per.getImages(), "static", find);
