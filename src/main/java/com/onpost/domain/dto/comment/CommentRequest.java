@@ -13,9 +13,9 @@ public class CommentRequest {
     @NotBlank(message = "내용이 없습니다!")
     private String context;
 
-    @NotNull(message = "작성자 아이디가 없습니다!")
+    @NotNull(message = "아이디를 찾을 수 없습니다.")
     private Long writerId;
 
-    @NotNull(message = "어디에 저장해야하는지 모르겠네요")
+    @NotNull(message = "아이디를 찾을 수 없습니다.")
     private Long parentId;
 }
