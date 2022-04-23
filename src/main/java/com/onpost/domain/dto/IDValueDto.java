@@ -9,9 +9,9 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class IDValueDto {
 
-    @NotNull(message = "제 아이디가 담기지 않았어요!")
+    @NotNull(message = "아이디를 찾을 수 없습니다.")
     private Long id;
 
-    @NotNull(message = "타겟 유저의 Id가 포함되지 않았습니다!")
+    @NotNull(message = "아이디를 찾을 수 없습니다.")
     private Long targetId;
 }
