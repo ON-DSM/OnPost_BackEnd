@@ -18,6 +18,7 @@ public class PostView extends PostDto {
     private final MemberView writer;
     private final List<Long> like;
     private final List<String> images;
+    private final List<String> tags;
     private final LocalDateTime createAt;
     private final List<MainCommentResponse> comments;
 
@@ -27,6 +28,7 @@ public class PostView extends PostDto {
         this.createAt = post.getCreateAt();
         this.writer = new MemberView(post.getWriter());
         this.like = post.getPostLike().stream().map(Member::getId).toList();
+        this.tags = List.of(post.getTags().split(","));
         this.comments = comments.stream().map(MainCommentResponse::new).toList();
         this.profile = post.getProfileImage();
     }
