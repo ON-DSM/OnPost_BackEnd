@@ -11,6 +11,6 @@ import java.util.List;
 @Getter
 public class FollowResponse {
 
-    private List<MemberView> follower;
-    private List<MemberView> following;
+    private final List<MemberView> follower;
+    private final List<MemberView> following;
 }
