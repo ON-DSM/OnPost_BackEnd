@@ -36,6 +36,8 @@ public class Post extends BaseEntity {
 
     private String introduce;
 
+    private String tags;
+
     @OneToMany(mappedBy = "usingPost")
     private Set<Image> images;
 
@@ -68,6 +70,10 @@ public class Post extends BaseEntity {
 
     public void setImages(Set<Image> images) {
         this.images = images;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     @Override
