@@ -3,7 +3,7 @@ package com.onpost.global.jwt;
 import com.onpost.domain.entity.AuthDetails;
 import com.onpost.domain.entity.member.RefreshToken;
 import com.onpost.domain.repository.jpa.RefreshRepository;
-import com.onpost.global.error.exception.InvalidTokenException;
+import com.onpost.global.error.exception.*;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -57,19 +57,22 @@ public record JwtProvider(JwtProperties jwtProperties, CustomUserDetailsService 
             return Jwts.parserBuilder()
                     .setSigningKey(jwtProperties.getSecretKey())
                     .build().parseClaimsJws(token);
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+        } catch (SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다");
+            throw WrongTokenException.EXCEPTION;
+        } catch (SignatureException e) {
+            log.info("특징이 다른 JWT 토큰입니다.");
+            throw SignatureTokenException.EXCEPTION;
         } catch (ExpiredJwtException e) {
             log.info("만료된 JWT 토큰입니다.");
-            throw InvalidTokenException.EXCEPTION;
+            throw ExpiredAccessTokenException.EXCEPTION;
         } catch (UnsupportedJwtException e) {
             log.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
+            throw UnsupportedTokenException.EXCEPTION;
         } catch (InvalidTokenException e) {
             log.info("유효하지 않는 JWT 토큰입니다.");
+            throw InvalidTokenException.EXCEPTION;
         }
-        return null;
     }
 
     public Authentication getAuthentication(String jwt) {
