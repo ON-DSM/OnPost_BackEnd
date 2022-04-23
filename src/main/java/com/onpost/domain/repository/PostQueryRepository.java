@@ -2,11 +2,11 @@ package com.onpost.domain.repository;
 
 import com.onpost.domain.dto.member.QMemberView;
 import com.onpost.domain.dto.post.PostResponse;
+import com.onpost.domain.dto.post.QPostResponse;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.repository.jpa.PostRepository;
 import com.onpost.global.error.exception.PostNotFoundException;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -70,14 +70,15 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
     }
 
     public List<PostResponse> findPage(OrderSpecifier<?> sort, Long page) {
-        return jpaQueryFactory.select(Projections.constructor(
-                        PostResponse.class,
+        return jpaQueryFactory.select(new QPostResponse(
                         post.id, post.content, post.title, post.introduce, post.profileImage,
                         select(count(mainComment)).from(mainComment).where(mainComment.parent_post.eq(post)),
                         select(count(member)).from(member).where(post.postLike.contains(member)),
-                        new QMemberView(post.writer),
-                        post.createAt
-                )).from(post)
+                        new QMemberView(post.writer.id, post.writer.name, post.writer.introduce, post.writer.email, post.writer.profile),
+                        post.createAt,
+                        post.tags
+                ))
+                .from(post)
                 .orderBy(sort)
                 .limit(16L)
                 .offset((page - 1L) * 16L)
