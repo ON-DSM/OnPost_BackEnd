@@ -2,12 +2,14 @@ package com.onpost.domain.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class SignupDto {
 
