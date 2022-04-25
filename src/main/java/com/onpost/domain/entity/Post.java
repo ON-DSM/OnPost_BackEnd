@@ -49,7 +49,7 @@ public class Post extends BaseEntity {
     )
     private final Set<Member> postLike = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "parent_post")
+    @OneToMany(mappedBy = "parent_post", cascade = CascadeType.ALL)
     private final Set<MainComment> comments = new LinkedHashSet<>();
 
     public void setContent(String content) {
