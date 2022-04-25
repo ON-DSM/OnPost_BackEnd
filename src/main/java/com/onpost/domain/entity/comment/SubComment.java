@@ -11,7 +11,7 @@ import javax.persistence.*;
 @DiscriminatorValue(value = "Sub")
 public class SubComment extends Comment {
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "main_comment_id")
     private MainComment main;
 
