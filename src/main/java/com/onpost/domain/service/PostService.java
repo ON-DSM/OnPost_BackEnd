@@ -117,13 +117,8 @@ public class PostService {
 
     public void deletePost(Long id) {
         Post find = postQueryRepository.findOneWithAll(id);
-        List<MainComment> comments = commentQueryRepository.findMainByParent(find);
 
         find.getWriter().getMakePost().remove(find);
-
-        find.getPostLike().clear();
-
-        comments.forEach(commentService::deleteMain);
 
         if(find.getProfileImage() != null) {
             imageService.deletePath(find.getProfileImage());
