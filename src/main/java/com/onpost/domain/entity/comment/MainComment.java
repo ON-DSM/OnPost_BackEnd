@@ -14,10 +14,10 @@ import java.util.Set;
 @Getter
 public class MainComment extends Comment {
 
-    @OneToMany(mappedBy = "main")
+    @OneToMany(mappedBy = "main", cascade = CascadeType.ALL)
     private final Set<SubComment> subComments = new LinkedHashSet<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parent_post_post_id")
     private Post parent_post;
 
