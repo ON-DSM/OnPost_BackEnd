@@ -51,6 +51,7 @@ public class CommentQueryRepository {
                 .leftJoin(mainComment.subComments)
                 .fetchJoin()
                 .where(mainComment.parent_post.eq(parent))
+                .distinct()
                 .fetch();
     }
 
