@@ -74,27 +74,14 @@ public class CommentService {
 
     public void deleteComment(Comment comment) {
         if (comment instanceof MainComment main) {
-
             Post post = main.getParent_post();
             post.getComments().remove(comment);
-
-            deleteMain(main);
         }
         else if(comment instanceof SubComment sub) {
-
             MainComment mainComment = sub.getMain();
             mainComment.getSubComments().add(sub);
-
-            deleteSub(comment);
         }
-    }
 
-    public void deleteMain(MainComment comment) {
-        comment.getSubComments().clear();
-        commentRepository.delete(comment);
-    }
-
-    public void deleteSub(Comment comment) {
         commentRepository.delete(comment);
     }
 
