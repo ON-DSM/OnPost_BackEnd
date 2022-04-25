@@ -24,7 +24,7 @@ public abstract class Comment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(referencedColumnName = "user_id")
     private Member writer;
 
