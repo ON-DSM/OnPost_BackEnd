@@ -1,36 +1,25 @@
-package com.onpost.domain.repository;
+package com.onpost.domain.repository.query;
 
 import com.onpost.domain.entity.member.Member;
-import com.onpost.domain.repository.jpa.MemberRepository;
+import com.onpost.domain.repository.Impl.CustomMemberRepository;
 import com.onpost.global.error.exception.MemberNotFoundException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import static com.onpost.domain.entity.member.QMember.member;
 
 @Repository
 @RequiredArgsConstructor
-@Transactional(rollbackFor = {Exception.class})
-public class MemberQueryRepository {
+public class MemberRepository implements CustomMemberRepository {
 
-    private final MemberRepository memberRepository;
     private final JPAQueryFactory jpaQueryFactory;
-
-    public boolean checkEmail(String email) {
-        return memberRepository.findByEmail(email).isPresent();
-    }
 
     public Member findMember(Long Id) {
         Member find = jpaQueryFactory.selectFrom(member)
                 .where(member.id.eq(Id))
                 .fetchOne();
         return check(find);
-    }
-
-    public void save(Member member) {
-        memberRepository.save(member);
     }
 
     public Member findOneWithAll(Long id) {
@@ -57,10 +46,6 @@ public class MemberQueryRepository {
         return check(find);
     }
 
-    public void delete(Member member) {
-        memberRepository.delete(member);
-    }
-
     public Member findOneByEmail(String email) {
         Member find = jpaQueryFactory.selectFrom(member)
                 .where(member.email.eq(email))
@@ -77,7 +62,7 @@ public class MemberQueryRepository {
         return check(find);
     }
 
-    public void Certified(String email, String certified) {
+    public void certified(String email, String certified) {
         jpaQueryFactory.update(member)
                 .setNull(member.certified)
                 .where(member.email.eq(email).and(member.certified.eq(certified)))
