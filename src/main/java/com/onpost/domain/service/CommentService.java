@@ -9,10 +9,9 @@ import com.onpost.domain.entity.comment.Comment;
 import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.comment.SubComment;
 import com.onpost.domain.entity.member.Member;
-import com.onpost.domain.repository.CommentQueryRepository;
-import com.onpost.domain.repository.MemberQueryRepository;
-import com.onpost.domain.repository.PostQueryRepository;
-import com.onpost.domain.repository.jpa.CommentRepository;
+import com.onpost.domain.repository.query.MemberRepository;
+import com.onpost.domain.repository.query.PostRepository;
+import com.onpost.domain.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,16 +25,15 @@ import java.util.List;
 @Transactional(rollbackFor = {Exception.class})
 public class CommentService {
 
-    private final CommentQueryRepository commentQueryRepository;
-    private final MemberQueryRepository memberQueryRepository;
-    private final PostQueryRepository postQueryRepository;
+    private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
     public void saveSub(CommentRequest commentRequest) {
-        MainComment parent = commentQueryRepository.findMainById(commentRequest.getParentId());
+        MainComment parent = commentRepository.findMainById(commentRequest.getParentId());
         SubComment comment = SubComment.builder()
                 .content(commentRequest.getContext())
-                .writer(memberQueryRepository.findMember(commentRequest.getWriterId()))
+                .writer(memberRepository.findMember(commentRequest.getWriterId()))
                 .main(parent)
                 .build();
         parent.getSubComments().add(comment);
@@ -44,10 +42,10 @@ public class CommentService {
     }
 
     public void saveMain(CommentRequest commentRequest) {
-        Post post = postQueryRepository.findOneWithComment(commentRequest.getParentId());
+        Post post = postRepository.findOneWithComment(commentRequest.getParentId());
         MainComment comment = MainComment.builder()
                 .content(commentRequest.getContext())
-                .writer(memberQueryRepository.findMember(commentRequest.getWriterId()))
+                .writer(memberRepository.findMember(commentRequest.getWriterId()))
                 .post(post)
                 .build();
         post.getComments().add(comment);
@@ -56,26 +54,26 @@ public class CommentService {
     }
 
     public CommentResponse showMain(Long id) {
-        MainComment comment = commentQueryRepository.findMainById(id);
+        MainComment comment = commentRepository.findMainById(id);
         return new CommentResponse(comment);
     }
 
     public CommentView editComment(CommentEditRequest commentEditRequest) {
-        Comment comment = commentQueryRepository.findOneById(commentEditRequest.getId());
+        Comment comment = commentRepository.findOneById(commentEditRequest.getId());
         comment.setContext(commentEditRequest.getContext());
         comment = commentRepository.save(comment);
         return new CommentView(comment);
     }
 
     public void deleteOne(Long id) {
-        Comment comment = commentQueryRepository.findOneById(id);
+        Comment comment = commentRepository.findOneById(id);
         deleteComment(comment);
     }
 
     public void deleteComment(Comment comment) {
         if (comment instanceof MainComment main) {
             Post post = main.getParent_post();
-            post.getComments().remove(comment);
+            post.getComments().remove(main);
         }
         else if(comment instanceof SubComment sub) {
             MainComment mainComment = sub.getMain();
@@ -86,7 +84,7 @@ public class CommentService {
     }
 
     public void deleteWriter(Member member) {
-        List<Comment> comments = commentQueryRepository.findAllByWriter(member);
+        List<Comment> comments = commentRepository.findAllByWriter(member);
         comments.forEach(this::deleteComment);
     }
 }
