@@ -8,8 +8,8 @@ import com.onpost.domain.dto.member.MemberView;
 import com.onpost.domain.entity.member.Authority;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.entity.member.RefreshToken;
-import com.onpost.domain.repository.MemberQueryRepository;
-import com.onpost.domain.repository.jpa.RefreshRepository;
+import com.onpost.domain.repository.MemberRepository;
+import com.onpost.domain.repository.RefreshRepository;
 import com.onpost.global.error.exception.EmailAlreadyExistsException;
 import com.onpost.global.error.exception.ExpiredRefreshTokenException;
 import com.onpost.global.error.exception.PasswordNotMatchException;
@@ -28,13 +28,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final JwtProvider jwtProvider;
-    private final MemberQueryRepository memberQueryRepository;
+    private final MemberRepository memberRepository;
     private final RefreshRepository refreshRepository;
     private final PasswordEncoder passwordEncoder;
 
     public void signupMember(SignupDto signupDto) {
 
-        if (memberQueryRepository.checkEmail(signupDto.getEmail())) {
+        if (memberRepository.findByEmail(signupDto.getEmail()).isPresent()) {
             throw EmailAlreadyExistsException.EXCEPTION;
         }
 
@@ -45,12 +45,12 @@ public class AuthService {
                 .password(passwordEncoder.encode(signupDto.getPassword()))
                 .certified(certifiedKey()).build();
 
-        memberQueryRepository.save(member);
+        memberRepository.save(member);
     }
 
     public LoginResponse loginMember(LoginDto loginDto) {
 
-        Member member = memberQueryRepository.findOneByEmail(loginDto.getEmail());
+        Member member = memberRepository.findOneByEmail(loginDto.getEmail());
 
         if (!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())) {
             throw PasswordNotMatchException.EXCEPTION;
