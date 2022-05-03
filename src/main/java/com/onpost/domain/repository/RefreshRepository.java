@@ -1,4 +1,4 @@
-package com.onpost.domain.repository.jpa;
+package com.onpost.domain.repository;
 
 import com.onpost.domain.entity.member.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
