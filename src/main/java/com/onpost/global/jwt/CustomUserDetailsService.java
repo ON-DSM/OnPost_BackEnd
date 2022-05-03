@@ -2,7 +2,7 @@ package com.onpost.global.jwt;
 
 import com.onpost.domain.entity.AuthDetails;
 import com.onpost.domain.entity.member.Member;
-import com.onpost.domain.repository.jpa.MemberRepository;
+import com.onpost.domain.repository.MemberRepository;
 import com.onpost.global.error.exception.EmailCertificationException;
 import com.onpost.global.error.exception.MemberNotFoundException;
 import lombok.extern.slf4j.Slf4j;
