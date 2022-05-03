@@ -2,7 +2,7 @@ package com.onpost.global.jwt;
 
 import com.onpost.domain.entity.AuthDetails;
 import com.onpost.domain.entity.member.RefreshToken;
-import com.onpost.domain.repository.jpa.RefreshRepository;
+import com.onpost.domain.repository.RefreshRepository;
 import com.onpost.global.error.exception.*;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
