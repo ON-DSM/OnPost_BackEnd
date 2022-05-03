@@ -1,10 +1,10 @@
-package com.onpost.domain.repository;
+package com.onpost.domain.repository.query;
 
 import com.onpost.domain.dto.member.QMemberView;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.dto.post.QPostResponse;
 import com.onpost.domain.entity.Post;
-import com.onpost.domain.repository.jpa.PostRepository;
+import com.onpost.domain.repository.Impl.CustomPostRepository;
 import com.onpost.global.error.exception.PostNotFoundException;
 import com.querydsl.core.types.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -22,15 +22,12 @@ import static com.querydsl.jpa.JPAExpressions.select;
 
 @Slf4j
 @Repository
-public class PostQueryRepository extends QuerydslRepositorySupport {
+public class PostRepository extends QuerydslRepositorySupport implements CustomPostRepository {
 
-    private final PostRepository postRepository;
     private final JPAQueryFactory jpaQueryFactory;
 
-    public PostQueryRepository(PostRepository postRepository,
-                               JPAQueryFactory jpaQueryFactory) {
+    public PostRepository(JPAQueryFactory jpaQueryFactory) {
         super(Post.class);
-        this.postRepository = postRepository;
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
@@ -56,7 +53,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
         return check(find);
     }
 
-    public Post findOneWithWriterAndImagesAndPostLike(Long id) {
+    public Post findOneWithWriterAndImagesAndLike(Long id) {
         Post find = jpaQueryFactory.selectFrom(post)
                 .leftJoin(post.writer)
                 .fetchJoin()
@@ -74,7 +71,7 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
                         post.id, post.content, post.title, post.introduce, post.profileImage,
                         select(count(mainComment)).from(mainComment).where(mainComment.parent_post.eq(post)),
                         select(count(member)).from(member).where(post.postLike.contains(member)),
-                        new QMemberView(post.writer.id, post.writer.name, post.writer.introduce, post.writer.email, post.writer.profile),
+                        new QMemberView(post.writer.id, post.writer.name, post.writer.introduce, post.writer.profile, post.writer.email),
                         post.createAt,
                         post.tags
                 ))
@@ -83,14 +80,6 @@ public class PostQueryRepository extends QuerydslRepositorySupport {
                 .limit(16L)
                 .offset((page - 1L) * 16L)
                 .fetch();
-    }
-
-    public void save(Post post) {
-        postRepository.save(post);
-    }
-
-    public void delete(Post find) {
-        postRepository.delete(find);
     }
 
     public Post findOneWithComment(Long id) {
