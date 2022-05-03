@@ -6,9 +6,9 @@ import com.onpost.domain.dto.post.PostView;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.member.Member;
-import com.onpost.domain.repository.CommentQueryRepository;
-import com.onpost.domain.repository.MemberQueryRepository;
-import com.onpost.domain.repository.PostQueryRepository;
+import com.onpost.domain.repository.query.CommentQueryRepository;
+import com.onpost.domain.repository.query.MemberRepository;
+import com.onpost.domain.repository.PostRepository;
 import com.onpost.global.error.exception.PageSortException;
 import com.querydsl.core.types.OrderSpecifier;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +26,10 @@ import static com.onpost.domain.entity.QPost.post;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final PostQueryRepository postQueryRepository;
+    private final PostRepository postRepository;
     private final ImageService imageService;
-    private final MemberQueryRepository memberQueryRepository;
+    private final MemberRepository memberQueryRepository;
     private final CommentQueryRepository commentQueryRepository;
-    private final CommentService commentService;
 
     public void createPost(PostRequest postRequest) {
 
@@ -51,30 +50,30 @@ public class PostService {
 
         writer.updatePost(post);
 
-        postQueryRepository.save(post);
+        postRepository.save(post);
     }
 
     public PostView showPost(Long id) {
-        Post find = postQueryRepository.findOneWithWriterAndImagesAndPostLike(id);
+        Post find = postRepository.findOneWithWriterAndImagesAndLike(id);
         List<MainComment> comments = commentQueryRepository.findMainByParent(find);
         return new PostView(find, comments);
     }
 
     public void like(Long id, Long target) {
-        Post find = postQueryRepository.findOneWithLike(target);
+        Post find = postRepository.findOneWithLike(target);
         Member member = memberQueryRepository.findMember(id);
         find.getPostLike().add(member);
-        postQueryRepository.save(find);
+        postRepository.save(find);
     }
 
     public void unlike(Long id, Long target) {
-        Post find = postQueryRepository.findOneWithLike(target);
+        Post find = postRepository.findOneWithLike(target);
         find.getPostLike().removeIf(member -> member.getId().equals(id));
-        postQueryRepository.save(find);
+        postRepository.save(find);
     }
 
     public void editPost(PostRequest per) {
-        Post find = postQueryRepository.findOneWithImages(per.getId());
+        Post find = postRepository.findOneWithImages(per.getId());
 
         if(per.getIntroduce() != null) {
             find.setIntroduce(per.getIntroduce());
@@ -103,7 +102,7 @@ public class PostService {
             imageService.addImageList(per.getImages(), "static", find);
         }
 
-        postQueryRepository.save(find);
+        postRepository.save(find);
     }
 
     public List<PostResponse> pagePost(String sort, Long page) {
@@ -112,11 +111,11 @@ public class PostService {
             case "like" -> post.postLike.size().desc();
             default -> throw PageSortException.EXCEPTION;
         };
-        return postQueryRepository.findPage(orderBy, page);
+        return postRepository.findPage(orderBy, page);
     }
 
     public void deletePost(Long id) {
-        Post find = postQueryRepository.findOneWithAll(id);
+        Post find = postRepository.findOneWithAll(id);
 
         find.getWriter().getMakePost().remove(find);
 
@@ -125,6 +124,6 @@ public class PostService {
         }
         imageService.deleteImageList(find.getImages());
 
-        postQueryRepository.delete(find);
+        postRepository.delete(find);
     }
 }
