@@ -1,26 +1,23 @@
-package com.onpost.domain.repository;
+package com.onpost.domain.repository.query;
 
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.comment.Comment;
 import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.member.Member;
+import com.onpost.domain.repository.Impl.CustomCommentRepository;
 import com.onpost.global.error.exception.CommentNotFoundException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static com.onpost.domain.entity.comment.QMainComment.mainComment;
 import static com.onpost.domain.entity.comment.QComment.comment;
 
-@Slf4j
 @Repository
 @RequiredArgsConstructor
-@Transactional(rollbackFor = {Exception.class})
-public class CommentQueryRepository {
+public class CommentQueryRepository implements CustomCommentRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
