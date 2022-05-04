@@ -101,7 +101,7 @@ public class PostService {
     }
 
     public List<PostResponse> pagePost(Sort sort, Long page) {
-        return postRepository.findPage(sort, page);
+        return postRepository.searchMainPage(sort, page);
     }
 
     public void deletePost(Long id) {
