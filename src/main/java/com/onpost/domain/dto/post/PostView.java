@@ -7,20 +7,22 @@ import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.member.Member;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Setter
 public class PostView extends PostDto {
 
-    private final String profile;
-    private final MemberView writer;
-    private final List<Long> like;
-    private final List<String> images;
-    private final List<String> tags;
-    private final LocalDateTime createAt;
-    private final List<MainCommentResponse> comments;
+    private String profile;
+    private MemberView writer;
+    private List<Long> like;
+    private List<String> images;
+    private List<String> tags;
+    private LocalDateTime createAt;
+    private List<MainCommentResponse> comments;
 
     public PostView(Post post, List<MainComment> comments) {
         super(post.getId(), post.getContent(), post.getTitle(), post.getIntroduce());
