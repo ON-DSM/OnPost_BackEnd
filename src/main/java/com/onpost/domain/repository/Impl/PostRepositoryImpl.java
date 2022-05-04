@@ -1,4 +1,4 @@
-package com.onpost.domain.repository.Impl;
+package com.onpost.domain.repository.impl;
 
 import com.onpost.domain.dto.member.QMemberView;
 import com.onpost.domain.dto.post.PostResponse;
@@ -17,17 +17,17 @@ import java.util.List;
 import static com.onpost.domain.entity.QPost.post;
 
 @Slf4j
-public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implements CustomPostRepository {
+public class PostRepositoryImpl extends QuerydslRepositorySupport implements CustomPostRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public CustomPostRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
+    public PostRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
         super(Post.class);
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
     @Override
-    public List<PostResponse> findPage(Sort sort, Long page) {
+    public List<PostResponse> searchMainPage(Sort sort, Long page) {
         return jpaQueryFactory.select(new QPostResponse(
                         post.id, post.content, post.title, post.introduce, post.profileImage,
                         post.comments.size().longValue(),
