@@ -1,4 +1,4 @@
-package com.onpost.domain.repository.Impl;
+package com.onpost.domain.repository.impl;
 
 import com.onpost.domain.repository.custom.CustomMemberRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import static com.onpost.domain.entity.member.QMember.member;
 
 @RequiredArgsConstructor
-public class CustomMemberRepositoryImpl implements CustomMemberRepository {
+public class MemberRepositoryImpl implements CustomMemberRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
