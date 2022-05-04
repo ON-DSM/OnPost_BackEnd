@@ -4,6 +4,7 @@ import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.comment.Comment;
 import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.member.Member;
+import com.onpost.domain.repository.custom.CustomCommentRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface CommentRepository extends JpaRepository<Comment, Long>, CustomCommentRepository {
 
     @Query("select m from MainComment m left join m.writer left join m.subComments where m.id = :id")
     Optional<MainComment> findMainById(@Param("id") Long id);
