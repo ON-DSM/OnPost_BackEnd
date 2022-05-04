@@ -6,28 +6,24 @@ import com.onpost.domain.dto.member.MemberRequest;
 import com.onpost.domain.dto.member.MemberResponse;
 import com.onpost.domain.dto.member.MemberView;
 import com.onpost.domain.entity.member.Member;
+import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.repository.MemberRepository;
+import com.onpost.global.annotation.ServiceSetting;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.stream.Collectors;
 
-@Slf4j
-@Service
+@ServiceSetting
 @RequiredArgsConstructor
-@Transactional(rollbackFor = {Exception.class})
 public class MemberService {
 
+    private final MemberFacade memberFacade;
     private final MemberRepository memberRepository;
     private final ImageService imageService;
     private final PostService postService;
     private final CommentService commentService;
 
     public void editMember(MemberRequest memberRequest) {
-        Member member = memberRepository.findMember(memberRequest.getId());
+        Member member = memberFacade.getMember(memberRequest.getId());
 
         if (memberRequest.getName() != null) {
             member.setName(memberRequest.getName());
@@ -48,12 +44,12 @@ public class MemberService {
     }
 
     public MemberResponse showMember(Long id) {
-        return new MemberResponse(memberRepository.findOneWithAll(id));
+        return new MemberResponse(memberFacade.getMemberWithAll(id));
     }
 
     public void followMember(IDValueDto IDValueDto, boolean positive) {
-        Member me = memberRepository.findOneWithFollow(IDValueDto.getId());
-        Member follow = memberRepository.findOneWithFollow(IDValueDto.getTargetId());
+        Member me = memberFacade.getMemberWithFollower(IDValueDto.getId());
+        Member follow = memberFacade.getMemberWithFollowing(IDValueDto.getTargetId());
 
         if (positive) {
             follow.followMe(me);
@@ -65,7 +61,7 @@ public class MemberService {
     }
 
     public FollowResponse followList(Long id) {
-        Member member = memberRepository.findOneWithFollow(id);
+        Member member = memberFacade.getMemberWithFollow(id);
         return FollowResponse.builder()
                 .follower(member.getFollower().stream().map(MemberView::new).collect(Collectors.toList()))
                 .following(member.getFollowing().stream().map(MemberView::new).collect(Collectors.toList()))
@@ -73,7 +69,7 @@ public class MemberService {
     }
 
     public void deleteMember(Long id) {
-        Member member = memberRepository.findOneWithAll(id);
+        Member member = memberFacade.getMemberWithAll(id);
 
         member.getFollower().forEach(m -> m.unfollowMe(member));
         member.getFollowing().forEach(member::unfollowMe);
@@ -90,8 +86,7 @@ public class MemberService {
     }
 
     public MemberView infoMember() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Member member = memberRepository.findOneByEmail(email);
+        Member member = memberFacade.getInfoMember();
         return new MemberView(member);
     }
 }
