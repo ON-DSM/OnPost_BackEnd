@@ -4,6 +4,7 @@ import com.onpost.domain.dto.IDValueDto;
 import com.onpost.domain.dto.post.PostRequest;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.dto.post.PostView;
+import com.onpost.domain.entity.Sort;
 import com.onpost.domain.service.PostService;
 import com.onpost.global.error.validation.EditGroup;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class PostController {
     }
 
     @GetMapping("/main")
-    public List<PostResponse> mainPage(@RequestParam(defaultValue = "like") String sort,
+    public List<PostResponse> mainPage(@RequestParam(defaultValue = "LIKE") Sort sort,
                                        @RequestParam(defaultValue = "1") @Positive Long page) {
         return postService.pagePost(sort, page);
     }
