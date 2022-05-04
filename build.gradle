@@ -26,10 +26,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework:spring-core:5.3.18'
+    implementation 'org.springframework:spring-core:5.3.19'
     implementation 'com.querydsl:querydsl-jpa:5.0.0'
     implementation "com.querydsl:querydsl-apt:5.0.0"
-    implementation 'org.mapstruct:mapstruct:1.4.2.Final'
     implementation 'org.springframework.cloud:spring-cloud-aws-context:2.2.6.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -37,16 +36,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.6.6'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.6.7'
     implementation('it.ozimov:embedded-redis:0.7.3') {
         exclude group: "org.slf4j", module: "slf4j-simple"
     }
-    implementation 'com.amazonaws:aws-java-sdk-ses:1.12.201'
+    implementation 'com.amazonaws:aws-java-sdk-ses:1.12.206'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
-    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.20'
 
