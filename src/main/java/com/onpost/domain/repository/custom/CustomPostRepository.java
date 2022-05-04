@@ -6,5 +6,5 @@ import com.onpost.domain.entity.Sort;
 import java.util.List;
 
 public interface CustomPostRepository {
-    List<PostResponse> findPage(Sort sort, Long page);
+    List<PostResponse> searchMainPage(Sort sort, Long page);
 }
