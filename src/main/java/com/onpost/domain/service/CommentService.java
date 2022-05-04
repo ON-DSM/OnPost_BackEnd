@@ -9,31 +9,29 @@ import com.onpost.domain.entity.comment.Comment;
 import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.comment.SubComment;
 import com.onpost.domain.entity.member.Member;
-import com.onpost.domain.repository.query.MemberRepository;
-import com.onpost.domain.repository.query.PostRepository;
+import com.onpost.domain.facade.CommentFacade;
+import com.onpost.domain.facade.MemberFacade;
+import com.onpost.domain.facade.PostFacade;
 import com.onpost.domain.repository.CommentRepository;
+import com.onpost.global.annotation.ServiceSetting;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Slf4j
-@Service
+@ServiceSetting
 @RequiredArgsConstructor
-@Transactional(rollbackFor = {Exception.class})
 public class CommentService {
 
-    private final MemberRepository memberRepository;
-    private final PostRepository postRepository;
+    private final MemberFacade memberFacade;
+    private final PostFacade postFacade;
     private final CommentRepository commentRepository;
+    private final CommentFacade commentFacade;
 
     public void saveSub(CommentRequest commentRequest) {
-        MainComment parent = commentRepository.findMainById(commentRequest.getParentId());
+        MainComment parent = commentFacade.getMainById(commentRequest.getParentId());
         SubComment comment = SubComment.builder()
                 .content(commentRequest.getContext())
-                .writer(memberRepository.findMember(commentRequest.getWriterId()))
+                .writer(memberFacade.getMember(commentRequest.getWriterId()))
                 .main(parent)
                 .build();
         parent.getSubComments().add(comment);
@@ -42,10 +40,10 @@ public class CommentService {
     }
 
     public void saveMain(CommentRequest commentRequest) {
-        Post post = postRepository.findOneWithComment(commentRequest.getParentId());
+        Post post = postFacade.getPostWithComment(commentRequest.getParentId());
         MainComment comment = MainComment.builder()
                 .content(commentRequest.getContext())
-                .writer(memberRepository.findMember(commentRequest.getWriterId()))
+                .writer(memberFacade.getMember(commentRequest.getWriterId()))
                 .post(post)
                 .build();
         post.getComments().add(comment);
@@ -54,19 +52,19 @@ public class CommentService {
     }
 
     public CommentResponse showMain(Long id) {
-        MainComment comment = commentRepository.findMainById(id);
+        MainComment comment = commentFacade.getMainById(id);
         return new CommentResponse(comment);
     }
 
     public CommentView editComment(CommentEditRequest commentEditRequest) {
-        Comment comment = commentRepository.findOneById(commentEditRequest.getId());
+        Comment comment = commentFacade.getOneById(commentEditRequest.getId());
         comment.setContext(commentEditRequest.getContext());
         comment = commentRepository.save(comment);
         return new CommentView(comment);
     }
 
     public void deleteOne(Long id) {
-        Comment comment = commentRepository.findOneById(id);
+        Comment comment = commentFacade.getOneById(id);
         deleteComment(comment);
     }
 
