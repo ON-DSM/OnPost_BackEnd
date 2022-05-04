@@ -4,6 +4,7 @@ import com.onpost.domain.dto.SenderDto;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.repository.MemberRepository;
+import com.onpost.domain.repository.custom.CustomMemberRepository;
 import com.onpost.domain.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ public class EmailController {
 
     private final EmailService emailService;
     private final MemberFacade memberFacade;
-    private final MemberRepository memberRepository;
+    private final CustomMemberRepository memberRepository;
 
     @Value("${cloud.aws.mail}")
     private String sender;
