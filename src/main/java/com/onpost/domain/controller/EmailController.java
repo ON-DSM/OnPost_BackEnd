@@ -2,6 +2,7 @@ package com.onpost.domain.controller;
 
 import com.onpost.domain.dto.SenderDto;
 import com.onpost.domain.entity.member.Member;
+import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.repository.MemberRepository;
 import com.onpost.domain.service.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class EmailController {
 
     private final EmailService emailService;
+    private final MemberFacade memberFacade;
     private final MemberRepository memberRepository;
 
     @Value("${cloud.aws.mail}")
@@ -26,7 +28,7 @@ public class EmailController {
 
     @PostMapping("/certified")
     public void Send(@RequestParam String email) {
-        Member member = memberRepository.findOneByEmail(email);
+        Member member = memberFacade.getMemberByEmail(email);
         String stringBuilder = "<!DOCTYPE html>" +
                 "<html>" +
                 "<head>" +
