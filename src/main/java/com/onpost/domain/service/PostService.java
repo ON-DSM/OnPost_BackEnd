@@ -4,36 +4,31 @@ import com.onpost.domain.dto.post.PostRequest;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.dto.post.PostView;
 import com.onpost.domain.entity.Post;
+import com.onpost.domain.entity.Sort;
 import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.member.Member;
-import com.onpost.domain.repository.query.CommentQueryRepository;
-import com.onpost.domain.repository.query.MemberRepository;
+import com.onpost.domain.facade.MemberFacade;
+import com.onpost.domain.facade.PostFacade;
+import com.onpost.domain.repository.CommentRepository;
 import com.onpost.domain.repository.PostRepository;
-import com.onpost.global.error.exception.PageSortException;
-import com.querydsl.core.types.OrderSpecifier;
+import com.onpost.global.annotation.ServiceSetting;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.onpost.domain.entity.QPost.post;
-
-@Slf4j
-@Service
-@Transactional(rollbackFor = {Exception.class})
+@ServiceSetting
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
+    private final PostFacade postFacade;
     private final ImageService imageService;
-    private final MemberRepository memberQueryRepository;
-    private final CommentQueryRepository commentQueryRepository;
+    private final MemberFacade memberFacade;
+    private final CommentRepository commentRepository;
 
     public void createPost(PostRequest postRequest) {
 
-        Member writer = memberQueryRepository.findOneWithPost(postRequest.getId());
+        Member writer = memberFacade.getMemberWithPost(postRequest.getId());
 
         Post post = Post.builder()
                 .introduce(postRequest.getIntroduce())
@@ -54,26 +49,26 @@ public class PostService {
     }
 
     public PostView showPost(Long id) {
-        Post find = postRepository.findOneWithWriterAndImagesAndLike(id);
-        List<MainComment> comments = commentQueryRepository.findMainByParent(find);
+        Post find = postFacade.getPostWithWriterAndImagesAndLike(id);
+        List<MainComment> comments = commentRepository.findMainByPost(find);
         return new PostView(find, comments);
     }
 
     public void like(Long id, Long target) {
-        Post find = postRepository.findOneWithLike(target);
-        Member member = memberQueryRepository.findMember(id);
+        Post find = postFacade.getPostWithLike(target);
+        Member member = memberFacade.getMember(id);
         find.getPostLike().add(member);
         postRepository.save(find);
     }
 
     public void unlike(Long id, Long target) {
-        Post find = postRepository.findOneWithLike(target);
+        Post find = postFacade.getPostWithLike(target);
         find.getPostLike().removeIf(member -> member.getId().equals(id));
         postRepository.save(find);
     }
 
     public void editPost(PostRequest per) {
-        Post find = postRepository.findOneWithImages(per.getId());
+        Post find = postFacade.getPostWithImages(per.getId());
 
         if(per.getIntroduce() != null) {
             find.setIntroduce(per.getIntroduce());
@@ -105,17 +100,12 @@ public class PostService {
         postRepository.save(find);
     }
 
-    public List<PostResponse> pagePost(String sort, Long page) {
-        OrderSpecifier<?> orderBy = switch (sort) {
-            case "new" -> post.id.desc();
-            case "like" -> post.postLike.size().desc();
-            default -> throw PageSortException.EXCEPTION;
-        };
-        return postRepository.findPage(orderBy, page);
+    public List<PostResponse> pagePost(Sort sort, Long page) {
+        return postRepository.findPage(sort, page);
     }
 
     public void deletePost(Long id) {
-        Post find = postRepository.findOneWithAll(id);
+        Post find = postFacade.getPostWithAll(id);
 
         find.getWriter().getMakePost().remove(find);
 
