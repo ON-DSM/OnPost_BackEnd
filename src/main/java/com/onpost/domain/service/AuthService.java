@@ -8,26 +8,24 @@ import com.onpost.domain.dto.member.MemberView;
 import com.onpost.domain.entity.member.Authority;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.entity.member.RefreshToken;
+import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.repository.MemberRepository;
 import com.onpost.domain.repository.RefreshRepository;
+import com.onpost.global.annotation.ServiceSetting;
 import com.onpost.global.error.exception.EmailAlreadyExistsException;
 import com.onpost.global.error.exception.ExpiredRefreshTokenException;
 import com.onpost.global.error.exception.PasswordNotMatchException;
 import com.onpost.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-@Service
-@Slf4j
+@ServiceSetting
 @RequiredArgsConstructor
-@Transactional(rollbackFor = {Exception.class})
 public class AuthService {
 
     private final JwtProvider jwtProvider;
+    private final MemberFacade memberFacade;
     private final MemberRepository memberRepository;
     private final RefreshRepository refreshRepository;
     private final PasswordEncoder passwordEncoder;
@@ -50,7 +48,7 @@ public class AuthService {
 
     public LoginResponse loginMember(LoginDto loginDto) {
 
-        Member member = memberRepository.findOneByEmail(loginDto.getEmail());
+        Member member = memberFacade.getMemberByEmail(loginDto.getEmail());
 
         if (!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())) {
             throw PasswordNotMatchException.EXCEPTION;
