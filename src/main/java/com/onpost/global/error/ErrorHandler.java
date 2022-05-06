@@ -10,6 +10,7 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
 @RestControllerAdvice
@@ -42,6 +43,12 @@ public class ErrorHandler {
     @ExceptionHandler(FileSizeLimitExceededException.class)
     public ResponseEntity<ErrorResponse> handleFileSizeLimitsExceptions() {
         ErrorResponse errorResponse = new ErrorResponse(ErrorCode.FILE_SIZE_LIMIT);
+        return result(errorResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodExceptions() {
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.DO_NOT_UNDERSTAND_REQUEST);
         return result(errorResponse);
     }
 
