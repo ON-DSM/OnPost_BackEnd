@@ -25,7 +25,7 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND("Comment Not Found", "COMMENT-404",404),
 
     PARAMETER_NOT_CONTAIN("Parameter Not Contain", "GLOBAL-404-1",404),
-    DO_NOT_UNDERSTAND_SORT("Don't Understand Sort", "GLOBAL-404-2",404),
+    DO_NOT_UNDERSTAND_REQUEST("Don't Understand Request", "GLOBAL-404-2",404),
 
     EMAIL_ALREADY_EXISTS("Email Already Exists", "GLOBAL-409-1", 409),
 
