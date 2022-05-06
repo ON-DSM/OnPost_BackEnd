@@ -1,5 +1,6 @@
 package com.onpost.domain.dto.member;
 
+import com.onpost.global.error.validation.EditGroup;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class MemberDto {
 
-    @NotNull(message = "아이디를 찾을 수 없습니다.")
+    @NotNull(message = "아이디를 찾을 수 없습니다.", groups = {EditGroup.class})
     private Long id;
 
     @NotBlank(message = "이름은 2자 이상, 10자 이하이여야 합니다.")
