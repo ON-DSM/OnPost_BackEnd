@@ -1,7 +1,6 @@
 package com.onpost.domain.service;
 
 import com.onpost.domain.dto.IDValueDto;
-import com.onpost.domain.dto.member.FollowResponse;
 import com.onpost.domain.dto.member.MemberRequest;
 import com.onpost.domain.dto.member.MemberResponse;
 import com.onpost.domain.dto.member.MemberView;
@@ -10,7 +9,8 @@ import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.repository.MemberRepository;
 import com.onpost.global.annotation.ServiceSetting;
 import lombok.RequiredArgsConstructor;
-import java.util.stream.Collectors;
+
+import java.util.List;
 
 @ServiceSetting
 @RequiredArgsConstructor
@@ -52,33 +52,32 @@ public class MemberService {
         Member follow = memberFacade.getMemberWithFollowing(IDValueDto.getTargetId());
 
         if (positive) {
-            follow.followMe(me);
+            me.follow(follow);
         } else {
-            follow.unfollowMe(me);
+            me.unfollow(follow);
         }
 
         memberRepository.save(follow);
     }
 
-    public FollowResponse followList(Long id) {
-        Member member = memberFacade.getMemberWithFollow(id);
-        return FollowResponse.builder()
-                .follower(member.getFollower().stream().map(MemberView::new).collect(Collectors.toList()))
-                .following(member.getFollowing().stream().map(MemberView::new).collect(Collectors.toList()))
-                .build();
+    public List<MemberView> followers(Long id) {
+        return memberRepository.searchFollower(id);
+    }
+
+    public List<MemberView> following(Long id) {
+        return memberRepository.searchFollowing(id);
     }
 
     public void deleteMember(Long id) {
         Member member = memberFacade.getMemberWithAll(id);
 
-        member.getFollower().forEach(m -> m.unfollowMe(member));
-        member.getFollowing().forEach(member::unfollowMe);
+        member.getFollowing().forEach(m -> {m.getFollower().remove(member); memberRepository.save(m);});
 
         if (member.getProfile() != null) {
             imageService.deletePath(member.getProfile());
         }
 
-        member.getMakePost().forEach(p -> postService.deletePost(p.getId()));
+        member.getMakePost().forEach(post -> postService.deletePost(post.getId()));
 
         commentService.deleteWriter(member);
 
