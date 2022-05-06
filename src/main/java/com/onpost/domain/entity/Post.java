@@ -2,10 +2,7 @@ package com.onpost.domain.entity;
 
 import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.member.Member;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -16,6 +13,7 @@ import java.util.*;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 public class Post extends BaseEntity {
 
     @Id
@@ -38,7 +36,7 @@ public class Post extends BaseEntity {
 
     private String tags;
 
-    @OneToMany(mappedBy = "usingPost")
+    @OneToMany(mappedBy = "usingPost", cascade = CascadeType.ALL)
     private Set<Image> images;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
@@ -49,32 +47,8 @@ public class Post extends BaseEntity {
     )
     private final Set<Member> postLike = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "parent_post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent_post", cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<MainComment> comments = new LinkedHashSet<>();
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setIntroduce(String introduce) {
-        this.introduce = introduce;
-    }
-
-    public void setProfileImage(String image) {
-        this.profileImage = image;
-    }
-
-    public void setImages(Set<Image> images) {
-        this.images = images;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
 
     @Override
     public boolean equals(Object o) {
