@@ -47,17 +47,12 @@ public class Member extends BaseEntity {
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "follower",
-            joinColumns = {@JoinColumn(name = "publisher")},
-            inverseJoinColumns = {@JoinColumn(name = "subscriber")}
+            joinColumns = {@JoinColumn(name = "follower_id")},
+            inverseJoinColumns = {@JoinColumn(name = "following_id")}
     )
     private final Set<Member> follower = new LinkedHashSet<>();
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "following",
-            joinColumns = {@JoinColumn(name = "publisher")},
-            inverseJoinColumns = {@JoinColumn(name = "subscriber")}
-    )
+    @ManyToMany(mappedBy = "follower", cascade = CascadeType.PERSIST)
     private final Set<Member> following = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "writer")
@@ -75,14 +70,14 @@ public class Member extends BaseEntity {
         this.profile = profile;
     }
 
-    public void followMe(Member other) {
-        this.follower.add(other);
-        other.following.add(this);
+    public void follow(Member other) {
+        this.following.add(other);
+        other.follower.add(this);
     }
 
-    public void unfollowMe(Member other) {
-        this.follower.remove(other);
-        other.following.remove(this);
+    public void unfollow(Member other) {
+        this.following.remove(other);
+        other.follower.remove(this);
     }
 
     public void updatePost(Post post) {
