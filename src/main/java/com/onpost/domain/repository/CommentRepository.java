@@ -25,6 +25,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, CustomC
     @Query("select m from MainComment m left join m.subComments where m.parent_post = :post")
     List<MainComment> findMainByPost(@Param("post") Post post);
 
-    @Query("select c from Comment c where c.writer = :member")
-    List<Comment> findAllByWriter(@Param("member") Member member);
+    void deleteCommentByWriter(Member writer);
 }
