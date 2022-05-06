@@ -38,6 +38,7 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Cus
                 ))
                 .from(post)
                 .orderBy(setSort(sort))
+                .orderBy(post.id.desc())
                 .limit(16L)
                 .offset((page - 1L) * 16L)
                 .fetch();
@@ -47,8 +48,7 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Cus
         return switch (sort) {
             case NEW -> post.id.desc();
             case LIKE -> post.postLike.size().desc();
-            //noinspection UnnecessaryDefault
-            default -> throw PageSortException.EXCEPTION;
+            case COMMENTS -> post.comments.size().desc();
         };
     }
 }
