@@ -16,8 +16,6 @@ import com.onpost.domain.repository.CommentRepository;
 import com.onpost.global.annotation.ServiceSetting;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @ServiceSetting
 @RequiredArgsConstructor
 public class CommentService {
@@ -64,25 +62,10 @@ public class CommentService {
     }
 
     public void deleteOne(Long id) {
-        Comment comment = commentFacade.getOneById(id);
-        deleteComment(comment);
-    }
-
-    public void deleteComment(Comment comment) {
-        if (comment instanceof MainComment main) {
-            Post post = main.getParent_post();
-            post.getComments().remove(main);
-        }
-        else if(comment instanceof SubComment sub) {
-            MainComment mainComment = sub.getMain();
-            mainComment.getSubComments().add(sub);
-        }
-
-        commentRepository.delete(comment);
+        commentRepository.deleteById(id);
     }
 
     public void deleteWriter(Member member) {
-        List<Comment> comments = commentRepository.findAllByWriter(member);
-        comments.forEach(this::deleteComment);
+        commentRepository.deleteCommentByWriter(member);
     }
 }
