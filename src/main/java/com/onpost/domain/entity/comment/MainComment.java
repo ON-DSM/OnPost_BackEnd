@@ -14,7 +14,7 @@ import java.util.Set;
 @Getter
 public class MainComment extends Comment {
 
-    @OneToMany(mappedBy = "main", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "main", cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<SubComment> subComments = new LinkedHashSet<>();
 
     @ManyToOne(cascade = CascadeType.PERSIST)
