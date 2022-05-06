@@ -3,7 +3,9 @@ package com.onpost.domain.controller;
 import com.onpost.domain.dto.IDValueDto;
 import com.onpost.domain.dto.member.*;
 import com.onpost.domain.service.MemberService;
+import com.onpost.global.error.validation.EditGroup;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,7 +18,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PutMapping("/edit")
-    public void edit(@Valid @ModelAttribute MemberRequest memberDto) {
+    public void edit(@Validated({EditGroup.class}) @ModelAttribute MemberRequest memberDto) {
         memberService.editMember(memberDto);
     }
 
