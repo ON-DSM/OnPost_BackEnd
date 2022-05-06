@@ -89,11 +89,10 @@ public class PostService {
             find.setProfileImage(imageService.getPath(per.getProfile(), "profile"));
         }
 
-        imageService.deleteImageList(find.getImages());
-
         find.setTags(per.getTags());
 
         if (per.getImages() != null) {
+            imageService.deleteImageList(find.getImages());
             imageService.addImageList(per.getImages(), "static", find);
         }
 
@@ -106,8 +105,6 @@ public class PostService {
 
     public void deletePost(Long id) {
         Post find = postFacade.getPostWithAll(id);
-
-        find.getWriter().getMakePost().remove(find);
 
         if(find.getProfileImage() != null) {
             imageService.deletePath(find.getProfileImage());
