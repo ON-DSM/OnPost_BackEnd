@@ -16,9 +16,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>, CustomMem
     @Query("select m from Member m left join m.makePost where m.id = :id")
     Optional<Member> findMemberWithPost(@Param("id") Long id);
 
-    @Query("select m from Member m left join m.follower left join m.following where m.id = :id")
-    Optional<Member> findMemberWithFollow(@Param("id") Long id);
-
     @Query("select m from Member m left join m.follower left join m.makePost left join m.following where m.id = :id")
     Optional<Member> findMemberWithAll(@Param("id") Long id);
 
