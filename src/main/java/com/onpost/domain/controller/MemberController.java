@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,9 +38,14 @@ public class MemberController {
         memberService.followMember(IDValueDto, false);
     }
 
-    @GetMapping("/link")
-    public FollowResponse linkMember(@RequestParam Long id) {
-        return memberService.followList(id);
+    @GetMapping("/followers")
+    public List<MemberView> follower(@RequestParam Long id) {
+        return memberService.followers(id);
+    }
+
+    @GetMapping("/following")
+    public List<MemberView> following(@RequestParam Long id) {
+        return memberService.following(id);
     }
 
     @DeleteMapping("/delete")
