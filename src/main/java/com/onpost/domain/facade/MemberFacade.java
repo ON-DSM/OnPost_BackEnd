@@ -30,10 +30,6 @@ public class MemberFacade {
         return memberRepository.findMemberWithPost(id).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
 
-    public Member getMemberWithFollow(Long id) {
-        return memberRepository.findMemberWithFollow(id).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
-    }
-
     public Member getMemberWithFollower(Long id) {
         return memberRepository.findMemberWithFollower(id).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
