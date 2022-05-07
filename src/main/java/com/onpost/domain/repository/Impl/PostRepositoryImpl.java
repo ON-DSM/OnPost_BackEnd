@@ -6,7 +6,6 @@ import com.onpost.domain.dto.post.QPostResponse;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.Sort;
 import com.onpost.domain.repository.custom.CustomPostRepository;
-import com.onpost.global.error.exception.PageSortException;
 import com.querydsl.core.types.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
