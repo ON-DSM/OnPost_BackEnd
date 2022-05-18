@@ -103,6 +103,10 @@ public class PostService {
         return postRepository.searchMainPage(sort, page);
     }
 
+    public List<PostResponse> memberPosts(Long id) {
+        return postRepository.searchMemberPosts(id);
+    }
+
     public void deletePost(Long id) {
         Post find = postFacade.getPostWithAll(id);
 
