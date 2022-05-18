@@ -9,8 +9,8 @@ public class MemberRequest extends MemberDto {
     private final MultipartFile profile;
 
     public MemberRequest(Long id, String name,
-                         String introduce, MultipartFile profile) {
-        super(id, name, introduce);
+                         String introduce, MultipartFile profile, boolean public_profile) {
+        super(id, name, introduce, public_profile);
         this.profile = profile;
     }
 }
