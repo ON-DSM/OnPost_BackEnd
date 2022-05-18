@@ -41,6 +41,7 @@ public class AuthService {
                 .email(signupDto.getEmail())
                 .name(signupDto.getUsername())
                 .password(passwordEncoder.encode(signupDto.getPassword()))
+                .profile_public(true)
                 .certified(certifiedKey()).build();
 
         memberRepository.save(member);
