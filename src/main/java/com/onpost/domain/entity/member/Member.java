@@ -2,10 +2,7 @@ package com.onpost.domain.entity.member;
 
 import com.onpost.domain.entity.BaseEntity;
 import com.onpost.domain.entity.Post;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -17,6 +14,7 @@ import java.util.*;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 public class Member extends BaseEntity {
 
     @Id
@@ -44,6 +42,8 @@ public class Member extends BaseEntity {
 
     private String certified;
 
+    private boolean profile_public;
+
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "follower",
@@ -57,18 +57,6 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "writer")
     private final Set<Post> makePost = new LinkedHashSet<>();
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setIntroduce(String introduce) {
-        this.introduce = introduce;
-    }
-
-    public void setProfile(String profile) {
-        this.profile = profile;
-    }
 
     public void follow(Member other) {
         this.following.add(other);
