@@ -41,4 +41,8 @@ public class MemberFacade {
     public Member getMemberWithAll(Long id) {
         return memberRepository.findMemberWithAll(id).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
+
+    public Member getMemberProfile(Long id) {
+        return memberRepository.findMemberProfile(id).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+    }
 }
