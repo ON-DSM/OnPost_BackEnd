@@ -23,4 +23,6 @@ public abstract class MemberDto {
     private String name;
 
     private String introduce;
+
+    private boolean public_profile;
 }
