@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CustomPostRepository {
     List<PostResponse> searchMainPage(Sort sort, Long page);
+
+    List<PostResponse> searchMemberPosts(Long id);
 }
