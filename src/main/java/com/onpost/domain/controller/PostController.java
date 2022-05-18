@@ -59,4 +59,9 @@ public class PostController {
     public void unlike(@Valid @RequestBody IDValueDto idValueDto) {
         postService.unlike(idValueDto.getId(), idValueDto.getTargetId());
     }
+
+    @PostMapping("/{userId}")
+    public List<PostResponse> hasPosts(@PathVariable("userId") Long id) {
+        return postService.memberPosts(id);
+    }
 }
