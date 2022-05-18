@@ -33,6 +33,8 @@ public class MemberService {
             member.setIntroduce(memberRequest.getIntroduce());
         }
 
+        member.setProfile_public(memberRequest.isPublic_profile());
+
         if (memberRequest.getProfile() != null) {
             if (member.getProfile() != null) {
                 imageService.deletePath(member.getProfile());
@@ -44,7 +46,25 @@ public class MemberService {
     }
 
     public MemberResponse showMember(Long id) {
-        return new MemberResponse(memberFacade.getMemberWithAll(id));
+        Member member = memberFacade.getMemberProfile(id);
+
+        if(!member.isProfile_public()) {
+            return MemberResponse.builder()
+                    .public_profile(member.isProfile_public())
+                    .createAt(member.getCreateAt())
+                    .name(member.getName()).build();
+        }
+
+        return MemberResponse.builder()
+                .id(id)
+                .name(member.getName())
+                .createAt(member.getCreateAt())
+                .public_profile(member.isProfile_public())
+                .authority(member.getAuthor())
+                .follower(member.getFollower().size())
+                .following(member.getFollowing().size())
+                .introduce(member.getIntroduce())
+                .profile(member.getProfile()).build();
     }
 
     public void followMember(IDValueDto IDValueDto, boolean positive) {
