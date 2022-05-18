@@ -43,6 +43,21 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Cus
                 .fetch();
     }
 
+    @Override
+    public List<PostResponse> searchMemberPosts(Long id) {
+        return jpaQueryFactory.select(new QPostResponse(
+                        post.id, post.content, post.title, post.introduce, post.profileImage,
+                        post.comments.size().longValue(),
+                        post.postLike.size().longValue(),
+                        new QMemberView(post.writer.id, post.writer.name, post.writer.introduce, post.writer.profile, post.writer.email),
+                        post.createAt,
+                        post.tags
+                ))
+                .from(post)
+                .where(post.writer.id.eq(id))
+                .orderBy(post.createAt.desc()).fetch();
+    }
+
     private OrderSpecifier<?> setSort(Sort sort) {
         return switch (sort) {
             case NEW -> post.id.desc();
