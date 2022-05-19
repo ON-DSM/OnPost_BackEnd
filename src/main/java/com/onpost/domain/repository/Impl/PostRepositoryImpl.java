@@ -31,7 +31,7 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Cus
                         post.id, post.content, post.title, post.introduce, post.profileImage,
                         post.comments.size().longValue(),
                         post.postLike.size().longValue(),
-                        new QMemberView(post.writer.id, post.writer.name, post.writer.introduce, post.writer.profile, post.writer.email),
+                        new QMemberView(post.writer.email, post.writer.name, post.writer.introduce, post.writer.profile),
                         post.createAt,
                         post.tags
                 ))
@@ -44,17 +44,17 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Cus
     }
 
     @Override
-    public List<PostResponse> searchMemberPosts(Long id) {
+    public List<PostResponse> searchMemberPosts(String email) {
         return jpaQueryFactory.select(new QPostResponse(
                         post.id, post.content, post.title, post.introduce, post.profileImage,
                         post.comments.size().longValue(),
                         post.postLike.size().longValue(),
-                        new QMemberView(post.writer.id, post.writer.name, post.writer.introduce, post.writer.profile, post.writer.email),
+                        new QMemberView(post.writer.email, post.writer.name, post.writer.introduce, post.writer.profile),
                         post.createAt,
                         post.tags
                 ))
                 .from(post)
-                .where(post.writer.id.eq(id))
+                .where(post.writer.email.eq(email))
                 .orderBy(post.createAt.desc()).fetch();
     }
 
