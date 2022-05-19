@@ -8,7 +8,7 @@ public interface CustomMemberRepository {
 
     void certified(String email, String certified);
 
-    List<MemberView> searchFollower(Long id);
+    List<MemberView> searchFollower(String email);
 
-    List<MemberView> searchFollowing(Long id);
+    List<MemberView> searchFollowing(String email);
 }
