@@ -1,7 +1,6 @@
 package com.onpost.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onpost.domain.entity.member.Authority;
 import com.onpost.global.error.exception.JwtAccessDeniedHandler;
 import com.onpost.global.error.exception.JwtAuthenticationEntryPoint;
 import com.onpost.global.jwt.JwtProvider;
@@ -64,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring()
                 .mvcMatchers("/**")
                 .servletPath("/**");
