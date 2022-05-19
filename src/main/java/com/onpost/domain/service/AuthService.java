@@ -1,10 +1,8 @@
 package com.onpost.domain.service;
 
 import com.onpost.domain.dto.auth.LoginDto;
-import com.onpost.domain.dto.auth.LoginResponse;
 import com.onpost.domain.dto.auth.SignupDto;
 import com.onpost.domain.dto.auth.TokenDto;
-import com.onpost.domain.dto.member.MemberView;
 import com.onpost.domain.entity.member.Authority;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.entity.member.RefreshToken;
@@ -41,13 +39,13 @@ public class AuthService {
                 .email(signupDto.getEmail())
                 .name(signupDto.getUsername())
                 .password(passwordEncoder.encode(signupDto.getPassword()))
-                .profile_public(true)
+                .visibility(true)
                 .certified(certifiedKey()).build();
 
         memberRepository.save(member);
     }
 
-    public LoginResponse loginMember(LoginDto loginDto) {
+    public TokenDto loginMember(LoginDto loginDto) {
 
         Member member = memberFacade.getMemberByEmail(loginDto.getEmail());
 
@@ -59,7 +57,7 @@ public class AuthService {
         String refresh = jwtProvider.generateRefreshToken(member.getAuthor().name(), loginDto.getEmail());
 
         TokenDto tokenDto = new TokenDto(access, refresh);
-        return new LoginResponse(tokenDto, new MemberView(member));
+        return tokenDto;
     }
 
     public TokenDto refreshRequest(String token) {
