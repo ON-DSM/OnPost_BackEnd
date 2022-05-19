@@ -1,5 +1,7 @@
 package com.onpost.domain.service;
 
+import com.onpost.domain.dto.LikeDto;
+import com.onpost.domain.dto.post.PostCreateRequest;
 import com.onpost.domain.dto.post.PostRequest;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.dto.post.PostView;
@@ -26,24 +28,24 @@ public class PostService {
     private final MemberFacade memberFacade;
     private final CommentRepository commentRepository;
 
-    public void createPost(PostRequest postRequest) {
+    public void createPost(PostCreateRequest request) {
 
-        Member writer = memberFacade.getMemberWithPost(postRequest.getId());
+        Member writer = memberFacade.getMemberWithPost(request.getEmail());
 
         Post post = Post.builder()
-                .introduce(postRequest.getIntroduce())
-                .content(postRequest.getContent())
-                .title(postRequest.getTitle())
-                .tags(postRequest.getTags())
+                .introduce(request.getIntroduce())
+                .content(request.getContent())
+                .title(request.getTitle())
+                .tags(request.getTags())
                 .writer(writer)
                 .build();
 
-        if(postRequest.getProfile() != null) {
-            post.setProfileImage(imageService.getPath(postRequest.getProfile(), "profile"));
+        if(request.getProfile() != null) {
+            post.setProfileImage(imageService.getPath(request.getProfile(), "profile"));
         }
-        imageService.addImageList(postRequest.getImages(), "static", post);
+        imageService.addImageList(request.getImages(), "static", post);
 
-        writer.updatePost(post);
+        writer.getMakePost().add(post);
 
         postRepository.save(post);
     }
@@ -54,46 +56,37 @@ public class PostService {
         return new PostView(find, comments);
     }
 
-    public void like(Long id, Long target) {
-        Post find = postFacade.getPostWithLike(target);
-        Member member = memberFacade.getMember(id);
+    public void like(LikeDto likeDto) {
+        Post find = postFacade.getPostWithLike(likeDto.getPostId());
+        Member member = memberFacade.getMemberByEmail(likeDto.getEmail());
         find.getPostLike().add(member);
         postRepository.save(find);
     }
 
-    public void unlike(Long id, Long target) {
-        Post find = postFacade.getPostWithLike(target);
-        find.getPostLike().removeIf(member -> member.getId().equals(id));
+    public void unlike(LikeDto likeDto) {
+        Post find = postFacade.getPostWithLike(likeDto.getPostId());
+        find.getPostLike().removeIf(member -> member.getEmail().equals(likeDto.getEmail()));
         postRepository.save(find);
     }
 
-    public void editPost(PostRequest per) {
-        Post find = postFacade.getPostWithImages(per.getId());
+    public void editPost(PostRequest request) {
+        Post find = postFacade.getPostWithImages(request.getId());
 
-        if(per.getIntroduce() != null) {
-            find.setIntroduce(per.getIntroduce());
-        }
+        find.setIntroduce(request.getIntroduce());
+        find.setContent(request.getContent());
+        find.setTitle(request.getTitle());
+        find.setTags(request.getTags());
 
-        if (per.getContent() != null) {
-            find.setContent(per.getContent());
-        }
-
-        if (per.getTitle() != null) {
-            find.setTitle(per.getTitle());
-        }
-
-        if(per.getProfile() != null) {
+        if(request.getProfile() != null) {
             if(find.getProfileImage() != null) {
                 imageService.deletePath(find.getProfileImage());
             }
-            find.setProfileImage(imageService.getPath(per.getProfile(), "profile"));
+            find.setProfileImage(imageService.getPath(request.getProfile(), "profile"));
         }
 
-        find.setTags(per.getTags());
-
-        if (per.getImages() != null) {
+        if (request.getImages() != null) {
             imageService.deleteImageList(find.getImages());
-            imageService.addImageList(per.getImages(), "static", find);
+            imageService.addImageList(request.getImages(), "static", find);
         }
 
         postRepository.save(find);
@@ -103,8 +96,8 @@ public class PostService {
         return postRepository.searchMainPage(sort, page);
     }
 
-    public List<PostResponse> memberPosts(Long id) {
-        return postRepository.searchMemberPosts(id);
+    public List<PostResponse> memberPosts(String email) {
+        return postRepository.searchMemberPosts(email);
     }
 
     public void deletePost(Long id) {
