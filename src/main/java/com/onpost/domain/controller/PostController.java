@@ -1,15 +1,14 @@
 package com.onpost.domain.controller;
 
-import com.onpost.domain.dto.IDValueDto;
+import com.onpost.domain.dto.LikeDto;
+import com.onpost.domain.dto.post.PostCreateRequest;
 import com.onpost.domain.dto.post.PostRequest;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.dto.post.PostView;
 import com.onpost.domain.entity.Sort;
 import com.onpost.domain.service.PostService;
-import com.onpost.global.error.validation.EditGroup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,8 +24,8 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/create")
-    public void create(@Valid @ModelAttribute PostRequest postRequest) {
-        postService.createPost(postRequest);
+    public void create(@Valid @ModelAttribute PostCreateRequest request) {
+        postService.createPost(request);
     }
 
     @GetMapping("/show")
@@ -36,12 +35,12 @@ public class PostController {
 
     @GetMapping("/main")
     public List<PostResponse> mainPage(@RequestParam(defaultValue = "LIKE") Sort sort,
-                                       @RequestParam(defaultValue = "1") @Positive Long page) {
+                                       @RequestParam(defaultValue = "1") @Positive(message = "페이지 값이 음수입니다.") Long page) {
         return postService.pagePost(sort, page);
     }
 
     @PutMapping("/edit")
-    public void edit(@ModelAttribute @Validated(EditGroup.class) PostRequest postRequest) {
+    public void edit(@ModelAttribute @Valid PostRequest postRequest) {
         postService.editPost(postRequest);
     }
 
@@ -51,17 +50,17 @@ public class PostController {
     }
 
     @PostMapping("/like")
-    public void like(@Valid @RequestBody IDValueDto idValueDto) {
-        postService.like(idValueDto.getId(), idValueDto.getTargetId());
+    public void like(@Valid @RequestBody LikeDto likeDto) {
+        postService.like(likeDto);
     }
 
     @PostMapping("/unlike")
-    public void unlike(@Valid @RequestBody IDValueDto idValueDto) {
-        postService.unlike(idValueDto.getId(), idValueDto.getTargetId());
+    public void unlike(@Valid @RequestBody LikeDto likeDto) {
+        postService.unlike(likeDto);
     }
 
-    @PostMapping("/{userId}")
-    public List<PostResponse> hasPosts(@PathVariable("userId") Long id) {
-        return postService.memberPosts(id);
+    @PostMapping("/posts")
+    public List<PostResponse> hasPosts(@RequestParam String email) {
+        return postService.memberPosts(email);
     }
 }
