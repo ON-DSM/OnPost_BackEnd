@@ -29,7 +29,7 @@ public class CommentService {
         MainComment parent = commentFacade.getMainById(commentRequest.getParentId());
         SubComment comment = SubComment.builder()
                 .content(commentRequest.getContext())
-                .writer(memberFacade.getMember(commentRequest.getWriterId()))
+                .writer(memberFacade.getMemberByEmail(commentRequest.getEmail()))
                 .main(parent)
                 .build();
         parent.getSubComments().add(comment);
@@ -41,7 +41,7 @@ public class CommentService {
         Post post = postFacade.getPostWithComment(commentRequest.getParentId());
         MainComment comment = MainComment.builder()
                 .content(commentRequest.getContext())
-                .writer(memberFacade.getMember(commentRequest.getWriterId()))
+                .writer(memberFacade.getMemberByEmail(commentRequest.getEmail()))
                 .post(post)
                 .build();
         post.getComments().add(comment);
