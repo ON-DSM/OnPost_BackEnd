@@ -27,16 +27,16 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     }
 
     @Override
-    public List<MemberView> searchFollower(Long id) {
+    public List<MemberView> searchFollower(String email) {
         return jpaQueryFactory.select(new QMemberView(
-                follow.id, follow.name, follow.introduce, follow.profile, follow.email
-        )).from(member).join(member.follower, follow).where(member.id.eq(id)).fetch();
+                follow.email, follow.name, follow.introduce, follow.profile
+        )).from(member).join(member.follower, follow).where(member.email.eq(email)).fetch();
     }
 
     @Override
-    public List<MemberView> searchFollowing(Long id) {
+    public List<MemberView> searchFollowing(String email) {
         return jpaQueryFactory.select(new QMemberView(
-                follow.id, follow.name, follow.introduce, follow.profile, follow.email
-        )).from(member).join(member.following, follow).where(member.id.eq(id)).fetch();
+                follow.email, follow.name, follow.introduce, follow.profile
+        )).from(member).join(member.following, follow).where(member.email.eq(email)).fetch();
     }
 }
