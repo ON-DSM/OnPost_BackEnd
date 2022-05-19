@@ -1,27 +1,28 @@
 package com.onpost.domain.dto.post;
 
-import com.onpost.global.error.validation.EditGroup;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
-public class PostRequest extends PostDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class PostRequest {
 
-    private final List<MultipartFile> images;
+    @NotNull(message = "아이디를 찾을 수 없습니다.")
+    private Long id;
 
-    @Size(max = 200, message = "태그가 너무 길거나 많습니다.", groups = {EditGroup.class})
-    private final String tags;
+    private String content;
+    private String title;
+    private String introduce;
+    private MultipartFile profile;
+    private List<MultipartFile> images;
 
-    private final MultipartFile profile;
-
-    public PostRequest(String content, Long id, String title, String introduce, MultipartFile profile, List<MultipartFile> images, String tags) {
-        super(id ,content, title, introduce);
-        this.images = images;
-        this.profile = profile;
-        this.tags = tags;
-    }
+    @Size(max = 200, message = "태그가 너무 길거나 많습니다.")
+    private String tags;
 }
