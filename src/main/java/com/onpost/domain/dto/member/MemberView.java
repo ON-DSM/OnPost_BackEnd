@@ -2,24 +2,31 @@ package com.onpost.domain.dto.member;
 
 import com.onpost.domain.entity.member.Member;
 import com.querydsl.core.annotations.QueryProjection;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-public class MemberView extends MemberDto {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class MemberView {
 
-    private final String image;
-    private final String email;
+    private String profile;
+    private String email;
+    private String name;
+    private String introduce;
 
-    public MemberView(Member writer) {
-        super(writer.getId(), writer.getName(), writer.getIntroduce(), writer.isProfile_public());
-        this.image = writer.getProfile();
-        this.email = writer.getEmail();
+    public MemberView(Member member) {
+        this.profile = member.getProfile();
+        this.introduce = member.getIntroduce();
+        this.name = member.getName();
+        this.email = member.getEmail();
     }
 
     @QueryProjection
-    public MemberView(Long id, String name, String introduce, String profile, String email, boolean profile_pub) {
-        super(id, name, introduce, profile_pub);
-        this.image = profile;
+    public MemberView(String email, String name, String introduce, String profile) {
         this.email = email;
+        this.name = name;
+        this.introduce = introduce;
+        this.profile = profile;
     }
 }
