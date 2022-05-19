@@ -22,27 +22,23 @@ public class MemberFacade {
         return memberRepository.findByEmail(email).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
 
-    public Member getMember(Long id) {
-        return memberRepository.findById(id).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+    public Member getMemberWithPost(String email) {
+        return memberRepository.findMemberWithPost(email).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
 
-    public Member getMemberWithPost(Long id) {
-        return memberRepository.findMemberWithPost(id).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+    public Member getMemberWithFollower(String email) {
+        return memberRepository.findMemberWithFollower(email).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
 
-    public Member getMemberWithFollower(Long id) {
-        return memberRepository.findMemberWithFollower(id).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+    public Member getMemberWithFollowing(String email) {
+        return memberRepository.findMemberWithFollowing(email).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
 
-    public Member getMemberWithFollowing(Long id) {
-        return memberRepository.findMemberWithFollowing(id).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+    public Member getMemberWithAll(String email) {
+        return memberRepository.findMemberWithAll(email).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
 
-    public Member getMemberWithAll(Long id) {
-        return memberRepository.findMemberWithAll(id).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
-    }
-
-    public Member getMemberProfile(Long id) {
-        return memberRepository.findMemberProfile(id).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+    public Member getMemberProfile(String email) {
+        return memberRepository.findMemberProfile(email).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
 }
