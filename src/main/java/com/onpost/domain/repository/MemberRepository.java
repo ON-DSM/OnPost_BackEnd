@@ -13,18 +13,18 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long>, CustomMemberRepository {
     Optional<Member> findByEmail(String email);
 
-    @Query("select m from Member m left join m.makePost where m.id = :id")
-    Optional<Member> findMemberWithPost(@Param("id") Long id);
+    @Query("select m from Member m left join m.makePost where m.email = :email")
+    Optional<Member> findMemberWithPost(@Param("email") String email);
 
-    @Query("select m from Member m left join m.follower left join m.makePost left join m.following where m.id = :id")
-    Optional<Member> findMemberWithAll(@Param("id") Long id);
+    @Query("select m from Member m left join m.follower left join m.makePost left join m.following where m.email = :email")
+    Optional<Member> findMemberWithAll(@Param("email") String email);
 
-    @Query("select m from Member m left join m.follower left join m.following where m.id = :id")
-    Optional<Member> findMemberProfile(@Param("id") Long id);
+    @Query("select m from Member m left join m.follower left join m.following where m.email = :email")
+    Optional<Member> findMemberProfile(@Param("email") String email);
 
-    @Query("select m from Member m left join m.follower where m.id = :id")
-    Optional<Member> findMemberWithFollower(@Param("id") Long id);
+    @Query("select m from Member m left join m.follower where m.email = :email")
+    Optional<Member> findMemberWithFollower(@Param("email") String email);
 
-    @Query("select m from Member m left join m.following where m.id = :id")
-    Optional<Member> findMemberWithFollowing(@Param("id") Long id);
+    @Query("select m from Member m left join m.following where m.email = :email")
+    Optional<Member> findMemberWithFollowing(@Param("email") String email);
 }
