@@ -1,14 +1,13 @@
 package com.onpost.domain.service;
 
-import com.onpost.domain.dto.IDValueDto;
-import com.onpost.domain.dto.member.MemberRequest;
-import com.onpost.domain.dto.member.MemberResponse;
-import com.onpost.domain.dto.member.MemberView;
+import com.onpost.domain.dto.FollowDto;
+import com.onpost.domain.dto.member.*;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.repository.MemberRepository;
 import com.onpost.global.annotation.ServiceSetting;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -21,75 +20,72 @@ public class MemberService {
     private final ImageService imageService;
     private final PostService postService;
     private final CommentService commentService;
+    private final PasswordEncoder passwordEncoder;
 
-    public void editMember(MemberRequest memberRequest) {
-        Member member = memberFacade.getMember(memberRequest.getId());
+    public void editMember(MemberRequest request) {
+        Member member = memberFacade.getMemberByEmail(request.getEmail());
+        member.setName(request.getName());
+        member.setIntroduce(request.getIntroduce());
 
-        if (memberRequest.getName() != null) {
-            member.setName(memberRequest.getName());
+        if(request.getPassword() != null) {
+            member.setPassword(passwordEncoder.encode(request.getPassword()));
         }
 
-        if (memberRequest.getIntroduce() != null) {
-            member.setIntroduce(memberRequest.getIntroduce());
-        }
-
-        member.setProfile_public(memberRequest.isPublic_profile());
-
-        if (memberRequest.getProfile() != null) {
+        if (request.getProfile() != null) {
             if (member.getProfile() != null) {
                 imageService.deletePath(member.getProfile());
             }
-            member.setProfile(imageService.getPath(memberRequest.getProfile(), "profile"));
+            member.setProfile(imageService.getPath(request.getProfile(), "profile"));
         }
 
         memberRepository.save(member);
     }
 
-    public MemberResponse showMember(Long id) {
-        Member member = memberFacade.getMemberProfile(id);
+    public void setVisibility(MemberVisibilityRequest request) {
+        Member member = memberFacade.getMemberByEmail(request.getEmail());
+        member.setVisibility(request.isVisibility());
+        memberRepository.save(member);
+    }
 
-        if(!member.isProfile_public()) {
-            return MemberResponse.builder()
-                    .public_profile(member.isProfile_public())
-                    .createAt(member.getCreateAt())
-                    .name(member.getName()).build();
-        }
+    public MemberResponse showMember(String email) {
+        Member member = memberFacade.getMemberProfile(email);
 
         return MemberResponse.builder()
-                .id(id)
                 .name(member.getName())
                 .createAt(member.getCreateAt())
-                .public_profile(member.isProfile_public())
-                .authority(member.getAuthor())
+                .visibility(member.isVisibility())
                 .follower(member.getFollower().size())
                 .following(member.getFollowing().size())
                 .introduce(member.getIntroduce())
                 .profile(member.getProfile()).build();
     }
 
-    public void followMember(IDValueDto IDValueDto, boolean positive) {
-        Member me = memberFacade.getMemberWithFollower(IDValueDto.getId());
-        Member follow = memberFacade.getMemberWithFollowing(IDValueDto.getTargetId());
-
-        if (positive) {
-            me.follow(follow);
-        } else {
-            me.unfollow(follow);
-        }
-
+    public void followMember(FollowDto followDto) {
+        Member me = memberFacade.getMemberWithFollower(followDto.getEmail());
+        Member follow = memberFacade.getMemberWithFollowing(followDto.getOtherEmail());
+        me.getFollowing().remove(follow);
+        follow.getFollower().remove(me);
         memberRepository.save(follow);
     }
 
-    public List<MemberView> followers(Long id) {
-        return memberRepository.searchFollower(id);
+    public void unFollowMember(FollowDto followDto) {
+        Member me = memberFacade.getMemberWithFollower(followDto.getEmail());
+        Member follow = memberFacade.getMemberWithFollowing(followDto.getOtherEmail());
+        me.getFollowing().remove(follow);
+        follow.getFollower().remove(me);
+        memberRepository.save(follow);
     }
 
-    public List<MemberView> following(Long id) {
-        return memberRepository.searchFollowing(id);
+    public List<MemberView> followers(String email) {
+        return memberRepository.searchFollower(email);
     }
 
-    public void deleteMember(Long id) {
-        Member member = memberFacade.getMemberWithAll(id);
+    public List<MemberView> following(String email) {
+        return memberRepository.searchFollowing(email);
+    }
+
+    public void deleteMember(String email) {
+        Member member = memberFacade.getMemberWithAll(email);
 
         member.getFollowing().forEach(m -> {m.getFollower().remove(member); memberRepository.save(m);});
 
@@ -104,8 +100,20 @@ public class MemberService {
         memberRepository.delete(member);
     }
 
-    public MemberView infoMember() {
+    public MemberInfoView infoMember() {
         Member member = memberFacade.getInfoMember();
-        return new MemberView(member);
+        return MemberInfoView.builder()
+                .visibility(member.isVisibility())
+                .introduce(member.getIntroduce())
+                .email(member.getEmail())
+                .name(member.getName())
+                .profile(member.getProfile())
+                .build();
+    }
+
+    public void setDevice(MemberDeviceTokenDto tokenDto) {
+        Member member = memberFacade.getMemberByEmail(tokenDto.getEmail());
+        member.setDevice_token(tokenDto.getDevice_token());
+        memberRepository.save(member);
     }
 }
