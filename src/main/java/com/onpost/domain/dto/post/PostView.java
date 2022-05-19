@@ -14,8 +14,12 @@ import java.util.List;
 
 @Getter
 @Setter
-public class PostView extends PostDto {
+public class PostView {
 
+    private Long id;
+    private String content;
+    private String title;
+    private String introduce;
     private String profile;
     private MemberView writer;
     private List<Long> like;
@@ -25,7 +29,9 @@ public class PostView extends PostDto {
     private List<MainCommentResponse> comments;
 
     public PostView(Post post, List<MainComment> comments) {
-        super(post.getId(), post.getContent(), post.getTitle(), post.getIntroduce());
+        this.id = post.getId();
+        this.content = post.getContent();
+        this.title = post.getTitle();
         this.images = post.getImages().stream().map(Image::getImagePath).toList();
         this.createAt = post.getCreateAt();
         this.writer = new MemberView(post.getWriter());
