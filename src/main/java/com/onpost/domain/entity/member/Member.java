@@ -42,7 +42,9 @@ public class Member extends BaseEntity {
 
     private String certified;
 
-    private boolean profile_public;
+    private boolean visibility;
+
+    private String device_token;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
@@ -57,20 +59,6 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "writer")
     private final Set<Post> makePost = new LinkedHashSet<>();
-
-    public void follow(Member other) {
-        this.following.add(other);
-        other.follower.add(this);
-    }
-
-    public void unfollow(Member other) {
-        this.following.remove(other);
-        other.follower.remove(this);
-    }
-
-    public void updatePost(Post post) {
-        this.makePost.add(post);
-    }
 
     @Override
     public boolean equals(Object o) {
