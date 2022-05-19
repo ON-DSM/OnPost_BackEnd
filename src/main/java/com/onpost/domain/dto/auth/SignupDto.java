@@ -13,7 +13,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class SignupDto {
 
-    @NotBlank(message = "이메일 유형이여야 합니다.")
     @Email(message = "이메일 유형이여야 합니다.")
     private String email;
 
