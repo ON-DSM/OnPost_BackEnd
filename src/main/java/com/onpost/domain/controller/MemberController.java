@@ -1,11 +1,9 @@
 package com.onpost.domain.controller;
 
-import com.onpost.domain.dto.IDValueDto;
+import com.onpost.domain.dto.FollowDto;
 import com.onpost.domain.dto.member.*;
 import com.onpost.domain.service.MemberService;
-import com.onpost.global.error.validation.EditGroup;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,42 +17,47 @@ public class MemberController {
     private final MemberService memberService;
 
     @PutMapping("/edit")
-    public void edit(@Validated({EditGroup.class}) @ModelAttribute MemberRequest memberDto) {
+    public void edit(@Valid @ModelAttribute MemberRequest memberDto) {
         memberService.editMember(memberDto);
     }
 
     @GetMapping("/profile")
-    public MemberResponse show(@RequestParam Long id) {
-        return memberService.showMember(id);
+    public MemberResponse show(@RequestParam String email) {
+        return memberService.showMember(email);
     }
 
     @PutMapping("/follow")
-    public void follow(@Valid @RequestBody IDValueDto IDValueDto) {
-        memberService.followMember(IDValueDto, true);
+    public void follow(@Valid @RequestBody FollowDto idDto) {
+        memberService.followMember(idDto);
     }
 
     @DeleteMapping("/unfollow")
-    public void unfollow(@Valid @RequestBody IDValueDto IDValueDto) {
-        memberService.followMember(IDValueDto, false);
+    public void unfollow(@Valid @RequestBody FollowDto idDto) {
+        memberService.unFollowMember(idDto);
     }
 
     @GetMapping("/followers")
-    public List<MemberView> follower(@RequestParam Long id) {
-        return memberService.followers(id);
+    public List<MemberView> follower(@RequestParam String email) {
+        return memberService.followers(email);
     }
 
     @GetMapping("/following")
-    public List<MemberView> following(@RequestParam Long id) {
-        return memberService.following(id);
+    public List<MemberView> following(@RequestParam String email) {
+        return memberService.following(email);
     }
 
     @DeleteMapping("/delete")
-    public void delete(@RequestParam Long id) {
-        memberService.deleteMember(id);
+    public void delete(@RequestParam String email) {
+        memberService.deleteMember(email);
     }
 
     @GetMapping("/info")
-    public MemberView info() {
+    public MemberInfoView info() {
         return memberService.infoMember();
+    }
+
+    @PostMapping("/device")
+    public void device(@RequestBody @Valid MemberDeviceTokenDto tokenDto) {
+        memberService.setDevice(tokenDto);
     }
 }
