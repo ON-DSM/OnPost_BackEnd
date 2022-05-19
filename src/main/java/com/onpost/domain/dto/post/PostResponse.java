@@ -2,24 +2,35 @@ package com.onpost.domain.dto.post;
 
 import com.onpost.domain.dto.member.MemberView;
 import com.querydsl.core.annotations.QueryProjection;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-public class PostResponse extends PostDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class PostResponse {
 
-    private final MemberView writer;
-    private final Long like;
-    private final Long comments;
-    private final List<String> tags;
-    private final String profileImage;
-    private final LocalDateTime createAt;
+    private Long id;
+    private String content;
+    private String title;
+    private String introduce;
+    private MemberView writer;
+    private Long like;
+    private Long comments;
+    private List<String> tags;
+    private String profileImage;
+    private LocalDateTime createAt;
 
     @QueryProjection
     public PostResponse(Long id, String content, String title, String introduce, String profile, Long comments, Long like, MemberView memberView, LocalDateTime createAt, String tags) {
-        super(id, content, title, introduce);
+        this.id = id;
+        this.content = content;
+        this.title = title;
+        this.introduce = introduce;
         this.comments = comments;
         this.like = like;
         this.writer = memberView;
