@@ -1,31 +1,36 @@
 package com.onpost.domain.dto.member;
 
-import com.onpost.domain.entity.member.Authority;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class MemberResponse extends MemberDto {
+@NoArgsConstructor
+public class MemberResponse {
 
-    private final String profile;
-    private final Authority authority;
-    private final LocalDateTime createAt;
-    private final Integer follower;
-    private final Integer following;
+    private String email;
+    private String name;
+    private String introduce;
+    private boolean visibility;
+    private String profile;
+    private LocalDateTime createAt;
+    private Integer follower;
+    private Integer following;
 
     @Builder
-    public MemberResponse(String profile,
-                          Authority authority,
+    public MemberResponse(String email, String profile,
                           LocalDateTime createAt,
                           Integer follower,
                           Integer following,
-                          boolean public_profile,
-                          Long id, String name, String introduce) {
-        super(id, name, introduce, public_profile);
+                          boolean visibility,
+                          String name, String introduce) {
+        this.email = email;
+        this.name = name;
+        this.visibility = visibility;
+        this.introduce = introduce;
         this.profile = profile;
-        this.authority = authority;
         this.createAt = createAt;
         this.follower = follower;
         this.following = following;
