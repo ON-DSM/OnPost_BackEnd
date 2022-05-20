@@ -44,6 +44,7 @@ public class FcmService {
 
     @EventListener
     public void SendNotification(NotificationEvent event) {
+        log.info("FCM SEND : " + event.getMessage());
         MulticastMessage message = MulticastMessage.builder()
                 .putData("message", event.getMessage())
                 .putData("time", "2:45")
