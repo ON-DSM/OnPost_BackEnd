@@ -2,7 +2,7 @@ package com.onpost.domain.service;
 
 import com.onpost.domain.dto.LikeDto;
 import com.onpost.domain.dto.post.PostCreateRequest;
-import com.onpost.domain.dto.post.PostRequest;
+import com.onpost.domain.dto.post.PostEditRequest;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.dto.post.PostView;
 import com.onpost.domain.entity.Post;
@@ -46,6 +46,11 @@ public class PostService {
         imageService.addImageList(request.getImages(), "static", post);
 
         writer.getMakePost().add(post);
+//
+//        NotificationMessage message = NotificationMessage.builder().message(new NotificationEvent(writer.getName() + "님이 새로운 게시물을 작성하였습니다.",
+//                writer.getFollower().stream().map(Member::getDevice_token).toList()
+//        ).getMessage()).build();
+//
 
         postRepository.save(post);
     }
@@ -69,7 +74,7 @@ public class PostService {
         postRepository.save(find);
     }
 
-    public void editPost(PostRequest request) {
+    public void editPost(PostEditRequest request) {
         Post find = postFacade.getPostWithImages(request.getId());
 
         find.setIntroduce(request.getIntroduce());
