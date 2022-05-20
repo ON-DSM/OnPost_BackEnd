@@ -17,7 +17,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PutMapping("/edit")
-    public void edit(@Valid @ModelAttribute MemberRequest memberDto) {
+    public void edit(@Valid @ModelAttribute MemberEditRequest memberDto) {
         memberService.editMember(memberDto);
     }
 
@@ -57,7 +57,17 @@ public class MemberController {
     }
 
     @PostMapping("/device")
-    public void device(@RequestBody @Valid MemberDeviceTokenDto tokenDto) {
+    public void device(@RequestBody @Valid MemberDeviceTokenRequest tokenDto) {
         memberService.setDevice(tokenDto);
+    }
+    
+    @PostMapping("/password")
+    public void changePassword(@RequestBody @Valid MemberPasswordRequest request) {
+        memberService.changePw(request);
+    }
+
+    @PutMapping("/visibility")
+    public void changeVisibility(@RequestBody @Valid MemberVisibilityRequest request) {
+        memberService.setVisibility(request);
     }
 }
