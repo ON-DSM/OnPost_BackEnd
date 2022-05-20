@@ -6,6 +6,7 @@ import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.repository.MemberRepository;
 import com.onpost.global.annotation.ServiceSetting;
+import com.onpost.global.error.exception.PasswordNotMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -22,14 +23,10 @@ public class MemberService {
     private final CommentService commentService;
     private final PasswordEncoder passwordEncoder;
 
-    public void editMember(MemberRequest request) {
+    public void editMember(MemberEditRequest request) {
         Member member = memberFacade.getMemberByEmail(request.getEmail());
         member.setName(request.getName());
         member.setIntroduce(request.getIntroduce());
-
-        if(request.getPassword() != null) {
-            member.setPassword(passwordEncoder.encode(request.getPassword()));
-        }
 
         if (request.getProfile() != null) {
             if (member.getProfile() != null) {
@@ -111,9 +108,20 @@ public class MemberService {
                 .build();
     }
 
-    public void setDevice(MemberDeviceTokenDto tokenDto) {
+    public void setDevice(MemberDeviceTokenRequest tokenDto) {
         Member member = memberFacade.getMemberByEmail(tokenDto.getEmail());
         member.setDevice_token(tokenDto.getDevice_token());
+        memberRepository.save(member);
+    }
+
+    public void changePw(MemberPasswordRequest request) {
+        Member member = memberFacade.getMemberByEmail(request.getEmail());
+
+        if(passwordEncoder.matches(request.getOriginPassword(), member.getPassword())) {
+            throw PasswordNotMatchException.EXCEPTION;
+        }
+
+        member.setPassword(passwordEncoder.encode(request.getNewPassword()));
         memberRepository.save(member);
     }
 }
