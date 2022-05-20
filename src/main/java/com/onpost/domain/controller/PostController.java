@@ -2,7 +2,7 @@ package com.onpost.domain.controller;
 
 import com.onpost.domain.dto.LikeDto;
 import com.onpost.domain.dto.post.PostCreateRequest;
-import com.onpost.domain.dto.post.PostRequest;
+import com.onpost.domain.dto.post.PostEditRequest;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.dto.post.PostView;
 import com.onpost.domain.entity.Sort;
@@ -40,7 +40,7 @@ public class PostController {
     }
 
     @PutMapping("/edit")
-    public void edit(@ModelAttribute @Valid PostRequest postRequest) {
+    public void edit(@ModelAttribute @Valid PostEditRequest postRequest) {
         postService.editPost(postRequest);
     }
 
