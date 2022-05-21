@@ -2,7 +2,6 @@ package com.onpost.domain.dto.post;
 
 import com.onpost.domain.dto.member.MemberView;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class PostResponse {
 
