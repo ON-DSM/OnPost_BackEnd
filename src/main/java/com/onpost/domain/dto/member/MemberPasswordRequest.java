@@ -2,7 +2,6 @@ package com.onpost.domain.dto.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -10,7 +9,6 @@ import javax.validation.constraints.Size;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class MemberPasswordRequest {
 
     @NotBlank(message = "기존 비밀번호는 8자 이상, 20자 이하입니다.")
