@@ -2,7 +2,6 @@ package com.onpost.domain.dto.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
@@ -11,7 +10,6 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class PostEditRequest {
 
     @NotNull(message = "아이디를 찾을 수 없습니다.")
