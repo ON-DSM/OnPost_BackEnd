@@ -2,13 +2,11 @@ package com.onpost.domain.dto.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class CommentEditRequest {
 
@@ -16,5 +14,5 @@ public class CommentEditRequest {
     private Long id;
 
     @NotBlank(message = "내용이 없습니다.")
-    private String context;
+    private String content;
 }
