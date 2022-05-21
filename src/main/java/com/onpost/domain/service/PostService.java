@@ -1,13 +1,15 @@
 package com.onpost.domain.service;
 
 import com.onpost.domain.dto.LikeDto;
+import com.onpost.domain.dto.comment.MainCommentResponse;
+import com.onpost.domain.dto.member.MemberView;
 import com.onpost.domain.dto.post.PostCreateRequest;
 import com.onpost.domain.dto.post.PostEditRequest;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.dto.post.PostView;
+import com.onpost.domain.entity.Image;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.Sort;
-import com.onpost.domain.entity.comment.MainComment;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.facade.PostFacade;
@@ -16,6 +18,7 @@ import com.onpost.domain.repository.PostRepository;
 import com.onpost.global.annotation.ServiceSetting;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
 import java.util.List;
 
 @ServiceSetting
@@ -29,7 +32,6 @@ public class PostService {
     private final CommentRepository commentRepository;
 
     public void createPost(PostCreateRequest request) {
-
         Member writer = memberFacade.getMemberWithPost(request.getEmail());
 
         Post post = Post.builder()
@@ -57,8 +59,20 @@ public class PostService {
 
     public PostView showPost(Long id) {
         Post find = postFacade.getPostWithWriterAndImagesAndLike(id);
-        List<MainComment> comments = commentRepository.findMainByPost(find);
-        return new PostView(find, comments);
+        List<MainCommentResponse> comments = commentRepository.findMainByPost(find);
+        return PostView.builder()
+                .id(find.getId())
+                .title(find.getTitle())
+                .content(find.getContent())
+                .createAt(find.getCreateAt())
+                .comments(comments)
+                .images(find.getImages().stream().map(Image::getImagePath).toList())
+                .profile(find.getProfileImage())
+                .introduce(find.getIntroduce())
+                .tags(Arrays.asList(find.getTags().split(",")))
+                .writer(new MemberView(find.getWriter()))
+                .like(find.getPostLike().stream().map(Member::getEmail).toList())
+                .build();
     }
 
     public void like(LikeDto likeDto) {
