@@ -1,7 +1,6 @@
 package com.onpost.domain.dto.comment;
 
 import com.onpost.domain.entity.comment.MainComment;
-import com.onpost.domain.entity.comment.SubComment;
 import lombok.Getter;
 
 import java.util.List;
