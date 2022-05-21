@@ -9,9 +9,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
-public class CommentRequest {
+public class CommentCreateRequest {
 
     @NotBlank(message = "내용이 없습니다!")
     private String context;
