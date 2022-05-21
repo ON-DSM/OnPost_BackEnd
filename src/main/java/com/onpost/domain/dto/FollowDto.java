@@ -8,7 +8,6 @@ import javax.validation.constraints.Email;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class FollowDto {
 
     @Email(message = "이메일 형식이 아닙니다.")
