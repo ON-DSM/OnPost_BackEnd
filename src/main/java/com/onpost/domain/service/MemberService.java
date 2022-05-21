@@ -49,6 +49,7 @@ public class MemberService {
 
         return MemberResponse.builder()
                 .name(member.getName())
+                .email(member.getEmail())
                 .createAt(member.getCreateAt())
                 .visibility(member.isVisibility())
                 .follower(member.getFollower().size())
@@ -60,8 +61,8 @@ public class MemberService {
     public void followMember(FollowDto followDto) {
         Member me = memberFacade.getMemberWithFollower(followDto.getEmail());
         Member follow = memberFacade.getMemberWithFollowing(followDto.getOtherEmail());
-        me.getFollowing().remove(follow);
-        follow.getFollower().remove(me);
+        me.getFollowing().add(follow);
+        follow.getFollower().add(me);
         memberRepository.save(follow);
     }
 
