@@ -1,7 +1,6 @@
 package com.onpost.domain.dto.comment;
 
 import com.onpost.domain.dto.member.MemberView;
-import com.onpost.domain.entity.comment.MainComment;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
