@@ -3,7 +3,6 @@ package com.onpost.domain.controller;
 import com.onpost.domain.dto.SenderDto;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.facade.MemberFacade;
-import com.onpost.domain.repository.MemberRepository;
 import com.onpost.domain.repository.custom.CustomMemberRepository;
 import com.onpost.domain.service.EmailService;
 import lombok.RequiredArgsConstructor;
