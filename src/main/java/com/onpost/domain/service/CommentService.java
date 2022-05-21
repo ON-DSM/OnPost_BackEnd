@@ -1,7 +1,7 @@
 package com.onpost.domain.service;
 
 import com.onpost.domain.dto.comment.CommentEditRequest;
-import com.onpost.domain.dto.comment.CommentRequest;
+import com.onpost.domain.dto.comment.CommentCreateRequest;
 import com.onpost.domain.dto.comment.CommentResponse;
 import com.onpost.domain.dto.comment.CommentView;
 import com.onpost.domain.entity.Post;
@@ -25,7 +25,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentFacade commentFacade;
 
-    public void saveSub(CommentRequest commentRequest) {
+    public void saveSub(CommentCreateRequest commentRequest) {
         MainComment parent = commentFacade.getMainById(commentRequest.getParentId());
         SubComment comment = SubComment.builder()
                 .content(commentRequest.getContext())
@@ -37,7 +37,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public void saveMain(CommentRequest commentRequest) {
+    public void saveMain(CommentCreateRequest commentRequest) {
         Post post = postFacade.getPostWithComment(commentRequest.getParentId());
         MainComment comment = MainComment.builder()
                 .content(commentRequest.getContext())
@@ -54,11 +54,10 @@ public class CommentService {
         return new CommentResponse(comment);
     }
 
-    public CommentView editComment(CommentEditRequest commentEditRequest) {
+    public void editComment(CommentEditRequest commentEditRequest) {
         Comment comment = commentFacade.getOneById(commentEditRequest.getId());
-        comment.setContext(commentEditRequest.getContext());
-        comment = commentRepository.save(comment);
-        return new CommentView(comment);
+        comment.setContext(commentEditRequest.getContent());
+        commentRepository.save(comment);
     }
 
     public void deleteOne(Long id) {
