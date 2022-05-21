@@ -6,7 +6,7 @@ import com.onpost.domain.dto.post.QPostResponse;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.Sort;
 import com.onpost.domain.repository.custom.CustomPostRepository;
-import com.querydsl.core.types.*;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
