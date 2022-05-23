@@ -129,4 +129,8 @@ public class PostService {
 
         postRepository.delete(find);
     }
+
+    public List<PostResponse> search(String param) {
+        return postRepository.searchPosts(param);
+    }
 }
