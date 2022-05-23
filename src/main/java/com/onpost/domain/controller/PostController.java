@@ -28,6 +28,11 @@ public class PostController {
         postService.createPost(request);
     }
 
+    @GetMapping("/search")
+    public List<PostResponse> searchPage(@RequestParam String param) {
+        return postService.search(param);
+    }
+
     @GetMapping("/show")
     public PostView show(@RequestParam Long id) {
         return postService.showPost(id);
