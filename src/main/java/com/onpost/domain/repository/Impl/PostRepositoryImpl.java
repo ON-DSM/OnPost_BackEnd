@@ -58,6 +58,21 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Cus
                 .orderBy(post.createAt.desc()).fetch();
     }
 
+    @Override
+    public List<PostResponse> searchPosts(String param) {
+        return jpaQueryFactory.select(new QPostResponse(
+                        post.id, post.content, post.title, post.introduce, post.profileImage,
+                        post.comments.size().longValue(),
+                        post.postLike.size().longValue(),
+                        new QMemberView(post.writer.email, post.writer.name, post.writer.introduce, post.writer.profile),
+                        post.createAt,
+                        post.tags
+                ))
+                .from(post)
+                .where(post.title.contains(param).or(post.tags.contains(param)).or(post.introduce.contains(param)))
+                .orderBy(post.createAt.desc()).fetch();
+    }
+
     private OrderSpecifier<?> setSort(Sort sort) {
         return switch (sort) {
             case NEW -> post.id.desc();
