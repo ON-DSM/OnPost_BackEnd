@@ -28,6 +28,8 @@ public class AuthService {
     private final RefreshRepository refreshRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public static final String DEFAULT_IMAGE = System.getenv("DEFAULT");
+
     public void signupMember(SignupDto signupDto) {
 
         if (memberRepository.findByEmail(signupDto.getEmail()).isPresent()) {
@@ -40,6 +42,7 @@ public class AuthService {
                 .name(signupDto.getUsername())
                 .password(passwordEncoder.encode(signupDto.getPassword()))
                 .visibility(true)
+                .profile(DEFAULT_IMAGE)
                 .certified(certifiedKey()).build();
 
         memberRepository.save(member);
