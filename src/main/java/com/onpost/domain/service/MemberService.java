@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import static com.onpost.domain.service.AuthService.DEFAULT_IMAGE;
 
 @ServiceSetting
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class MemberService {
         member.setIntroduce(request.getIntroduce());
 
         if (request.getProfile() != null) {
-            if (member.getProfile() != null) {
+            if (member.getProfile() != null && !member.getProfile().equals(DEFAULT_IMAGE)) {
                 imageService.deletePath(member.getProfile());
             }
             member.setProfile(imageService.getPath(request.getProfile(), "profile"));
@@ -87,7 +88,7 @@ public class MemberService {
 
         member.getFollowing().forEach(m -> {m.getFollower().remove(member); memberRepository.save(m);});
 
-        if (member.getProfile() != null) {
+        if (member.getProfile() != null && !member.getProfile().equals(DEFAULT_IMAGE)) {
             imageService.deletePath(member.getProfile());
         }
 
