@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 public class CommentCreateRequest {
 
     @NotBlank(message = "내용이 없습니다!")
-    private String context;
+    private String content;
 
     @Email(message = "이메일 형식이여야 합니다.")
     private String email;
