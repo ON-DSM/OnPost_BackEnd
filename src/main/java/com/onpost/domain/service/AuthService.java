@@ -41,7 +41,6 @@ public class AuthService {
                 .email(signupDto.getEmail())
                 .name(signupDto.getUsername())
                 .password(passwordEncoder.encode(signupDto.getPassword()))
-                .visibility(true)
                 .profile(DEFAULT_IMAGE)
                 .certified(certifiedKey()).build();
 
