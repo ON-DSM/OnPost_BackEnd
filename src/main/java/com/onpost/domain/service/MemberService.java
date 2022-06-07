@@ -24,7 +24,7 @@ public class MemberService {
     private final CommentService commentService;
     private final PasswordEncoder passwordEncoder;
 
-    public void editMember(MemberEditRequest request) {
+    public MemberView editMember(MemberEditRequest request) {
         Member member = memberFacade.getMemberByEmail(request.getEmail());
         member.setName(request.getName());
         member.setIntroduce(request.getIntroduce());
@@ -36,13 +36,15 @@ public class MemberService {
             member.setProfile(imageService.getPath(request.getProfile(), "profile"));
         }
 
-        memberRepository.save(member);
-    }
+        member = memberRepository.save(member);
 
-    public void setVisibility(MemberVisibilityRequest request) {
-        Member member = memberFacade.getMemberByEmail(request.getEmail());
-        member.setVisibility(request.isVisibility());
-        memberRepository.save(member);
+        return MemberView.builder()
+                .profile(member.getProfile())
+                .name(member.getName())
+                .email(member.getEmail())
+                .introduce(member.getIntroduce())
+                .profile(member.getProfile())
+                .build();
     }
 
     public MemberResponse showMember(String email) {
@@ -52,7 +54,6 @@ public class MemberService {
                 .name(member.getName())
                 .email(member.getEmail())
                 .createAt(member.getCreateAt())
-                .visibility(member.isVisibility())
                 .follower(member.getFollower().size())
                 .following(member.getFollowing().size())
                 .introduce(member.getIntroduce())
@@ -99,21 +100,14 @@ public class MemberService {
         memberRepository.delete(member);
     }
 
-    public MemberInfoView infoMember() {
+    public MemberView infoMember() {
         Member member = memberFacade.getInfoMember();
-        return MemberInfoView.builder()
-                .visibility(member.isVisibility())
+        return MemberView.builder()
                 .introduce(member.getIntroduce())
                 .email(member.getEmail())
                 .name(member.getName())
                 .profile(member.getProfile())
                 .build();
-    }
-
-    public void setDevice(MemberDeviceTokenRequest tokenDto) {
-        Member member = memberFacade.getMemberByEmail(tokenDto.getEmail());
-        member.setDevice_token(tokenDto.getDevice_token());
-        memberRepository.save(member);
     }
 
     public void changePw(MemberPasswordRequest request) {
