@@ -42,10 +42,6 @@ public class Member extends BaseEntity {
 
     private String certified;
 
-    private boolean visibility;
-
-    private String device_token;
-
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "follower",
