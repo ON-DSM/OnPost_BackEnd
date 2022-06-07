@@ -48,11 +48,6 @@ public class PostService {
         imageService.addImageList(request.getImages(), "static", post);
 
         writer.getMakePost().add(post);
-//
-//        NotificationMessage message = NotificationMessage.builder().message(new NotificationEvent(writer.getName() + "님이 새로운 게시물을 작성하였습니다.",
-//                writer.getFollower().stream().map(Member::getDevice_token).toList()
-//        ).getMessage()).build();
-//
 
         postRepository.save(post);
     }
