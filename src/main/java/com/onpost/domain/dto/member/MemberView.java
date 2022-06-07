@@ -3,6 +3,7 @@ package com.onpost.domain.dto.member;
 import com.onpost.domain.entity.member.Member;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ public class MemberView {
         this.email = member.getEmail();
     }
 
+    @Builder
     @QueryProjection
     public MemberView(String email, String name, String introduce, String profile) {
         this.email = email;
