@@ -6,10 +6,12 @@ import com.onpost.domain.dto.post.PostEditRequest;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.dto.post.PostView;
 import com.onpost.domain.entity.Sort;
+import com.onpost.domain.service.ImageService;
 import com.onpost.domain.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -22,6 +24,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final ImageService imageService;
 
     @PostMapping("/create")
     public void create(@Valid @ModelAttribute PostCreateRequest request) {
@@ -67,5 +70,10 @@ public class PostController {
     @PostMapping("/posts")
     public List<PostResponse> hasPosts(@RequestParam String email) {
         return postService.memberPosts(email);
+    }
+
+    @PostMapping("/save/image")
+    public String getImage(@RequestParam MultipartFile image) {
+        return imageService.addImage(image, "static");
     }
 }
