@@ -113,7 +113,7 @@ public class MemberService {
     public void changePw(MemberPasswordRequest request) {
         Member member = memberFacade.getMemberByEmail(request.getEmail());
 
-        if(passwordEncoder.matches(request.getOriginPassword(), member.getPassword())) {
+        if(!passwordEncoder.matches(request.getOriginPassword(), member.getPassword())) {
             throw PasswordNotMatchException.EXCEPTION;
         }
 
