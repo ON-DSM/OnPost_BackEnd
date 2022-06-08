@@ -1,9 +1,8 @@
 package com.onpost.domain.service;
 
-import com.onpost.domain.dto.comment.CommentEditRequest;
 import com.onpost.domain.dto.comment.CommentCreateRequest;
+import com.onpost.domain.dto.comment.CommentEditRequest;
 import com.onpost.domain.dto.comment.CommentResponse;
-import com.onpost.domain.dto.comment.CommentView;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.comment.Comment;
 import com.onpost.domain.entity.comment.MainComment;
