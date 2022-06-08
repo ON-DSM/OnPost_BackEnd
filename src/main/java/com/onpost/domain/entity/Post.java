@@ -36,9 +36,6 @@ public class Post extends BaseEntity {
 
     private String tags;
 
-    @OneToMany(mappedBy = "usingPost", cascade = CascadeType.ALL)
-    private Set<Image> images;
-
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "post_like",
