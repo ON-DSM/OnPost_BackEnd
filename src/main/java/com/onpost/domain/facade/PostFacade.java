@@ -20,15 +20,11 @@ public class PostFacade {
         return postRepository.findOneWithComment(id).orElseThrow(() -> PostNotFoundException.EXCEPTION);
     }
 
-    public Post getPostWithWriterAndImagesAndLike(Long id) {
-        return postRepository.findOneWithWriterAndImagesAndLike(id).orElseThrow(() -> PostNotFoundException.EXCEPTION);
+    public Post getPost(Long id) {
+        return postRepository.findOne(id).orElseThrow(() -> PostNotFoundException.EXCEPTION);
     }
 
     public Post getPostWithLike(Long id) {
         return postRepository.findOneWithLike(id).orElseThrow(() -> PostNotFoundException.EXCEPTION);
-    }
-
-    public Post getPostWithImages(Long id) {
-        return postRepository.findOneWithImages(id).orElseThrow(() -> PostNotFoundException.EXCEPTION);
     }
 }
