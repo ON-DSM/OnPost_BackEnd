@@ -21,7 +21,6 @@ public class PostView {
     private String profile;
     private MemberView writer;
     private List<String> like;
-    private List<String> images;
     private List<String> tags;
     private LocalDateTime createAt;
     private List<MainCommentResponse> comments;
