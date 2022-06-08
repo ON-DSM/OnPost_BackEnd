@@ -19,7 +19,6 @@ public class PostEditRequest {
     private String title;
     private String introduce;
     private MultipartFile profile;
-    private List<MultipartFile> images;
 
     @Size(max = 200, message = "태그가 너무 길거나 많습니다.")
     private String tags;
