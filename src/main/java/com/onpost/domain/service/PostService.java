@@ -7,7 +7,6 @@ import com.onpost.domain.dto.post.PostCreateRequest;
 import com.onpost.domain.dto.post.PostEditRequest;
 import com.onpost.domain.dto.post.PostResponse;
 import com.onpost.domain.dto.post.PostView;
-import com.onpost.domain.entity.Image;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.Sort;
 import com.onpost.domain.entity.member.Member;
@@ -45,7 +44,6 @@ public class PostService {
         if(request.getProfile() != null) {
             post.setProfileImage(imageService.getPath(request.getProfile(), "profile"));
         }
-        imageService.addImageList(request.getImages(), "static", post);
 
         writer.getMakePost().add(post);
 
@@ -53,7 +51,7 @@ public class PostService {
     }
 
     public PostView showPost(Long id) {
-        Post find = postFacade.getPostWithWriterAndImagesAndLike(id);
+        Post find = postFacade.getPostWithAll(id);
         List<MainCommentResponse> comments = commentRepository.findMainByPost(find);
         return PostView.builder()
                 .id(find.getId())
@@ -61,7 +59,6 @@ public class PostService {
                 .content(find.getContent())
                 .createAt(find.getCreateAt())
                 .comments(comments)
-                .images(find.getImages().stream().map(Image::getImagePath).toList())
                 .profile(find.getProfileImage())
                 .introduce(find.getIntroduce())
                 .tags(Arrays.asList(find.getTags().split(",")))
@@ -84,7 +81,7 @@ public class PostService {
     }
 
     public void editPost(PostEditRequest request) {
-        Post find = postFacade.getPostWithImages(request.getId());
+        Post find = postFacade.getPost(request.getId());
 
         find.setIntroduce(request.getIntroduce());
         find.setContent(request.getContent());
@@ -96,11 +93,6 @@ public class PostService {
                 imageService.deletePath(find.getProfileImage());
             }
             find.setProfileImage(imageService.getPath(request.getProfile(), "profile"));
-        }
-
-        if (request.getImages() != null) {
-            imageService.deleteImageList(find.getImages());
-            imageService.addImageList(request.getImages(), "static", find);
         }
 
         postRepository.save(find);
@@ -120,7 +112,6 @@ public class PostService {
         if(find.getProfileImage() != null) {
             imageService.deletePath(find.getProfileImage());
         }
-        imageService.deleteImageList(find.getImages());
 
         postRepository.delete(find);
     }
