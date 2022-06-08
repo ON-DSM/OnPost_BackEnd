@@ -23,5 +23,4 @@ public class PostCreateRequest {
     private String tags;
     private String introduce;
     private MultipartFile profile;
-    private List<MultipartFile> images;
 }
