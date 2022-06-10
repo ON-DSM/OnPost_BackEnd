@@ -42,11 +42,9 @@ cloud.aws:
   s3.bucket: ${BUCKET}
   stack.auto: false
   mail: ${EMAIL_SEND}
-  url: ${MAIL_URL}
+  template: ${TEMPLATE}
 
 redis:
   port: ${REDIS_PORT}
   host: ${REDIS_HOST}
   password: ${REDIS_PW}
-
-firebase.path: ${fcm}
