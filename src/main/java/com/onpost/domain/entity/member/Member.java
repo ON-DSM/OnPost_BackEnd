@@ -40,8 +40,6 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Authority author;
 
-    private String certified;
-
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "follower",
