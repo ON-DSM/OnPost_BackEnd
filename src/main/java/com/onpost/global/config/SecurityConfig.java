@@ -1,8 +1,8 @@
 package com.onpost.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onpost.global.error.exception.JwtAccessDeniedHandler;
-import com.onpost.global.error.exception.JwtAuthenticationEntryPoint;
+import com.onpost.global.error.JwtAccessDeniedHandler;
+import com.onpost.global.error.JwtAuthenticationEntryPoint;
 import com.onpost.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
