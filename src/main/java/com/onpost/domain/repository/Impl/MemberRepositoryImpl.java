@@ -19,14 +19,6 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     private final static QMember follow = new QMember("member2");
 
     @Override
-    public void certified(String email, String certified) {
-        jpaQueryFactory.update(member)
-                .setNull(member.certified)
-                .where(member.email.eq(email).and(member.certified.eq(certified)))
-                .execute();
-    }
-
-    @Override
     public List<MemberView> searchFollower(String email) {
         return jpaQueryFactory.select(new QMemberView(
                 follow.email, follow.name, follow.introduce, follow.profile
