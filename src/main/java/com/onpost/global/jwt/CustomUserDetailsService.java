@@ -3,7 +3,6 @@ package com.onpost.global.jwt;
 import com.onpost.domain.entity.AuthDetails;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.facade.MemberFacade;
-import com.onpost.global.error.exception.EmailCertificationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -14,10 +13,6 @@ public record CustomUserDetailsService(MemberFacade memberFacade) {
 
     public AuthDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Member member = memberFacade.getMemberByEmail(email);
-
-        if(member.getCertified() != null) {
-            throw EmailCertificationException.EXCEPTION;
-        }
 
         return createUser(member.getEmail(), member);
     }
