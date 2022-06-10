@@ -15,7 +15,6 @@ import com.onpost.global.error.exception.ExpiredRefreshTokenException;
 import com.onpost.global.error.exception.PasswordNotMatchException;
 import com.onpost.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.utility.RandomString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ServiceSetting
@@ -37,12 +36,12 @@ public class AuthService {
         }
 
         Member member = Member.builder()
-                .author(Authority.USER)
+                .author(Authority.MEMBER)
                 .email(signupDto.getEmail())
                 .name(signupDto.getUsername())
                 .password(passwordEncoder.encode(signupDto.getPassword()))
                 .profile(DEFAULT_IMAGE)
-                .certified(certifiedKey()).build();
+                .build();
 
         memberRepository.save(member);
     }
@@ -71,9 +70,5 @@ public class AuthService {
 
         String access = jwtProvider.generateAccessToken(refreshToken.getAuthority(), refreshToken.getEmail());
         return new TokenDto(access, refresh);
-    }
-
-    private String certifiedKey() {
-        return RandomString.make(10);
     }
 }
