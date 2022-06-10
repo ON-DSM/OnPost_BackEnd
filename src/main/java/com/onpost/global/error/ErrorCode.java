@@ -19,7 +19,7 @@ public enum ErrorCode {
     PASSWORD_NOT_MATCH("Password Not Match",  "GLOBAL-401-6", 401),
     DIFFERENT_SIGNATURE_TOKEN("Different Signature Token", "GLOBAL-401-8", 401),
     FILE_UPLOAD_FAILED("File Upload Failed", "GLOBAL-402-9", 401),
-    
+
     NEED_EMAIL_CERTIFICATION("Need Email Certification", "GLOBAL-403-2",403),
 
     POST_NOT_FOUND("Post Not Found", "POST-404", 404),
