@@ -27,7 +27,7 @@ public class EmailController {
     private String TEMPLATE;
 
     @Value("${cloud.aws.mail}")
-    private String sender;
+    private String SENDER;
 
     @PostMapping("/certified")
     public String Send(@RequestParam String email) {
@@ -46,7 +46,7 @@ public class EmailController {
         request.setTemplate(TEMPLATE);
         request.setDestination(des);
         request.setTemplateData(templateData);
-        request.setSource(sender);
+        request.setSource(SENDER);
 
         emailService.sendMail(request);
         return code;
