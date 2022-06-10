@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface CustomMemberRepository {
 
-    void certified(String email, String certified);
-
     List<MemberView> searchFollower(String email);
 
     List<MemberView> searchFollowing(String email);
