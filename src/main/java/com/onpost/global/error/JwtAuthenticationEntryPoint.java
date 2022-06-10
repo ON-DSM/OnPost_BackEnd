@@ -1,4 +1,4 @@
-package com.onpost.global.error.exception;
+package com.onpost.global.error;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
