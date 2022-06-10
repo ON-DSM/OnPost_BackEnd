@@ -9,8 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 public enum Authority {
 
-    USER("USER"),
-    ADMIN("ADMIN");
+    MEMBER("MEMBER");
 
     private final String type;
 
