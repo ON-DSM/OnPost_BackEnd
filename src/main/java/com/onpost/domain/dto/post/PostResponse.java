@@ -34,6 +34,6 @@ public class PostResponse {
         this.writer = memberView;
         this.createAt = createAt;
         this.profileImage = profile;
-        this.tags = List.of(tags.split(","));
+        this.tags = tags != null ? List.of(tags.split(",")) : null;
     }
 }
