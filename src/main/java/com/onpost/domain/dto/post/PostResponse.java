@@ -19,7 +19,7 @@ public class PostResponse {
     private MemberView writer;
     private Long like;
     private Long comments;
-    private List<String> tags;
+    private String tags;
     private String profileImage;
     private LocalDateTime createAt;
 
@@ -34,6 +34,6 @@ public class PostResponse {
         this.writer = memberView;
         this.createAt = createAt;
         this.profileImage = profile;
-        this.tags = tags != null ? List.of(tags.split(",")) : null;
+        this.tags = tags;
     }
 }

@@ -61,7 +61,7 @@ public class PostService {
                 .comments(comments)
                 .profile(find.getProfileImage())
                 .introduce(find.getIntroduce())
-                .tags(Arrays.asList(find.getTags().split(",")))
+                .tags(find.getTags())
                 .writer(new MemberView(find.getWriter()))
                 .like(find.getPostLike().stream().map(Member::getEmail).toList())
                 .build();
