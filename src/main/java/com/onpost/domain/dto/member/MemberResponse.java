@@ -1,5 +1,6 @@
 package com.onpost.domain.dto.member;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +14,11 @@ public class MemberResponse {
     private String email;
     private String name;
     private String introduce;
-    private boolean visibility;
     private String profile;
+
+    @JsonFormat(pattern = "YYYY-MM-dd")
     private LocalDateTime createAt;
+
     private Integer follower;
     private Integer following;
 
@@ -24,11 +27,9 @@ public class MemberResponse {
                           LocalDateTime createAt,
                           Integer follower,
                           Integer following,
-                          boolean visibility,
                           String name, String introduce) {
         this.email = email;
         this.name = name;
-        this.visibility = visibility;
         this.introduce = introduce;
         this.profile = profile;
         this.createAt = createAt;
