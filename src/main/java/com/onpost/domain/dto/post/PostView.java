@@ -20,8 +20,9 @@ public class PostView {
     private String introduce;
     private String profile;
     private MemberView writer;
-    private List<String> like;
+    private Long like;
     private String tags;
     private LocalDateTime createAt;
     private List<MainCommentResponse> comments;
+    private boolean doLike;
 }
