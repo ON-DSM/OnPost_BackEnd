@@ -13,9 +13,12 @@ public class MemberFacade {
 
     private final MemberRepository memberRepository;
 
+    public String getEmail() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
     public Member getInfoMember() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return getMemberByEmail(email);
+        return getMemberByEmail(getEmail());
     }
 
     public Member getMemberByEmail(String email) {
