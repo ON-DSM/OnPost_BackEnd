@@ -1,5 +1,6 @@
 package com.onpost.domain.dto.post;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.onpost.domain.dto.comment.MainCommentResponse;
 import com.onpost.domain.dto.member.MemberView;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,9 @@ public class PostView {
     private MemberView writer;
     private Long like;
     private String tags;
-    private LocalDateTime createAt;
     private List<MainCommentResponse> comments;
     private boolean doLike;
+
+    @JsonFormat(pattern = "YYYY-MM-dd")
+    private LocalDateTime createAt;
 }
