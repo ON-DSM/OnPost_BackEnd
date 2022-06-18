@@ -16,10 +16,11 @@ import com.onpost.domain.repository.CommentRepository;
 import com.onpost.domain.repository.PostRepository;
 import com.onpost.global.annotation.ServiceSetting;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @ServiceSetting
 @RequiredArgsConstructor
 public class PostService {
@@ -50,9 +51,15 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public PostView showPost(Long id) {
+    public PostView showPost(Long id, String email) {
         Post find = postFacade.getPostWithAll(id);
         List<MainCommentResponse> comments = commentRepository.findMainByPost(find);
+        boolean check = true;
+
+        if(email != null) {
+            check = postRepository.checkLike(email, id);
+        }
+
         return PostView.builder()
                 .id(find.getId())
                 .title(find.getTitle())
@@ -63,7 +70,8 @@ public class PostService {
                 .introduce(find.getIntroduce())
                 .tags(find.getTags())
                 .writer(new MemberView(find.getWriter()))
-                .like(find.getPostLike().stream().map(Member::getEmail).toList())
+                .like((long) find.getPostLike().size())
+                .doLike(check)
                 .build();
     }
 
