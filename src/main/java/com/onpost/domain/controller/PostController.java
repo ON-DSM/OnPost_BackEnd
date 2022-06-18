@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -37,8 +38,8 @@ public class PostController {
     }
 
     @GetMapping("/show")
-    public PostView show(@RequestParam Long id) {
-        return postService.showPost(id);
+    public PostView show(@RequestParam Long id, @RequestParam @Nullable String email) {
+        return postService.showPost(id, email);
     }
 
     @GetMapping("/main")
