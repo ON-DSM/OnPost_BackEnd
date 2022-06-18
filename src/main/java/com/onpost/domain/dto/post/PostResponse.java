@@ -1,5 +1,6 @@
 package com.onpost.domain.dto.post;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.onpost.domain.dto.member.MemberView;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
@@ -21,6 +22,8 @@ public class PostResponse {
     private Long comments;
     private String tags;
     private String profileImage;
+
+    @JsonFormat(pattern = "YYYY-MM-dd")
     private LocalDateTime createAt;
 
     @QueryProjection
