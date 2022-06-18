@@ -23,4 +23,10 @@ public interface PostRepository extends JpaRepository<Post, Long>, CustomPostRep
 
     @Query("select p from Post p left join p.postLike where p.id = :id")
     Optional<Post> findOneWithLike(@Param("id") Long id);
+
+    @Query(nativeQuery = true
+            ,value = "select if(exists(" +
+            "select * from post_like p where p.post_id = :id and p.user_id = (" +
+            "select m.user_id from member m where m.email = :email)) = 1, 'false', 'true') as result")
+    boolean checkLike(@Param("email") String email, @Param("id") Long postId);
 }
