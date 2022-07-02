@@ -1,14 +1,14 @@
 package com.onpost.domain.controller;
 
-import com.onpost.domain.dto.comment.*;
+import com.onpost.domain.dto.comment.CommentCreateRequest;
+import com.onpost.domain.dto.comment.CommentEditRequest;
+import com.onpost.domain.dto.comment.CommentResponse;
 import com.onpost.domain.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/comment")
