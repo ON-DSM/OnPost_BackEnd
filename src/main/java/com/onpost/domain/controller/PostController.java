@@ -46,6 +46,11 @@ public class PostController {
         return postService.pagePost(sort, page);
     }
 
+    @GetMapping("/top3")
+    public List<PostResponse> top3(@RequestParam Sort sort) {
+        return postService.top3Post(sort);
+    }
+
     @PutMapping("/edit")
     public void edit(@ModelAttribute @Valid PostEditRequest postRequest) {
         postService.editPost(postRequest);
