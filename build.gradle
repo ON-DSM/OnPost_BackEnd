@@ -11,8 +11,8 @@ plugins {
     id 'java'
 }
 
-group = 'com'
-version = '0.0.1-SNAPSHOT'
+group 'com'
+version '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 configurations {
@@ -36,12 +36,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.6.7'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.7.0'
     implementation('it.ozimov:embedded-redis:0.7.3') {
         exclude group: "org.slf4j", module: "slf4j-simple"
     }
     implementation 'com.amazonaws:aws-java-sdk-ses:1.12.220'
-    implementation 'com.google.firebase:firebase-admin:8.1.0'
+    implementation 'com.google.firebase:firebase-admin:8.2.0'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     annotationProcessor 'org.projectlombok:lombok'
