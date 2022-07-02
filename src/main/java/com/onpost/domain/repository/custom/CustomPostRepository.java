@@ -11,4 +11,6 @@ public interface CustomPostRepository {
     List<PostResponse> searchMemberPosts(String email);
 
     List<PostResponse> searchPosts(String param);
+
+    List<PostResponse> searchTop3(Sort sort);
 }
