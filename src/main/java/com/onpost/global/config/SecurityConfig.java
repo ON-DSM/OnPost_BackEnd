@@ -60,6 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/member/followers").permitAll()
                 .antMatchers("/post/search").permitAll()
                 .antMatchers("/comment/show").permitAll()
+                .antMatchers("/post/top3").permitAll()
 
                 .anyRequest().authenticated()
                 .and()
