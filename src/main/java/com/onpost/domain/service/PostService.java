@@ -114,6 +114,10 @@ public class PostService {
         return postRepository.searchMemberPosts(email);
     }
 
+    public List<PostResponse> top3Post(Sort sort) {
+        return postRepository.searchTop3(sort);
+    }
+
     public void deletePost(Long id) {
         Post find = postFacade.getPostWithAll(id);
 
