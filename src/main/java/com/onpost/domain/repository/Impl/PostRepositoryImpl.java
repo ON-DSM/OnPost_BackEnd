@@ -66,7 +66,9 @@ public class PostRepositoryImpl extends QuerydslRepositorySupport implements Cus
                         post.tags
                 ))
                 .from(post)
-                .where(post.title.contains(param).or(post.tags.contains(param)).or(post.introduce.contains(param)))
+                .where(post.title.contains(param)
+                        .or(post.tags.contains(param))
+                        .or(post.introduce.contains(param)))
                 .orderBy(post.createAt.desc()).fetch();
     }
 
