@@ -48,3 +48,7 @@ redis:
   port: ${REDIS_PORT}
   host: ${REDIS_HOST}
   password: ${REDIS_PW}
+
+socketio:
+  host: localhost
+  port: 10027
