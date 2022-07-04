@@ -6,10 +6,10 @@ import com.onpost.domain.entity.Sort;
 import com.onpost.domain.service.ImageService;
 import com.onpost.domain.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
