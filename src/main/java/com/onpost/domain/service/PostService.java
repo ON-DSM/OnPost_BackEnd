@@ -3,10 +3,7 @@ package com.onpost.domain.service;
 import com.onpost.domain.dto.LikeDto;
 import com.onpost.domain.dto.comment.MainCommentResponse;
 import com.onpost.domain.dto.member.MemberView;
-import com.onpost.domain.dto.post.PostCreateRequest;
-import com.onpost.domain.dto.post.PostEditRequest;
-import com.onpost.domain.dto.post.PostResponse;
-import com.onpost.domain.dto.post.PostView;
+import com.onpost.domain.dto.post.*;
 import com.onpost.domain.entity.Post;
 import com.onpost.domain.entity.Sort;
 import com.onpost.domain.entity.member.Member;
@@ -18,6 +15,8 @@ import com.onpost.global.annotation.ServiceSetting;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Slf4j
@@ -114,8 +113,15 @@ public class PostService {
         return postRepository.searchMemberPosts(email);
     }
 
-    public List<PostResponse> top3Post(Sort sort) {
-        return postRepository.searchTop3(sort);
+    public List<PostTop3Response> top3Post(Sort sort) {
+        List<PostResponse> list = postRepository.searchTop3(sort);
+
+        List<PostTop3Response> response = new ArrayList<>();
+        for(int i = 0; i < list.size(); i++) {
+            response.add(new PostTop3Response(list.get(i), i + 1));
+        }
+
+        return response;
     }
 
     public void deletePost(Long id) {

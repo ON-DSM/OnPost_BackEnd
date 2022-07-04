@@ -1,10 +1,7 @@
 package com.onpost.domain.controller;
 
 import com.onpost.domain.dto.LikeDto;
-import com.onpost.domain.dto.post.PostCreateRequest;
-import com.onpost.domain.dto.post.PostEditRequest;
-import com.onpost.domain.dto.post.PostResponse;
-import com.onpost.domain.dto.post.PostView;
+import com.onpost.domain.dto.post.*;
 import com.onpost.domain.entity.Sort;
 import com.onpost.domain.service.ImageService;
 import com.onpost.domain.service.PostService;
@@ -47,7 +44,7 @@ public class PostController {
     }
 
     @GetMapping("/top3")
-    public List<PostResponse> top3(@RequestParam Sort sort) {
+    public List<PostTop3Response> top3(@RequestParam Sort sort) {
         return postService.top3Post(sort);
     }
 
