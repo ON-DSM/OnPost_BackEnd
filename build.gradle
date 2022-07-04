@@ -41,7 +41,8 @@ dependencies {
         exclude group: "org.slf4j", module: "slf4j-simple"
     }
     implementation 'com.amazonaws:aws-java-sdk-ses:1.12.220'
-    implementation 'com.google.firebase:firebase-admin:8.2.0'
+    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.corundumstudio.socketio:netty-socketio:1.7.19'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     annotationProcessor 'org.projectlombok:lombok'
