@@ -35,7 +35,6 @@ public class SocketIoConfig {
 
         @Override
         public void onPingException(Exception e, SocketIOClient client) {
-
         }
 
         @Override
