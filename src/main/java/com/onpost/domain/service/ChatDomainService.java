@@ -29,7 +29,7 @@ public class ChatDomainService {
     public ChatDomainService(SocketIOServer server) {
         namespace = server.addNamespace("/chat");
         namespace.addEventListener("send", ChatMessageDto.class, onSend());
-        namespace.addEventListener("stop", Void.class, onStop());
+        namespace.addEventListener("stop", String.class, onStop());
         namespace.addEventListener("match", String.class, onMatching());
         namespace.addEventListener("exit", String.class, onExit());
     }
@@ -45,17 +45,30 @@ public class ChatDomainService {
             client.set("type", type);
             switch (type) {
                 case MENTEE -> {
-                    if (!matchingMentorQueue.isEmpty()) makeRoom(client, matchingMentorQueue.poll());
+                    if (!matchingMentorQueue.isEmpty()) {
+                        makeRoom(client, matchingMentorQueue.poll());
+                    }
+                    else {
+                        matchingMenteeQueue.add(client);
+                    }
                 }
                 case MENTOR -> {
-                    if (!matchingMenteeQueue.isEmpty()) makeRoom(client, matchingMenteeQueue.poll());
+                    if (!matchingMenteeQueue.isEmpty()) {
+                        makeRoom(client, matchingMenteeQueue.poll());
+                    }
+                    else {
+                        matchingMentorQueue.add(client);
+                    }
                 }
                 default -> throw new MasterException(ErrorCode.PARAMETER_NOT_CONTAIN);
             }
+
+            log.info("MENTEE : {}", matchingMenteeQueue.size());
+            log.info("MENTOR : {}", matchingMentorQueue.size());
         };
     }
 
-    private DataListener<Void> onStop() {
+    private DataListener<String> onStop() {
         return (client, data, ackSender) -> {
             log.info("Stop : {}", client.getSessionId());
             switch ((Category) client.get("type")) {
@@ -63,21 +76,24 @@ public class ChatDomainService {
                 case MENTOR -> matchingMentorQueue.remove(client);
                 default -> throw new MasterException(ErrorCode.PARAMETER_NOT_CONTAIN);
             }
+
+            log.info("MENTEE : {}", matchingMenteeQueue.size());
+            log.info("MENTOR : {}", matchingMentorQueue.size());
         };
     }
 
     private DataListener<ChatMessageDto> onSend() {
         return (client, data, ackSender) -> {
             log.info("message : {}, sessionId : {}", data.getMessage(), client.getSessionId());
-            namespace.getRoomOperations(data.getRoomId()).sendEvent("");
+            namespace.getRoomOperations(data.getRoomId()).sendEvent("message", client, data.getMessage());
         };
     }
 
     private DataListener<String> onExit() {
         return (client, data, ackSender) -> {
-            log.info("Exit : {}", client.getSessionId());
+            log.info("Exit : {}\nRoom : {}", client.getSessionId(), data);
             client.leaveRoom(data);
-            namespace.getRoomOperations(data).sendEvent("exitUser");
+            namespace.getRoomOperations(data).sendEvent("exitUser", "상대방이 나갔습니다.");
         };
     }
 
@@ -87,8 +103,10 @@ public class ChatDomainService {
         user1.joinRoom(uuid.toString());
         user2.joinRoom(uuid.toString());
 
-        user1.sendEvent("connected", (Category) user1.get("type"), uuid.toString());
-        user2.sendEvent("connected", (Category) user1.get("type"), uuid.toString());
+        log.info("room : {}", uuid);
+
+        user1.sendEvent("room", (Category) user1.get("type"), uuid.toString());
+        user2.sendEvent("room", (Category) user1.get("type"), uuid.toString());
     }
 
 }
