@@ -51,7 +51,4 @@ redis:
 
 socketio:
   host: ${SOCKETHOST}
-  port: 8080
-
-server:
   port: 10027
