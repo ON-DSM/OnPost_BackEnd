@@ -50,5 +50,5 @@ redis:
   password: ${REDIS_PW}
 
 socketio:
-  host: ${SOCKET-HOST}
+  host: ${SOCKETHOST}
   port: 10027
