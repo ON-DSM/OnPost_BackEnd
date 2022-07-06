@@ -12,11 +12,11 @@ import com.onpost.domain.facade.PostFacade;
 import com.onpost.domain.repository.CommentRepository;
 import com.onpost.domain.repository.PostRepository;
 import com.onpost.global.annotation.ServiceSetting;
+import com.onpost.global.error.exception.InvalidTokenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Slf4j
@@ -30,6 +30,8 @@ public class PostService {
     private final MemberFacade memberFacade;
     private final CommentRepository commentRepository;
 
+    private static final String DEFAULT_IMAGE = System.getenv("POST_DEFAULT");
+
     public void createPost(PostCreateRequest request) {
         Member writer = memberFacade.getMemberWithPost(request.getEmail());
 
@@ -38,6 +40,7 @@ public class PostService {
                 .content(request.getContent())
                 .title(request.getTitle())
                 .tags(request.getTags())
+                .profileImage(DEFAULT_IMAGE)
                 .writer(writer)
                 .build();
 
@@ -89,6 +92,10 @@ public class PostService {
 
     public void editPost(PostEditRequest request) {
         Post find = postFacade.getPost(request.getId());
+
+        if(!find.getWriter().getEmail().equals(memberFacade.getEmail())) {
+            throw InvalidTokenException.EXCEPTION;
+        }
 
         find.setIntroduce(request.getIntroduce());
         find.setContent(request.getContent());
