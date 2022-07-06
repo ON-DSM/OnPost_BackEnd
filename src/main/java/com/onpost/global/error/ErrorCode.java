@@ -10,6 +10,7 @@ public enum ErrorCode {
     FILE_CONVERSION_FAILED("File Change Failed","GLOBAL-400-1", 400),
     HEADER_NOT_CONTAIN("Header Not Contain", "GLOBAL-400-2", 400),
     REQUEST_VALIDATION("", "GLOBAL-400-3", 400),
+    PARAMETER_NOT_CONTAIN("Parameter Not Contain", "GLOBAL-400-1",400),
 
     INVALID_TOKEN("Invalid Token", "GLOBAL-401-1",401),
     WRONG_TOKEN("Wrong Token", "GLOBAL-401-2", 401),
@@ -26,8 +27,7 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND("Member Not Found", "MEMBER-404",404),
     COMMENT_NOT_FOUND("Comment Not Found", "COMMENT-404",404),
 
-    PARAMETER_NOT_CONTAIN("Parameter Not Contain", "GLOBAL-404-1",404),
-    DO_NOT_UNDERSTAND_REQUEST("Don't Understand Request", "GLOBAL-404-2",404),
+    DO_NOT_UNDERSTAND_REQUEST("Don't Understand Request", "GLOBAL-404-1",404),
 
     EMAIL_ALREADY_EXISTS("Email Already Exists", "GLOBAL-409-1", 409),
 
