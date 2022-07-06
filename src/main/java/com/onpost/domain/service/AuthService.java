@@ -27,7 +27,7 @@ public class AuthService {
     private final RefreshRepository refreshRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public static final String DEFAULT_IMAGE = System.getenv("DEFAULT");
+    public static final String DEFAULT_IMAGE = System.getenv("MEMBER_DEFAULT");
 
     public void signupMember(SignupDto signupDto) {
 
