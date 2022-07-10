@@ -1,19 +1,23 @@
 package com.onpost.domain.service;
 
 import com.onpost.domain.dto.FollowDto;
-import com.onpost.domain.dto.member.*;
+import com.onpost.domain.dto.member.MemberEditRequest;
+import com.onpost.domain.dto.member.MemberPasswordRequest;
+import com.onpost.domain.dto.member.MemberResponse;
+import com.onpost.domain.dto.member.MemberView;
 import com.onpost.domain.entity.member.Member;
 import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.repository.MemberRepository;
-import com.onpost.global.annotation.ServiceSetting;
 import com.onpost.global.error.exception.PasswordNotMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 import static com.onpost.domain.service.AuthService.DEFAULT_IMAGE;
 
-@ServiceSetting
+@Service
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -30,7 +34,7 @@ public class MemberService {
         member.setIntroduce(request.getIntroduce());
 
         if (request.getProfile() != null) {
-            if (member.getProfile() != null && !member.getProfile().equals(DEFAULT_IMAGE)) {
+            if (!member.getProfile().equals(DEFAULT_IMAGE)) {
                 imageService.deletePath(member.getProfile());
             }
             member.setProfile(imageService.getPath(request.getProfile(), "profile"));
