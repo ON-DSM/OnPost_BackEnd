@@ -12,12 +12,14 @@ import com.onpost.global.error.exception.PasswordNotMatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static com.onpost.domain.service.AuthService.DEFAULT_IMAGE;
 
 @Service
+@Transactional(rollbackFor = {Exception.class})
 @RequiredArgsConstructor
 public class MemberService {
 
