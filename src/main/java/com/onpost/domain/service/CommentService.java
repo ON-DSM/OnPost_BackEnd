@@ -14,8 +14,10 @@ import com.onpost.domain.facade.PostFacade;
 import com.onpost.domain.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(rollbackFor = {Exception.class})
 @RequiredArgsConstructor
 public class CommentService {
 
