@@ -9,15 +9,15 @@ import com.onpost.domain.entity.member.RefreshToken;
 import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.repository.MemberRepository;
 import com.onpost.domain.repository.RefreshRepository;
-import com.onpost.global.annotation.ServiceSetting;
 import com.onpost.global.error.exception.EmailAlreadyExistsException;
 import com.onpost.global.error.exception.ExpiredRefreshTokenException;
 import com.onpost.global.error.exception.PasswordNotMatchException;
 import com.onpost.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
-@ServiceSetting
+@Service
 @RequiredArgsConstructor
 public class AuthService {
 
