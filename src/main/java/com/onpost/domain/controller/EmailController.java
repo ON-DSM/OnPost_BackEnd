@@ -26,10 +26,10 @@ public class EmailController {
 
     private final EmailService emailService;
 
-    @Value("${cloud.aws.template}")
+    @Value("${amazon.template}")
     private String TEMPLATE;
 
-    @Value("${cloud.aws.mail}")
+    @Value("${amazon.mail}")
     private String SENDER;
 
     @PostMapping("/certified")
