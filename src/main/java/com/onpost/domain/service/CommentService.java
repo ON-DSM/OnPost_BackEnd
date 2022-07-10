@@ -12,10 +12,10 @@ import com.onpost.domain.facade.CommentFacade;
 import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.facade.PostFacade;
 import com.onpost.domain.repository.CommentRepository;
-import com.onpost.global.annotation.ServiceSetting;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-@ServiceSetting
+@Service
 @RequiredArgsConstructor
 public class CommentService {
 
@@ -24,7 +24,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentFacade commentFacade;
 
-    public void saveSub(CommentCreateRequest commentRequest) {
+    public Long saveSub(CommentCreateRequest commentRequest) {
         MainComment parent = commentFacade.getMainById(commentRequest.getParentId());
         SubComment comment = SubComment.builder()
                 .content(commentRequest.getContent())
@@ -33,10 +33,10 @@ public class CommentService {
                 .build();
         parent.getSubComments().add(comment);
 
-        commentRepository.save(comment);
+        return commentRepository.save(comment).getId();
     }
 
-    public void saveMain(CommentCreateRequest commentRequest) {
+    public Long saveMain(CommentCreateRequest commentRequest) {
         Post post = postFacade.getPostWithComment(commentRequest.getParentId());
         MainComment comment = MainComment.builder()
                 .content(commentRequest.getContent())
@@ -45,7 +45,7 @@ public class CommentService {
                 .build();
         post.getComments().add(comment);
 
-        commentRepository.save(comment);
+        return commentRepository.save(comment).getId();
     }
 
     public CommentResponse showMain(Long id) {
