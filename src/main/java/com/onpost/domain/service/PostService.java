@@ -11,16 +11,16 @@ import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.facade.PostFacade;
 import com.onpost.domain.repository.CommentRepository;
 import com.onpost.domain.repository.PostRepository;
-import com.onpost.global.annotation.ServiceSetting;
 import com.onpost.global.error.exception.InvalidTokenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@ServiceSetting
+@Service
 @RequiredArgsConstructor
 public class PostService {
 
@@ -45,6 +45,9 @@ public class PostService {
                 .build();
 
         if(request.getProfile() != null) {
+            if(!post.getProfileImage().equals(DEFAULT_IMAGE)) {
+                imageService.deletePath(post.getProfileImage());
+            }
             post.setProfileImage(imageService.getPath(request.getProfile(), "profile"));
         }
 
@@ -134,7 +137,7 @@ public class PostService {
     public void deletePost(Long id) {
         Post find = postFacade.getPostWithAll(id);
 
-        if(find.getProfileImage() != null) {
+        if(!find.getProfileImage().equals(DEFAULT_IMAGE)) {
             imageService.deletePath(find.getProfileImage());
         }
 
