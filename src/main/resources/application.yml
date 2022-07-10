@@ -34,7 +34,7 @@ jwt:
   refresh: ${REFRESH_TIME}
   header: ${HEADER}
 
-cloud.aws:
+amazon:
   region.static: ${REGION}
   credentials:
     secretKey: ${SECRETKEY}
@@ -50,5 +50,5 @@ redis:
   password: ${REDIS_PW}
 
 socketio:
-  host: ${SOCKETHOST}
+  host: ${SOCKET_HOST}
   port: 10027
