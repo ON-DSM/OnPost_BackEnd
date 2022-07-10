@@ -13,13 +13,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AmazonConfig {
 
-    @Value("${cloud.aws.credentials.accessKey}")
+    @Value("${amazon.credentials.accessKey}")
     private String accessKey;
 
-    @Value("${cloud.aws.credentials.secretKey}")
+    @Value("${amazon.credentials.secretKey}")
     private String secretKey;
 
-    @Value("${cloud.aws.region.static}")
+    @Value("${amazon.region.static}")
     private String region;
 
     @Bean
