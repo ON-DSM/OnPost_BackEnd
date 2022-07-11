@@ -75,6 +75,6 @@ public class PostController {
 
     @PostMapping("/save/image")
     public String getImage(@RequestParam MultipartFile image) {
-        return imageService.getPath(image, "static");
+        return imageService.savePath(image, "static");
     }
 }
