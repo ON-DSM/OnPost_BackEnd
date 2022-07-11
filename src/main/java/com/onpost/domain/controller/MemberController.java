@@ -47,8 +47,8 @@ public class MemberController {
     }
 
     @DeleteMapping("/delete")
-    public void delete(@RequestParam String email) {
-        memberService.deleteMember(email);
+    public void delete() {
+        memberService.deleteMember();
     }
 
     @GetMapping("/info")
