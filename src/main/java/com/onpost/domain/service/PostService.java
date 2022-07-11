@@ -11,9 +11,9 @@ import com.onpost.domain.facade.MemberFacade;
 import com.onpost.domain.facade.PostFacade;
 import com.onpost.domain.repository.CommentRepository;
 import com.onpost.domain.repository.PostRepository;
-import com.onpost.global.error.exception.InvalidTokenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,11 +61,7 @@ public class PostService {
     public PostView showPost(Long id, String email) {
         Post find = postFacade.getPostWithAll(id);
         List<MainCommentResponse> comments = commentRepository.findMainByPost(find);
-        boolean check = true;
-
-        if(email != null) {
-            check = postRepository.checkLike(email, id);
-        }
+        boolean check = email == null || postRepository.checkLike(email, id);
 
         return PostView.builder()
                 .id(find.getId())
@@ -99,7 +95,7 @@ public class PostService {
         Post find = postFacade.getPost(request.getId());
 
         if(!find.getWriter().getEmail().equals(memberFacade.getEmail())) {
-            throw InvalidTokenException.EXCEPTION;
+            throw new AccessDeniedException(null);
         }
 
         find.setIntroduce(request.getIntroduce());
@@ -138,6 +134,10 @@ public class PostService {
 
     public void deletePost(Long id) {
         Post find = postFacade.getPostWithAll(id);
+
+        if(!find.getWriter().getEmail().equals(memberFacade.getEmail())) {
+            throw new AccessDeniedException(null);
+        }
 
         if(!find.getProfileImage().equals(DEFAULT_IMAGE)) {
             imageService.deletePath(find.getProfileImage());
