@@ -2,10 +2,7 @@ package com.onpost.domain.entity.comment;
 
 import com.onpost.domain.entity.BaseEntity;
 import com.onpost.domain.entity.member.Member;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -17,6 +14,7 @@ import java.util.Objects;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorColumn
 @Getter
+@EqualsAndHashCode
 public abstract class Comment extends BaseEntity {
 
     @Id
@@ -37,18 +35,5 @@ public abstract class Comment extends BaseEntity {
     public Comment(Member writer, String content) {
         this.content = content;
         this.writer = writer;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Comment comment = (Comment) o;
-        return id != null && Objects.equals(id, comment.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 }
