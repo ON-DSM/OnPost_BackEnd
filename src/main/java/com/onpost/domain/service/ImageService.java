@@ -9,10 +9,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public record ImageService(S3Uploader s3Uploader, ImageRepository imageRepository) {
 
-    public String getPath(MultipartFile file, String dirName) {
-        Image image = Image.builder().imagePath(s3Uploader.upload(file, dirName)).build();
+    public String savePath(MultipartFile file, String dirName) {
+        Image image = Image.builder().imagePath(getPath(file, dirName)).build();
         imageRepository.save(image);
         return image.getImagePath();
+    }
+
+    public String getPath(MultipartFile file, String dirName) {
+        return s3Uploader.upload(file, dirName);
     }
 
     public void deletePath(String path) {
