@@ -14,7 +14,6 @@ import java.util.*;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode
 public class Post extends BaseEntity {
 
     @Id
@@ -47,4 +46,18 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "parent_post", cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<MainComment> comments = new LinkedHashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+
+        Post post = (Post) o;
+        return id != null && Objects.equals(id, post.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
