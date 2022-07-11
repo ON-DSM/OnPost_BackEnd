@@ -90,8 +90,8 @@ public class MemberService {
         return memberRepository.searchFollowing(email);
     }
 
-    public void deleteMember(String email) {
-        Member member = memberFacade.getMemberWithAll(email);
+    public void deleteMember() {
+        Member member = memberFacade.getMemberWithAll(memberFacade.getEmail());
 
         member.getFollowing().forEach(m -> {m.getFollower().remove(member); memberRepository.save(m);});
 
