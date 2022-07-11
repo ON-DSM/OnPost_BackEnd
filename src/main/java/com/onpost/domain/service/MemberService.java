@@ -95,7 +95,7 @@ public class MemberService {
 
         member.getFollowing().forEach(m -> {m.getFollower().remove(member); memberRepository.save(m);});
 
-        if (member.getProfile() != null && !member.getProfile().equals(DEFAULT_IMAGE)) {
+        if (!member.getProfile().equals(DEFAULT_IMAGE)) {
             imageService.deletePath(member.getProfile());
         }
 
