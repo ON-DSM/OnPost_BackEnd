@@ -3,11 +3,11 @@ package com.onpost.domain.entity.member;
 import com.onpost.domain.entity.BaseEntity;
 import com.onpost.domain.entity.Post;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -15,6 +15,7 @@ import java.util.*;
 @Builder
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Member extends BaseEntity {
 
     @Id
@@ -53,17 +54,4 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "writer")
     private final Set<Post> makePost = new LinkedHashSet<>();
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Member member = (Member) o;
-        return id != null && Objects.equals(id, member.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
